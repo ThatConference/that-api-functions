@@ -29,6 +29,7 @@ jobs:
           npm run validate
       - name: Post-Build Copies
         run: |
+          cd functions/fileUpload
           pwd
           cp ./package.json __build__/
           cp ./package-lock.json __build__/
