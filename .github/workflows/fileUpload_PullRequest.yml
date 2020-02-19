@@ -1,0 +1,36 @@
+name: fileUpload Pull Request 
+
+on: 
+  pull_request:
+    paths:
+      - 'functions/fileUpload/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout PR
+        uses: actions/checkout@v2
+      - name: Use Node.js 10.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10.x
+      - name: npm ci, run validate
+        run: |
+          cd functions/fileUpload
+          pwd
+          cp ./.env.sample .env
+          npm ci
+          npm run validate
+        env:
+          CI: true
+      - name: Slack Notification
+        uses: 8398a7/action-slack@v2
+        with:
+          status: ${{ job.status }}
+          author: PullReq CI
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_DEV_NOTIFICATIONS }}
+        if: always()

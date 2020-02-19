@@ -1,0 +1,101 @@
+name: fileUpload Push Master
+
+on: 
+  push:
+    branches:
+      - master
+    paths:
+      - 'functions/fileUpload/**'
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Use Node.js 10.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10.x
+      - name: npm ci, run validate
+        run: |
+          cd functions/fileUpload
+          pwd
+          cp .env.sample .env
+          npm ci
+          npm run validate
+      - name: Post-Build Copies
+        run: |
+          pwd
+          cp ./package.json __build__/
+          cp ./package-lock.json __build__/
+          git rev-list --count master > __build__/ccnt.txt
+      - name: Archive Build Artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: tc-api
+          path: __build__
+      - name: Slack Notification
+        uses: 8398a7/action-slack@v2
+        with:
+          status: ${{ job.status }}
+          author: Push Master CI
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_DEV_NOTIFICATIONS }}
+        if: job.status == 'failure' || job.status == 'cancelled'
+
+  deploy-image:
+    name: Deploy Image Upload
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v1
+        with:
+          name: tc-api
+      - name: Setup GCP Actions
+        uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+        with:
+          version: '274.0.1'
+          service_account_key: ${{ secrets.GCLOUD_AUTH }}
+      - name: Load gcloud beta bits
+        run: gcloud components install beta
+        env:
+          CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
+      - name: write .env file
+        run: |
+          gcloud beta secrets versions access latest --secret prod-api-gateway-env > tc-api/.env
+          C_CNT=$(cat tc-api/ccnt.txt)
+          rm -f tc-api/ccnt.txt
+          SENTRYREL=SENTRY_VERSION=that-imgage-upload@$(cat tc-api/package.json | jq '.version' | tr -d '"')-$C_CNT.$(echo $GITHUB_SHA | cut -c1-7)
+          echo "" >> tc-api/.env
+          echo $SENTRYREL >> tc-api/.env
+          echo "::set-env name=SENTRYREL::$SENTRYREL"
+        env:
+          CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
+      - name: Checks and verifications
+        run: |
+          echo "**********"
+          echo $SENTRYREL
+          echo $GITHUB_SHA
+          echo $GITHUB_REF
+          echo "**********"
+          echo $PWD
+          ls -lasiR
+      - name: Run GCP Deploy Function - imageUpload
+        run: gcloud functions deploy fileUploadGateway --runtime nodejs10 --trigger-http --source $PWD/tc-api --entry-point handler --memory 512MB
+        env:
+          CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
+      - name: Slack Notification
+        uses: 8398a7/action-slack@v2
+        with:
+          status: ${{ job.status }}
+          author: Push Master CI
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_DEV_NOTIFICATIONS }}
+        if: always()
