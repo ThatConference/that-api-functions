@@ -1,6 +1,6 @@
 # that-api-webhooks
 
-[![Actions Status](https://github.com/ThatConference/that-api-webhooks/workflows/Push%20Master%20CI/badge.svg)](https://github.com/ThatConference/that-api-webhooks/workflows/actions)
+![that-api-webhooks Push Master](https://github.com/ThatConference/that-api-functions/workflows/that-api-webhooks%20Push%20Master/badge.svg?branch=master)
 
 middleware webhooks
 
