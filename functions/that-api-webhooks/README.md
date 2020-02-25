@@ -4,6 +4,9 @@
 
 middleware webhooks
 
+- docusign -> webhooks -> tallyfy
+- next-function
+
 ## Authentication
 
 Uses basic authentication. Preferred method is via header, though the **less secure** query string will also be accepted. This is unfortunately required as some services can't set an authorization header for their webhooks.
