@@ -8,4 +8,4 @@ A collection of functions used for THAT
 
 ## that-api-webhooks
 
---badge here
+![that-api-webhooks Push Master](https://github.com/ThatConference/that-api-functions/workflows/that-api-webhooks%20Push%20Master/badge.svg?branch=master)
