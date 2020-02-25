@@ -1,0 +1,62 @@
+[
+  {
+    "checklistTitle": "",
+    "checklistId": "",
+    "docusignTemplates": [],
+    "uploadLogoStepId": "",
+    "uploadLogoStepAlias": "",
+    "preloadFields": {
+      "organization": "",
+      "partnershipLevel": "",
+      "primaryContactName": "",
+      "primaryContactEmail": "",
+      "event": ""
+    },
+    "stepsToUpdate": [
+      {
+        "id": "",
+        "alias": ""
+      }
+    ]
+  },
+  {
+    "checklistTitle": "Test Partner Onboard",
+    "checklistId": "123456789",
+    "docusignTemplates": ["template1", "template2"],
+    "uploadLogoStepId": "0987654321",
+    "uploadLogoStepAlias": "logo-99",
+    "preloadFields": {
+      "organization": "1234",
+      "partnershipLevel": "2345",
+      "primaryContactName": "3456",
+      "primaryContactEmail": "4567",
+      "event": "event456e1"
+    },
+    "stepsToUpdate": [
+      {
+        "id": "",
+        "alias": ""
+      }
+    ]
+  },
+  {
+    "checklistTitle": "Onboard Partner",
+    "checklistId": "2f7a3a5f03bd0c3bd541df81b60d4637",
+    "docusignTemplates": ["2020 Partnership Commitment Agreement"],
+    "uploadLogoStepId": "",
+    "uploadLogoStepAlias": "",
+    "preloadFields": {
+      "organization": "a001570eeaf072c55b248c9e1b0614a7",
+      "partnershipLevel": "bceb474eced80ea20716b321630ba230",
+      "primaryContactName": "6f3317bd752b569f34041ace8800c6a4",
+      "primaryContactEmail": "d746829a4bc4ecfda53c91e40d4be279",
+      "event": "08177f9035dd65524ba82a532b49cb75"
+    },
+    "stepsToUpdate": [
+      {
+        "id": "294a76779652ebad3630e65b508813c7",
+        "alias": "send-that-partner-logo-2760459"
+      }
+    ]
+  }
+]

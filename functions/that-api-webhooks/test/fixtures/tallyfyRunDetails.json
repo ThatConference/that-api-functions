@@ -1,0 +1,178 @@
+{
+  "data": {
+    "id": "acd807aa93d1e8c82cc1e29ab7f570fd",
+    "checklist_id": "2f7a3a5f03bd0c3bd541df81b60d4637",
+    "name": "Brettski 5b, LLC - WI 2020 (from API)",
+    "summary": "Brettki 5b, LLC Onboarding Process WI 2020",
+    "status": "active",
+    "progress": {
+      "complete": 0,
+      "total": 6,
+      "percent": 0
+    },
+    "started_by": 31104,
+    "owner_id": 31104,
+    "prerun": {
+      "a001570eeaf072c55b248c9e1b0614a7": "Brettski 5b, LLC",
+      "bceb474eced80ea20716b321630ba230": {
+        "id": "0",
+        "text": "Explorer"
+      },
+      "6f3317bd752b569f34041ace8800c6a4": "Brett Slaski",
+      "d746829a4bc4ecfda53c91e40d4be279": "brettski@yahoo.com",
+      "08177f9035dd65524ba82a532b49cb75": "WI"
+    },
+    "starred": false,
+    "created_at": "2019-11-18T22:31:07Z",
+    "started_at": "2019-11-18T22:31:07Z",
+    "last_updated": "2019-11-18T22:31:07Z",
+    "archived_at": null,
+    "completed_at": null,
+    "due_date_passed": true,
+    "collaborators": [31104, 31794],
+    "due_soon": false,
+    "max_task_deadline": "2019-11-23T22:31:07Z",
+    "tasks": {
+      "data": [
+        {
+          "id": "741e9b2018f124149ef39cc292d8a07e",
+          "title": "DocuSign Agreement Signed",
+          "run_id": "acd807aa93d1e8c82cc1e29ab7f570fd",
+          "step_id": "b98ac7f710c2dc51446c4b2d66190a33",
+          "alias": "docusign-agreement-signed-2760444",
+          "taskdata": {},
+          "owners": {
+            "users": [31104],
+            "guests": []
+          },
+          "is_completable": true,
+          "status": "not-started",
+          "position": 1,
+          "deadline": "2019-11-19T22:31:07Z",
+          "created_at": "2019-11-18T22:31:07Z",
+          "last_updated": "2019-11-18T22:31:07Z",
+          "archived_at": null,
+          "completed_at": null,
+          "starter_id": 31104,
+          "completer_id": null,
+          "run_status": "delayed"
+        },
+        {
+          "id": "9fbaaab7b830a188c9cc6f76096e32e4",
+          "title": "Send Invoice to Partner",
+          "run_id": "acd807aa93d1e8c82cc1e29ab7f570fd",
+          "step_id": "a858be0372f27af76332a9697bb1b741",
+          "alias": "send-invoice-to-partner-2760449",
+          "taskdata": {},
+          "owners": {
+            "users": [31794],
+            "guests": []
+          },
+          "is_completable": true,
+          "status": "not-started",
+          "position": 2,
+          "deadline": "2019-11-19T22:31:07Z",
+          "created_at": "2019-11-18T22:31:07Z",
+          "last_updated": "2019-11-18T22:31:07Z",
+          "archived_at": null,
+          "completed_at": null,
+          "starter_id": 31104,
+          "completer_id": null,
+          "run_status": "delayed"
+        },
+        {
+          "id": "52cf313b451f837fdc289679f430a77d",
+          "title": "Send THAT Partner Logo",
+          "run_id": "acd807aa93d1e8c82cc1e29ab7f570fd",
+          "step_id": "294a76779652ebad3630e65b508813c7",
+          "alias": "send-that-partner-logo-2760459",
+          "taskdata": {},
+          "owners": {
+            "users": [31104],
+            "guests": []
+          },
+          "is_completable": true,
+          "status": "not-started",
+          "position": 4,
+          "deadline": "2019-11-23T22:31:07Z",
+          "created_at": "2019-11-18T22:31:07Z",
+          "last_updated": "2019-11-18T22:31:07Z",
+          "archived_at": null,
+          "completed_at": null,
+          "starter_id": 31104,
+          "completer_id": null,
+          "run_status": "delayed"
+        },
+        {
+          "id": "f912861cb0dbee1249759b3f9f5ab945",
+          "title": "Request Partner Page Data (TODO: define)",
+          "run_id": "acd807aa93d1e8c82cc1e29ab7f570fd",
+          "step_id": "cdc57e94db396a3ead8b5e1c93f9a6e3",
+          "alias": "request-partner-page-data-define-2760462",
+          "taskdata": {},
+          "owners": {
+            "users": [31104],
+            "guests": []
+          },
+          "is_completable": true,
+          "status": "not-started",
+          "position": 5,
+          "deadline": "2019-11-19T22:31:07Z",
+          "created_at": "2019-11-18T22:31:07Z",
+          "last_updated": "2019-11-18T22:31:07Z",
+          "archived_at": null,
+          "completed_at": null,
+          "starter_id": 31104,
+          "completer_id": null,
+          "run_status": "delayed"
+        },
+        {
+          "id": "6d013e58bd09b5c56f19678495131c8b",
+          "title": "Does Partner have A THAT account? (TODO: define)",
+          "run_id": "acd807aa93d1e8c82cc1e29ab7f570fd",
+          "step_id": "982e8d076ad4776e0c4ed9112139cc6a",
+          "alias": "does-partner-have-that-account-2760463",
+          "taskdata": {},
+          "owners": {
+            "users": [31104],
+            "guests": []
+          },
+          "is_completable": true,
+          "status": "not-started",
+          "position": 6,
+          "deadline": "2019-11-19T22:31:07Z",
+          "created_at": "2019-11-18T22:31:07Z",
+          "last_updated": "2019-11-18T22:31:07Z",
+          "archived_at": null,
+          "completed_at": null,
+          "starter_id": 31104,
+          "completer_id": null,
+          "run_status": "delayed"
+        },
+        {
+          "id": "374e6e9eba1e7990abe8e60a49a2e807",
+          "title": "Is Partner Interested in Speaking Slot?",
+          "run_id": "acd807aa93d1e8c82cc1e29ab7f570fd",
+          "step_id": "40ef5683c07c530ddeeaf0700d3175b8",
+          "alias": "is-partner-interested-in-2760452",
+          "taskdata": {},
+          "owners": {
+            "users": [31104],
+            "guests": []
+          },
+          "is_completable": true,
+          "status": "not-started",
+          "position": 8,
+          "deadline": "2019-11-19T22:31:07Z",
+          "created_at": "2019-11-18T22:31:07Z",
+          "last_updated": "2019-11-18T22:31:07Z",
+          "archived_at": null,
+          "completed_at": null,
+          "starter_id": 31104,
+          "completer_id": null,
+          "run_status": "delayed"
+        }
+      ]
+    }
+  }
+}
