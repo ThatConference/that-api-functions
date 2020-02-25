@@ -1,0 +1,77 @@
+# Validate lint, build, and tests on PR
+name: that-api-webhooks Push Master
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'functions/that-api-webhooks/**'
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Use node.js 10.x
+        uses: actions/setup-node@master
+        with:
+          node-version: 10.x
+      - name: npm ci, lint, test
+        run: |
+          cd functions/that-api-webhooks
+          cp .env.sample .env
+          npm ci
+          npm run lint
+          npm run test
+      - name: Slack Notification
+        uses: 8398a7/action-slack@v2
+        with:
+          status: ${{ job.status }}
+          author: Push Master CI
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_DEV_NOTIFICATIONS }}
+        if: job.status == 'failure' || job.status == 'cancelled'
+
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Setup GCP Deploy Function - webhooks
+        uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+        with:
+          version: '274.0.1'
+          service_account_key: ${{ secrets.GCLOUD_AUTH }}
+      - name: Load gcloud beta bits
+        run: gcloud components install beta
+        env:
+          CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
+      - name: write .env file
+        run: |
+          cd functions/that-api-webhooks
+          gcloud beta secrets versions access latest --secret prod-api-webhooks-env > .env
+          C_CNT=$(cat ccnt.txt)
+          rm -f ccnt.txt
+        env:
+          CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}      
+      - name: Run GCP Deploy Function - webhooks
+        run: |
+          cd functions/that-api-webhooks
+          gcloud functions deploy webhooks --runtime nodejs10 --trigger-http --entry-point hooks
+        env:
+          CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
+      - name: Slack Notification
+        uses: 8398a7/action-slack@v2
+        with:
+          status: ${{ job.status }}
+          author: Push Master CI
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_DEV_NOTIFICATIONS }}
+        if: always()

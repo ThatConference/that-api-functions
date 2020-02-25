@@ -1,0 +1,18 @@
+{
+  "workbench.colorCustomizations": {
+    "titleBar.activeBackground": "#b700ff",
+    "titleBar.inactiveBackground": "#b700ff",
+    "titleBar.activeForeground": "#000000",
+    "titleBar.inactiveForeground": "#333333",
+    "statusBar.background": "#b700ff"
+  },
+  "eslint.autoFixOnSave": false,
+  "editor.tabSize": 2,
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveTimeout": 1500,
+  "editor.snippetSuggestions": "top",
+  "prettier.tabWidth": 2,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": false
+  }
+}

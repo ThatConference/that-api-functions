@@ -1,0 +1,32 @@
+[
+  {
+    "templateName": "",
+    "partnerOrganization": "",
+    "partnerFullName": "",
+    "partnerEmail": "",
+    "partnerMailAddr": "",
+    "partnerWebsite": "",
+    "partnerPhoneNumber": "",
+    "partnerLevel": "",
+    "partnerOtherCheckbox": "",
+    "partnerOtherText": "",
+    "partnerDateSigned": "",
+    "event": "",
+    "eventYear": ""
+  },
+  {
+    "templateName": "2020 Partnership Commitment Agreement",
+    "partnerOrganization": "Company",
+    "partnerFullName": "FullName",
+    "partnerEmail": "EmailAddress",
+    "partnerMailAddr": "Partner Mailing Address",
+    "partnerWebsite": "Partner Website Address",
+    "partnerPhoneNumber": "Partner Phone Number",
+    "partnerLevel": "Partner Level",
+    "partnerOtherCheckbox": "Partner Other Checkbox",
+    "partnerOtherText": "Other Opportunity Text",
+    "partnerDateSigned": "DateSigned",
+    "event": "Event",
+    "eventYear": "Event Year"
+  }
+]
