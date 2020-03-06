@@ -4,18 +4,14 @@ import debug from 'debug';
 import * as Sentry from '@sentry/node';
 import { Firestore } from '@google-cloud/firestore';
 
-import { version } from '../package.json';
-
 const firestore = new Firestore();
 const dlog = debug('that:api:functions:voting-on-create');
 dlog('started');
 
-const defaultVersion = `voting-on-create@${version}`;
-
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
   environment: process.env.THAT_ENVIRONMENT,
-  release: process.env.SENTRY_VERSION || defaultVersion,
+  // release: process.env.SENTRY_VERSION,
   debug: process.env.NODE_ENV === 'development',
 });
 
