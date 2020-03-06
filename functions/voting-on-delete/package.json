@@ -1,7 +1,7 @@
 {
   "name": "@thatconference/voting-on-delete",
   "version": "1.0.0",
-  "description": "REST endpoint to upload images to google bucket",
+  "description": "Firestore event to aggregate votes",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ThatConference/that-api-functions.git"
