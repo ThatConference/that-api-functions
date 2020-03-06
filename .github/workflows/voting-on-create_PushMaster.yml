@@ -87,7 +87,7 @@ jobs:
           ls -lasiR
       - name: Run GCP Deploy Function - voting-on-create
         run: |
-          cd functions/voting-on-create
+          cd tc-api
           gcloud functions deploy voting-on-create --runtime nodejs10 --trigger-event providers/cloud.firestore/eventTypes/document.create --trigger-resource "projects/all-that/databases/(default)/documents/votes/{vote}" --entry-point handler
         env:
           CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
