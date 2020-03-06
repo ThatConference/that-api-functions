@@ -36,7 +36,7 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: tc-api
-          path: functions/fileUpload/__build__
+          path: functions/voting-on-create/__build__
       - name: Slack Notification
         uses: 8398a7/action-slack@v2
         with:
