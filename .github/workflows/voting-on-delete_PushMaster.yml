@@ -36,7 +36,7 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: tc-api
-          path: functions/voting-on-create/__build__
+          path: functions/voting-on-delete/__build__
       - name: Slack Notification
         uses: 8398a7/action-slack@v2
         with:
@@ -67,8 +67,7 @@ jobs:
           CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
       - name: write .env file
         run: |
-          cd functions/voting-on-delete
-          gcloud beta secrets versions access latest --secret prod-voting-on-delete-env > .env
+          gcloud beta secrets versions access latest --secret prod-voting-on-delete-env > tc-api/.env
           C_CNT=$(cat tc-api/ccnt.txt)
           rm -f tc-api/ccnt.txt
           SENTRYREL=SENTRY_VERSION=voting-on-delete$(cat tc-api/package.json | jq '.version' | tr -d '"')-$C_CNT.$(echo $GITHUB_SHA | cut -c1-7)

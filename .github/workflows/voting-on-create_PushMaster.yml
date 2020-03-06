@@ -67,8 +67,7 @@ jobs:
           CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
       - name: write .env file
         run: |
-          cd functions/voting-on-create
-          gcloud beta secrets versions access latest --secret prod-voting-on-create-env > .env
+          gcloud beta secrets versions access latest --secret prod-voting-on-create-env > tc-api/.env
           C_CNT=$(cat tc-api/ccnt.txt)
           rm -f tc-api/ccnt.txt
           SENTRYREL=SENTRY_VERSION=voting-on-create@$(cat tc-api/package.json | jq '.version' | tr -d '"')-$C_CNT.$(echo $GITHUB_SHA | cut -c1-7)
