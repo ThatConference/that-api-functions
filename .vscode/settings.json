@@ -1,0 +1,20 @@
+{
+  "workbench.colorCustomizations": {
+    "titleBar.activeBackground": "#b700ff",
+    "titleBar.inactiveBackground": "#b700ff99",
+    "titleBar.activeForeground": "#e7e7e7",
+    "titleBar.inactiveForeground": "#e7e7e799",
+    "statusBar.background": "#b700ff",
+    "statusBarItem.hoverBackground": "#c533ff",
+    "statusBar.foreground": "#e7e7e7"
+  },
+  "editor.tabSize": 2,
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveTimeout": 1500,
+  "editor.snippetSuggestions": "top",
+  "prettier.tabWidth": 2,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": false
+  },
+  "peacock.color": "#b700ff"
+}
