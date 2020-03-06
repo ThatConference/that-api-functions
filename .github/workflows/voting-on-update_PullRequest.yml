@@ -22,5 +22,4 @@ jobs:
           cd functions/voting-on-update
           cp .env.sample .env
           npm ci
-          npm run lint
-          npm run test
+          npm run validate
