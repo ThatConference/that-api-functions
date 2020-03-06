@@ -14,17 +14,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@master
+        uses: actions/checkout@v2
       - name: Use node.js 10.x
-        uses: actions/setup-node@master
+        uses: actions/setup-node@v1
         with:
           node-version: 10.x
-      - name: npm ci, lint, test
+      - name: npm ci,  run validate
         run: |
           cd functions/voting-on-update
           cp .env.sample .env
           npm ci
           npm run validate
+      - name: Post-Build Copies
+        run: |
+          cd functions/voting-on-update
+          pwd
+          cp ./package.json __build__/
+          cp ./package-lock.json __build__/
+          git rev-list --count master > __build__/ccnt.txt
+      - name: Archive Build Artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: tc-api
+          path: functions/fileUpload/__build__
       - name: Slack Notification
         uses: 8398a7/action-slack@v2
         with:
@@ -35,13 +47,15 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_DEV_NOTIFICATIONS }}
         if: job.status == 'failure' || job.status == 'cancelled'
 
-  deploy:
+  deploy-function:
     name: Deploy
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@master
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v1
+        with:
+          name: tc-api
       - name: Setup GCP Deploy Function - voting-on-update
         uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
         with:
@@ -55,8 +69,23 @@ jobs:
         run: |
           cd functions/voting-on-update
           gcloud beta secrets versions access latest --secret prod-voting-on-update-env > .env
+          C_CNT=$(cat tc-api/ccnt.txt)
+          rm -f tc-api/ccnt.txt
+          SENTRYREL=SENTRY_VERSION=voting-on-update@$(cat tc-api/package.json | jq '.version' | tr -d '"')-$C_CNT.$(echo $GITHUB_SHA | cut -c1-7)
+          echo "" >> tc-api/.env
+          echo $SENTRYREL >> tc-api/.env
+          echo "::set-env name=SENTRYREL::$SENTRYREL"
         env:
           CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
+      - name: Checks and verifications
+        run: |
+          echo "**********"
+          echo $SENTRYREL
+          echo $GITHUB_SHA
+          echo $GITHUB_REF
+          echo "**********"
+          echo $PWD
+          ls -lasiR
       - name: Run GCP Deploy Function - voting-on-update
         run: |
           cd functions/voting-on-update
