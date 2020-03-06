@@ -87,7 +87,7 @@ jobs:
           ls -lasiR
       - name: Run GCP Deploy Function - voting-on-delete
         run: |
-          cd functions/voting-on-delete
+          cd tc-api
           gcloud functions deploy voting-on-delete --runtime nodejs10 --trigger-event providers/cloud.firestore/eventTypes/document.delete --trigger-resource "projects/all-that/databases/(default)/documents/votes/{vote}" --entry-point handler
         env:
           CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
