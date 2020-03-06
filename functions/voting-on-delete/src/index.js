@@ -10,7 +10,7 @@ const firestore = new Firestore();
 const dlog = debug('that:api:functions:voting-on-delete');
 dlog('started');
 
-const defaultVersion = `voting-on-create@${version}`;
+const defaultVersion = `voting-on-delete@${version}`;
 
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
