@@ -80,8 +80,6 @@ export const handler = (event, context) => {
         cVoteTrue = cVoteTrue || 0;
         cVoteFalse = cVoteFalse || 0;
 
-        let userVote;
-
         const userVote = voteVal
           ? {
               voteTrue: cVoteTrue + 1,
