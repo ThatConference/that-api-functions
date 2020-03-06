@@ -1,0 +1,25 @@
+# Validate lint, build, and tests on PR
+name: voting-on-create Pull Request
+
+on:
+  pull_request:
+    paths:
+      - "functions/voting-on-create/**"
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Use node.js 10.x
+        uses: actions/setup-node@master
+        with:
+          node-version: 10.x
+      - name: npm ci, run
+        run: |
+          cd functions/voting-on-create
+          cp .env.sample .env
+          npm ci
+          npm run validate

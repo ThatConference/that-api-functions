@@ -1,0 +1,68 @@
+{
+  "name": "@thatconference/voting-on-update",
+  "version": "1.0.0",
+  "description": "Firestore event to aggregate votes",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ThatConference/that-api-functions.git"
+  },
+  "license": "GPL-3.0",
+  "main": "index.js",
+  "engines": {
+    "node": "10.15.0"
+  },
+  "scripts": {
+    "build": "rimraf __build__ && babel ./src -d ./__build__ --copy-files --ignore ./**/__tests__",
+    "postbuild": "cp -v .env package.json package-lock.json __build__",
+    "preprod:deploy": "npm run build",
+    "prod:deploy": "gcloud functions deploy voting-on-update --runtime nodejs10 --trigger-event providers/cloud.firestore/eventTypes/document.update --trigger-resource 'projects/qa-that/databases/(default)/documents/votes/{vote}' --entry-point handler --source ./__build__",
+    "deploy:api:handler": "functions-framework --target=handler --port=9000 --signature-type=event --source=./__build__",
+    "prestart:watch:this": "npm run build",
+    "start:watch:this": "concurrently npm:deploy:api:* --raw",
+    "start:watch": "nodemon -e env,js,json --watch src --ignore '*.test.js' --exec npm run start:watch:this",
+    "test": "jest --coverage --passWithNoTests",
+    "test:watch": "cross-env  jest --watchAll",
+    "lint": "eslint 'src/**/*.js'",
+    "validate": "concurrently npm:test npm:lint npm:build"
+  },
+  "dependencies": {
+    "@google-cloud/firestore": "^3.5.1",
+    "@sentry/node": "^5.13.2",
+    "connect": "^3.7.0",
+    "debug": "^4.1.1",
+    "dotenv": "^8.2.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.8.7",
+    "@babel/node": "^7.8.7",
+    "@babel/preset-env": "^7.8.7",
+    "@babel/register": "^7.8.6",
+    "@google-cloud/functions-framework": "^1.4.0",
+    "babel-jest": "^25.1.0",
+    "concurrently": "^5.1.0",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-babel": "^5.3.0",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-jest": "^23.8.1",
+    "eslint-plugin-prettier": "^3.1.2",
+    "husky": "^4.2.3",
+    "jest-cli": "^25.1.0",
+    "nodemon": "^2.0.2",
+    "prettier-eslint": "^9.0.1",
+    "prettier-eslint-cli": "^5.0.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "npm run validate"
+    }
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "verbose": true,
+    "rootDir": "./src",
+    "coverageDirectory": "../__testCoverage__"
+  }
+}
