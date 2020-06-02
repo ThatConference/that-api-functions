@@ -13,7 +13,17 @@ import { v4 as uuidv4 } from 'uuid';
 
 import fileUpload from './middleware/fileUpload';
 import envConfig from './envConfig';
-import { version } from '../package.json';
+
+let version;
+(async () => {
+  let p;
+  try {
+    p = await import('./package.json');
+  } catch {
+    p = await import('../package.json');
+  }
+  version = p.version;
+})();
 
 const api = connect();
 const dlog = debug('that:api:gateway:fileUpload');
