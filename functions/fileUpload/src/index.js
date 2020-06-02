@@ -9,7 +9,7 @@ import responseTime from 'response-time';
 import { Storage } from '@google-cloud/storage';
 import * as Sentry from '@sentry/node';
 import mime from 'mime-types';
-import uuid from 'uuid/v4';
+import { v4 as uuidv4 } from 'uuid';
 
 import fileUpload from './middleware/fileUpload';
 import envConfig from './envConfig';
@@ -65,7 +65,7 @@ async function uploadFile(req, res) {
   const storage = new Storage();
   // const bucket = storage.bucket(`${envConfig.google.bucket}/members`);
   const bucket = storage.bucket('that-images');
-  const imageName = `${uuid()}.${mime.extensions[type][0]}`;
+  const imageName = `${uuidv4()}.${mime.extensions[type][0]}`;
   const blob = bucket.file(`members/${imageName}`);
 
   const stream = blob.createWriteStream({
