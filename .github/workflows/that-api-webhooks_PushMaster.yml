@@ -1,12 +1,13 @@
 # Validate lint, build, and tests on PR
 name: that-api-webhooks Push Master
 
+# disabled on 8/27/2020
 on:
   push:
     branches:
       - master
     paths:
-      - 'functions/that-api-webhooks/**'
+      - "blocked--functions/that-api-webhooks/**"
 
 jobs:
   build:
@@ -46,7 +47,7 @@ jobs:
       - name: Setup GCP Deploy Function - webhooks
         uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
         with:
-          version: '274.0.1'
+          version: "274.0.1"
           service_account_key: ${{ secrets.GCLOUD_AUTH }}
       - name: Load gcloud beta bits
         run: gcloud components install beta
@@ -57,7 +58,7 @@ jobs:
           cd functions/that-api-webhooks
           gcloud beta secrets versions access latest --secret prod-api-webhooks-env > .env
         env:
-          CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}      
+          CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
       - name: Run GCP Deploy Function - webhooks
         run: |
           cd functions/that-api-webhooks
