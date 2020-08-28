@@ -1,7 +1,7 @@
 {
-  "name": "that-us-session-bot",
+  "name": "that-starter-function",
   "version": "0.1.0",
-  "description": "Webhook bot to send session notifcations to slack. Including daily aggregates",
+  "description": "a function to start out with when building new functions in this repo",
   "main": "index.js",
   "scripts": {
     "build": "rimraf __build__ && babel ./src -d ./__build__ --copy-files --ignore ./**/__tests__",
@@ -11,6 +11,9 @@
     "test": "jest --coverage --passWithNoTests",
     "lint": "eslint 'src/**/*.js'",
     "validate": "concurrently npm:test npm:lint npm:build"
+  },
+  "engines": {
+    "node": "12.x"
   },
   "repository": {
     "type": "git",
