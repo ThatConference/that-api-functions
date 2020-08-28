@@ -1,10 +1,11 @@
 # Validate lint, build, and tests on PR
 name: that-api-webhooks Pull Request
 
+# disabled on 8/27/2020
 on:
   pull_request:
     paths:
-      - 'functions/that-api-webhooks/**'
+      - " blocked--functions/that-api-webhooks/**"
 
 jobs:
   build:
