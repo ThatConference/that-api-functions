@@ -13,9 +13,7 @@ function failure(err, req, res, next) {
 
 function postSession(req, res) {
   /*
-   * Verify data
-   * format slack post
-   * post to slack
+   *
    */
   if (req.method === 'POST') {
     console.log('dump: ', req.body);
