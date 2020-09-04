@@ -62,7 +62,7 @@ jobs:
       - name: Run GCP Deploy Function - webhooks
         run: |
           cd functions/that-api-webhooks
-          gcloud functions deploy webhooks --runtime nodejs10 --trigger-http --entry-point hooks
+          gcloud functions deploy webhooks --runtime nodejs10 --trigger-http --entry-point hooks --allow-unauthenticated
         env:
           CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
       - name: Slack Notification
