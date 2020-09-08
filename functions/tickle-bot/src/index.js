@@ -26,21 +26,6 @@ function failure(err, req, res, next) {
   res.set('Content-type', 'application/json').status(500).json(err);
 }
 
-function postSession(req, res) {
-  /*
-   *
-   */
-  if (req.method === 'POST') {
-    dlog('dump: ', req.body);
-    res.end();
-  } else {
-    dlog(`Non POST request, ${req.method}`);
-    res.writeHead(405, { 'Content-Type': 'text/plain' });
-    res.write(`Unsupported request method`);
-    res.end();
-  }
-}
-
 function slackDigest(hours) {
   dlog('call slackDigest with %d', hours);
   return (req, res) => {
@@ -52,8 +37,12 @@ function slackDigest(hours) {
     };
 
     sendGraphReq({ query, variables }).then(result => {
-      dlog('result of graph req %O', result);
-      res.writeHead(200, { 'content-type': 'application/json' }).end();
+      dlog('result of graph req %o', result);
+      res
+        .set('content-type', 'application/json')
+        .status(200)
+        .json(result.data)
+        .end();
     });
   };
 }
@@ -63,13 +52,16 @@ function thatStats(req, res) {
   const query = queries.communityStats.graphQl;
   return sendGraphReq({ query }).then(result => {
     dlog('result of graph req %O', result);
-    res.writeHead(200, { 'content-type': 'application/json' }).end();
+    res
+      .set('content-type', 'application/json')
+      .status(200)
+      .json(result.data)
+      .end();
   });
 }
 
 export const handler = api
   .use(responseTime())
-  .use('/newsession', postSession)
   .use('/dailydigest', slackDigest(24))
   .use('/hourlydigest', slackDigest(1))
   .use('/thatstats', thatStats)

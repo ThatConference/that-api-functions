@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 import debug from 'debug';
 import fetch from 'node-fetch';
+import * as Sentry from '@sentry/node';
 import envConfig from './envConfig';
 
 const dlog = debug('that:api:ticklebot');
@@ -33,5 +34,8 @@ export default function reqAuthToken() {
         );
       return res.access_token;
     })
-    .catch(err => dlog('error %O', err));
+    .catch(err => {
+      dlog('error %O', err);
+      Sentry.captureException(err);
+    });
 }

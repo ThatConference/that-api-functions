@@ -5,6 +5,7 @@ export default {
         sendDigest(hours: $hours, start: $start) {
           id
           title
+          startTime
         }
       }
     }
