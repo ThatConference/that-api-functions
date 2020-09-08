@@ -63,10 +63,10 @@ jobs:
         with:
           version: "305.0.0"
           service_account_key: ${{ secrets.GCLOUD_AUTH }}
-      - name: Load gcloud beta bits
-        run: gcloud components install beta
-        env:
-          CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
+      # - name: Load gcloud beta bits
+      #   run: gcloud components install beta
+      #   env:
+      #     CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
       - name: write .env file
         run: |
           gcloud beta secrets versions access latest --secret prod-api-that-tickle-bot-env > tc-api/.env
