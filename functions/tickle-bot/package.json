@@ -59,7 +59,7 @@
     "connect": "^3.7.0",
     "debug": "^4.1.1",
     "dotenv": "^8.2.0",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "response-time": "^2.3.2"
   },
   "husky": {
