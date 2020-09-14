@@ -1,7 +1,6 @@
 const Sentry = require('@sentry/node');
-const dotenv = require('dotenv');
+require('dotenv').config();
 
-dotenv.config();
 Sentry.init({ dsn: process.env.SENTRY_NODE_DSN });
 
 const express = require('express');
@@ -11,5 +10,6 @@ const docusignComplete = require('./hooks/receive/docusignComplete');
 const app = express();
 app.use(auth);
 app.use('/docusignComplete', docusignComplete);
+app.use('/auth0signup', {});
 
 exports.hooks = app;

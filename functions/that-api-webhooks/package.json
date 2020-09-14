@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha",
-    "start:local": "nodemon --exec functions-framework --target=hooks",
-    "lint": "eslint . --ext .js"
+    "start:watch": "nodemon --exec functions-framework --target=hooks",
+    "lint": "eslint . --ext .js",
+    "validate": "concurrently npm:test npm:lint"
   },
   "repository": {
     "type": "git",
@@ -30,6 +31,7 @@
     "@sentry/node": "^5.22.2",
     "axios": "^0.20.0",
     "chai-as-promised": "^7.1.1",
+    "debug": "^4.1.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "xml2js": "^0.4.23"
@@ -37,6 +39,7 @@
   "devDependencies": {
     "@google-cloud/functions-framework": "^1.7.1",
     "chai": "^4.2.0",
+    "concurrently": "^5.3.0",
     "eslint": "^7.7.0",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-config-prettier": "^6.11.0",
