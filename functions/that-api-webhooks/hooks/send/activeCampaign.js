@@ -197,7 +197,7 @@ function searchForTag(tagName) {
 }
 
 function addTagToContact(acId, tagId) {
-  dlog('call addTagToContact for %s adding %s', acId, tagId);
+  dlog('call addTagToContact for id %s adding tag %s', acId, tagId);
   const url = `${acBaseUrl}/contactTags`;
   const reqConfig = {
     url,
@@ -232,6 +232,7 @@ function addTagToContact(acId, tagId) {
     .catch(err => {
       dlog('Exception adding tag: %s', err);
       Sentry.captureException(err);
+      return undefined;
     });
 }
 
