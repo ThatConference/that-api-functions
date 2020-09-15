@@ -66,7 +66,6 @@ async function usePayload(payload, res) {
   }
   const tagId = tagResult.id;
   let contactId = '';
-  // there may have been a retrieve error, or simply no contact w/ that email
   if (!contactResult || (contactResult && !contactResult.id)) {
     const contact = {
       contact: {
@@ -92,6 +91,19 @@ async function usePayload(payload, res) {
     }
     contactId = newContact.id;
   } else {
+    // user already in AC, update 'RegisteredFrom' field
+    const contact = {
+      contact: {
+        email: payload.email,
+        fieldValues: [
+          {
+            field: REGFROM_FIELD_ID,
+            value: payload.context_clientName,
+          },
+        ],
+      },
+    };
+    ac.syncContact(contact); // We don't care of this result here
     contactId = contactResult.id;
   }
 

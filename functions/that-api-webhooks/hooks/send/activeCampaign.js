@@ -117,6 +117,38 @@ function createContact(contact) {
     });
 }
 
+function syncContact(contact) {
+  // Sync contact will update or create new contact based on AC's
+  // contact key, email address
+  dlog('call syncContact for %o', contact);
+  const url = `${acBaseUrl}/contact/sync`;
+  const reqConfig = {
+    url,
+    method: 'post',
+    ...axiosReqConfig,
+    data: contact,
+  };
+  return axios(reqConfig)
+    .then(r => {
+      if (![200, 201].includes(r.status)) {
+        dlog('exception syncing contact');
+        Sentry.withScope(scope => {
+          scope.setLevel('error');
+          scope.setContext('exception syncing contact', contact, r);
+          Sentry.captureMessage('exception syncing contact');
+        });
+        return undefined;
+      }
+
+      return r.data.contact;
+    })
+    .catch(err => {
+      dlog('exception syncing contact: %s', err);
+      Sentry.captureException(err);
+      return undefined;
+    });
+}
+
 function searchForTag(tagName) {
   dlog('search for tag %s', tagName);
   const url = `${acBaseUrl}/tags`;
@@ -206,6 +238,7 @@ function addTagToContact(acId, tagId) {
 module.exports = {
   findContactByEmail,
   createContact,
+  syncContact,
   searchForTag,
   addTagToContact,
 };
