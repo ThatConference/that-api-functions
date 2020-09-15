@@ -7,7 +7,7 @@ on:
     branches:
       - master
     paths:
-      - "blocked--functions/that-api-webhooks/**"
+      - "functions/that-api-webhooks/**"
 
 jobs:
   build:
