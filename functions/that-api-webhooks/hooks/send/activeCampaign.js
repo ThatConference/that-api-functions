@@ -13,7 +13,8 @@ const dlog = debug('that:api:webhooks:activeCampaign');
 // result set is the same
 
 let acBaseUrl = envConfig.activeCampaignApi;
-if (!acBaseUrl.endsWith('/')) acBaseUrl = `${acBaseUrl}/`;
+if (acBaseUrl.endsWith('/'))
+  acBaseUrl = acBaseUrl.substring(0, acBaseUrl.length - 1);
 const axiosReqConfig = {
   headers: {
     'Api-Token': envConfig.activeCampaignKey,
@@ -68,15 +69,25 @@ function findContactByEmail(email) {
         });
         return undefined;
       }
+      dlog(`returning ${result.data.contacts[0]}`);
       return result.data.contacts[0];
     })
     .catch(err => {
-      dlog('exception looking for contact: %o', err);
+      dlog('exception looking for contact: %s', err);
       Sentry.captureException(err);
+      return undefined;
     });
 }
 
 function createContact(contact) {
+  // https://developers.activecampaign.com/reference#create-a-contact-new
+  /* minimum required for payload
+    {
+      contact: {
+        email: email@email.com,
+      }
+    }
+  */
   dlog('call updateContact for %o', contact);
   const url = `${acBaseUrl}/contacts`;
   const reqConfig = {
@@ -100,7 +111,7 @@ function createContact(contact) {
       return r.data.contact;
     })
     .catch(err => {
-      dlog('exception creating contact: %o', err);
+      dlog('exception creating contact: %s', err);
       Sentry.captureException(err);
       return undefined;
     });
@@ -144,11 +155,12 @@ function searchForTag(tagName) {
         });
         return undefined;
       }
-      return r.data.tags[0] || {};
+      return r.data.tags[0];
     })
     .catch(err => {
-      dlog('exception searching for tag: %o', err);
+      dlog('exception searching for tag: %s', err);
       Sentry.captureException(err);
+      return undefined;
     });
 }
 
@@ -160,8 +172,10 @@ function addTagToContact(acId, tagId) {
     method: 'post',
     ...axiosReqConfig,
     data: {
-      contact: acId,
-      tag: tagId,
+      contactTag: {
+        contact: acId,
+        tag: tagId,
+      },
     },
   };
   return axios(reqConfig)
@@ -180,10 +194,11 @@ function addTagToContact(acId, tagId) {
         });
         return undefined;
       }
+      dlog('returning %o', r.data);
       return r.data;
     })
     .catch(err => {
-      dlog('Exception adding tag: %o', err);
+      dlog('Exception adding tag: %s', err);
       Sentry.captureException(err);
     });
 }

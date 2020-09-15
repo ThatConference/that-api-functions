@@ -36,19 +36,29 @@ module.exports = (req, res) => {
 };
 
 async function usePayload(payload, res) {
-  dlog('use payload from auth0');
+  dlog('use payload from auth0 %O', payload);
   const SIGNUP_TAG = 'NewSignUp';
+  const REGFROM_FIELD_ID = '20';
+
   if (!payload.email) {
-    // return bad request
+    dlog('stopping. missing email in payload');
+    res.writeHead(400, { 'Content-type': 'text/plain' });
+    res.write(`Bad Request. Did you forget your payload?`);
+    res.end();
+    return;
   }
-  const presolved = await Promise.all(
+  const presolved = await Promise.all([
     ac.findContactByEmail(payload.email),
     ac.searchForTag(SIGNUP_TAG),
-  );
+  ]);
   const contactResult = presolved[0];
   const tagResult = presolved[1];
+  dlog('contactResult %o', contactResult);
+  dlog('tagResult %o', tagResult);
+
   if (!tagResult || (tagResult && !tagResult.id)) {
-    Sentry.captureMessage('Failed to find AC Tag THATProfileComplete', 'error');
+    dlog(`tag, ${SIGNUP_TAG}, not found at AC`);
+    Sentry.captureMessage(`Failed to find tag at AC ${SIGNUP_TAG}`, 'error');
     res.writeHead(500, { 'Content-type': 'application/json' });
     res.write(`{"error":"Unable to locate tag: ${SIGNUP_TAG}"}`);
     res.end();
@@ -59,12 +69,21 @@ async function usePayload(payload, res) {
   // there may have been a retrieve error, or simply no contact w/ that email
   if (!contactResult || (contactResult && !contactResult.id)) {
     const contact = {
-      email: payload.email,
-      firstName: payload.given_name,
-      lastName: payload.family_name,
+      contact: {
+        email: payload.email,
+        firstName: payload.given_name,
+        lastName: payload.family_name,
+        fieldValues: [
+          {
+            field: REGFROM_FIELD_ID,
+            value: payload.context_clientName,
+          },
+        ],
+      },
     };
     const newContact = await ac.createContact(contact);
     if (!newContact) {
+      dlog(`failed creating contact in AC %o`, contact);
       Sentry.captureMessage('failed creating contact in AC', 'error');
       res.writeHead(500, { 'Content-type': 'application/json' });
       res.write('{"error":"Failed creating new contact in AC"}');
@@ -102,5 +121,6 @@ async function usePayload(payload, res) {
     username: user.username,
     created_at: user.created_at,
     context_clientId: context.clientID,
+    context_clientName: context.clientName,
   };
 */
