@@ -88,7 +88,7 @@ function createContact(contact) {
       }
     }
   */
-  dlog('call updateContact for %o', contact);
+  dlog('call createContact for %o', contact);
   const url = `${acBaseUrl}/contacts`;
   const reqConfig = {
     url,
