@@ -47,12 +47,10 @@ async function usePayload(payload, res) {
     res.end();
     return;
   }
-  const presolved = await Promise.all([
+  const [contactResult, tagResult] = await Promise.all([
     ac.findContactByEmail(payload.email),
     ac.searchForTag(SIGNUP_TAG),
   ]);
-  const contactResult = presolved[0];
-  const tagResult = presolved[1];
   dlog('contactResult %o', contactResult);
   dlog('tagResult %o', tagResult);
 
