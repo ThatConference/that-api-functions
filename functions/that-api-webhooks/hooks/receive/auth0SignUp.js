@@ -6,26 +6,9 @@ const dlog = debug('that:api:webhooks:auth0SignUp');
 
 module.exports = (req, res, next) => {
   dlog('trigger (receive) auth0SignUp');
-  let payload = [];
   if (req.method === 'POST') {
     dlog('post');
-    if (req.body) {
-      usePayload(req.body, res, next);
-    } else {
-      req
-        .on('error', err => {
-          console.error(err);
-        })
-        .on('data', chunk => {
-          dlog('data event');
-          payload.push(chunk);
-        })
-        .on('end', () => {
-          dlog('end event');
-          payload = Buffer.concat(payload).toString();
-          usePayload(payload, res, next);
-        });
-    }
+    usePayload(req.body, res, next);
   } else {
     console.error(`Non POST request, ${req.method}`);
     Sentry.captureMessage(`Non POST request, ${req.method}`, 'info');
@@ -68,10 +51,7 @@ async function usePayload(payload, res, next) {
   if (!tagResult || (tagResult && !tagResult.id)) {
     dlog(`tag, ${SIGNUP_TAG}, not found at AC`);
     Sentry.captureMessage(`Failed to find tag at AC ${SIGNUP_TAG}`, 'error');
-    res.writeHead(500, { 'Content-type': 'application/json' });
-    res.write(`{"error":"Unable to locate tag: ${SIGNUP_TAG}"}`);
-    res.end();
-    return;
+    next(new Error('Unable to locate tag', { tag: SIGNUP_TAG }));
   }
   const tagId = tagResult.id;
   if (!listResult || (listResult && !listResult.id)) {
@@ -80,10 +60,7 @@ async function usePayload(payload, res, next) {
       `Failed to find list ${THATUS_SYSTEMS_MSG_LIST} at AC `,
       'error',
     );
-    res.writeHead(500, { 'Content-type': 'application/json' });
-    res.write(`{"error":"Unable to locate list: ${THATUS_SYSTEMS_MSG_LIST}"}`);
-    res.end();
-    return;
+    next(new Error('Unable to locate list', { list: THATUS_SYSTEMS_MSG_LIST }));
   }
   const listId = listResult.id;
   let contactId = '';
@@ -110,10 +87,7 @@ async function usePayload(payload, res, next) {
     if (!newContact) {
       dlog(`failed creating contact in AC %o`, contact);
       Sentry.captureMessage('failed creating contact in AC', 'error');
-      res.writeHead(500, { 'Content-type': 'application/json' });
-      res.write('{"error":"Failed creating new contact in AC"}');
-      res.end();
-      return;
+      next(new Error('Failed creating new contact in AC', { contact }));
     }
     contactId = newContact.id;
   } else {
@@ -142,9 +116,7 @@ async function usePayload(payload, res, next) {
   if (!taggedContact) {
     dlog(`Tag didn't set, sending non-200`);
     Sentry.captureMessage('failed adding tag to contact in AC', 'error');
-    res.writeHead(500, { 'Content-type': 'application/json' });
-    res.write('{"error":"Failed adding tag to contact in AC"}');
-    res.end();
+    next(new Error('falied adding tag to contact in ac'));
     return;
   }
   let listContact;
@@ -156,14 +128,12 @@ async function usePayload(payload, res, next) {
   if (!listContact) {
     dlog(`Failure adding contact to list, sending non-200`);
     Sentry.captureMessage('failed adding contact to list in AC', 'error');
-    res.writeHead(500, { 'Content-type': 'application/json' });
-    res.write('{"error":"Failed adding contact to list in AC"}');
-    res.end();
+    next(new Error('failed adding contact to list in AC'));
     return;
   }
 
   res.writeHead(200, { 'Content-type': 'application/json' });
-  res.write(JSON.stringify({ contactId, tagId, email: payload.email }));
+  res.json({ contactId, tagId, email: payload.email });
   res.end();
 }
 

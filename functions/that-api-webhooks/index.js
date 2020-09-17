@@ -17,12 +17,12 @@ const app = express();
 function failure(err, req, res, next) {
   dlog('middleware catcall error %O', err);
   Sentry.captureException(err);
-  res.set('Content-type', 'application/json').status(500).json(err.message);
+  res.status(500).json({ error: err.message });
 }
 
 exports.hooks = app
   .use(auth)
-  .use('/docusignComplete', docusignComplete)
-  .use('/auth0signup', auth0signup)
+  .post('/docusignComplete', docusignComplete)
+  .post('/auth0signup', auth0signup)
 
   .use(failure);
