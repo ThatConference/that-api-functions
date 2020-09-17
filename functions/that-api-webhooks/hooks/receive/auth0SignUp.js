@@ -4,13 +4,13 @@ const ac = require('../send/activeCampaign');
 
 const dlog = debug('that:api:webhooks:auth0SignUp');
 
-module.exports = (req, res) => {
+module.exports = (req, res, next) => {
   dlog('trigger (receive) auth0SignUp');
   let payload = [];
   if (req.method === 'POST') {
     dlog('post');
     if (req.body) {
-      usePayload(req.body, res);
+      usePayload(req.body, res, next);
     } else {
       req
         .on('error', err => {
@@ -23,7 +23,7 @@ module.exports = (req, res) => {
         .on('end', () => {
           dlog('end event');
           payload = Buffer.concat(payload).toString();
-          usePayload(payload, res);
+          usePayload(payload, res, next);
         });
     }
   } else {
@@ -35,7 +35,7 @@ module.exports = (req, res) => {
   }
 };
 
-async function usePayload(payload, res) {
+async function usePayload(payload, res, next) {
   dlog('use payload from auth0 %O', payload);
   const SIGNUP_TAG = 'NewSignUp';
   const REGFROM_FIELD_ID = '20';
@@ -47,10 +47,16 @@ async function usePayload(payload, res) {
     res.end();
     return;
   }
-  const [contactResult, tagResult] = await Promise.all([
-    ac.findContactByEmail(payload.email),
-    ac.searchForTag(SIGNUP_TAG),
-  ]);
+  let contactResult;
+  let tagResult;
+  try {
+    [contactResult, tagResult] = await Promise.all([
+      ac.findContactByEmail(payload.email),
+      ac.searchForTag(SIGNUP_TAG),
+    ]);
+  } catch (e) {
+    next(e);
+  }
   dlog('contactResult %o', contactResult);
   dlog('tagResult %o', tagResult);
 
@@ -78,7 +84,12 @@ async function usePayload(payload, res) {
         ],
       },
     };
-    const newContact = await ac.createContact(contact);
+    let newContact;
+    try {
+      newContact = await ac.createContact(contact);
+    } catch (e) {
+      next(e);
+    }
     if (!newContact) {
       dlog(`failed creating contact in AC %o`, contact);
       Sentry.captureMessage('failed creating contact in AC', 'error');
@@ -104,9 +115,12 @@ async function usePayload(payload, res) {
     ac.syncContact(contact); // We don't care of this result here
     contactId = contactResult.id;
   }
-
-  const taggedContact = await ac.addTagToContact(contactId, tagId);
-
+  let taggedContact;
+  try {
+    taggedContact = await ac.addTagToContact(contactId, tagId);
+  } catch (e) {
+    next(e);
+  }
   if (!taggedContact) {
     dlog(`Tag didn't set, sending non-200`);
     Sentry.captureMessage('failed adding tag to contact in AC', 'error');
