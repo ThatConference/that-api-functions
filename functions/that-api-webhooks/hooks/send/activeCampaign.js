@@ -216,7 +216,12 @@ function addTagToContact(acId, tagId) {
       dlog('issue adding tag to contact');
       Sentry.withScope(scope => {
         scope.setLevel('error');
-        scope.setContext('Issue adding tag to contact', { acId }, { tagId }, r);
+        scope.setContext(
+          'Issue adding tag to contact',
+          { acId },
+          { tagId },
+          { r },
+        );
         Sentry.captureMessage('issue adding tag to contact');
       });
       throw new Error(
@@ -233,10 +238,109 @@ function addTagToContact(acId, tagId) {
   });
 }
 
+function searchForList(listName) {
+  dlog('search for list %s', listName);
+  const url = `${acBaseUrl}/lists`;
+  const reqConfig = {
+    url,
+    method: 'get',
+    ...axiosReqConfig,
+    params: {
+      'filters[name]': listName,
+    },
+  };
+  return axios(reqConfig).then(r => {
+    if (r.status !== 200) {
+      Sentry.withScope(scope => {
+        scope.setLevel('error');
+        scope.setContext('non-200 status searching for list', { listName }, r);
+        Sentry.captureMessage('non-200 status searching for list');
+      });
+      throw new Error(
+        'non-200 status return searching for list',
+        listName,
+        r.status,
+        r.statusText,
+      );
+    }
+    if (r.data && r.data.lists && r.data.lists.length > 1) {
+      dlog(
+        'query for list, %s, returned %d matches, expect 1 or 0',
+        listName,
+        r.data.lists.length,
+      );
+      Sentry.withScope(scope => {
+        scope.setLevel('error');
+        scope.setContext(
+          'Tag search return > 1 contact',
+          { listName },
+          r.data.lists,
+        );
+        Sentry.captureMessage('query by list returned > 1 contact');
+      });
+      throw new Error(
+        'List search returned > 1 list. Expected 0 or 1',
+        r.data.lists.length,
+        listName,
+      );
+    }
+
+    const [rlist] = r.data.lists;
+    dlog('returning %o', rlist);
+    return rlist;
+  });
+}
+
+function setContactToList(acId, listId, status = 1) {
+  // statuses: 1: subscribe, 2: unsubscribe
+  dlog('call setContactToList for id %s to list %s', acId, listId);
+  const url = `${acBaseUrl}/contactLists`;
+  const reqConfig = {
+    url,
+    method: 'post',
+    ...axiosReqConfig,
+    data: {
+      contactList: {
+        list: listId,
+        contact: acId,
+        status,
+      },
+    },
+  };
+  return axios(reqConfig).then(r => {
+    if (![200, 201].includes(r.status)) {
+      dlog('issue setting contact to list');
+      Sentry.withScope(scope => {
+        scope.setLevel('error');
+        scope.setContext(
+          'Issue setting contact to list',
+          { acId },
+          { listId },
+          { status },
+          { r },
+        );
+        Sentry.captureMessage('issue setting contact to list');
+      });
+      throw new Error(
+        'Unable to add contact to list',
+        { acId },
+        { listId },
+        r.status,
+        r.statusText,
+      );
+    }
+
+    dlog('returning %o', r.data);
+    return r.data;
+  });
+}
+
 module.exports = {
   findContactByEmail,
   createContact,
   syncContact,
   searchForTag,
   addTagToContact,
+  searchForList,
+  setContactToList,
 };

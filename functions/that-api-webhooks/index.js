@@ -17,7 +17,7 @@ const app = express();
 function failure(err, req, res, next) {
   dlog('middleware catcall error %O', err);
   Sentry.captureException(err);
-  res.set('Content-type', 'application/json').status(500).json(err);
+  res.set('Content-type', 'application/json').status(500).json(err.message);
 }
 
 exports.hooks = app

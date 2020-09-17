@@ -39,6 +39,9 @@ async function usePayload(payload, res, next) {
   dlog('use payload from auth0 %O', payload);
   const SIGNUP_TAG = 'NewSignUp';
   const REGFROM_FIELD_ID = '20';
+  const THATUS_SYSTEMS_MSG_LIST = 'THAT.us System Messages';
+  // end state goal is contact is added to AC automation "User Sign-up No Profile"
+  // see automation for trigger details
 
   if (!payload.email) {
     dlog('stopping. missing email in payload');
@@ -49,10 +52,12 @@ async function usePayload(payload, res, next) {
   }
   let contactResult;
   let tagResult;
+  let listResult;
   try {
-    [contactResult, tagResult] = await Promise.all([
+    [contactResult, tagResult, listResult] = await Promise.all([
       ac.findContactByEmail(payload.email),
       ac.searchForTag(SIGNUP_TAG),
+      ac.searchForList(THATUS_SYSTEMS_MSG_LIST),
     ]);
   } catch (e) {
     next(e);
@@ -69,6 +74,18 @@ async function usePayload(payload, res, next) {
     return;
   }
   const tagId = tagResult.id;
+  if (!listResult || (listResult && !listResult.id)) {
+    dlog(`list, ${THATUS_SYSTEMS_MSG_LIST}, not found at AC`);
+    Sentry.captureMessage(
+      `Failed to find list ${THATUS_SYSTEMS_MSG_LIST} at AC `,
+      'error',
+    );
+    res.writeHead(500, { 'Content-type': 'application/json' });
+    res.write(`{"error":"Unable to locate list: ${THATUS_SYSTEMS_MSG_LIST}"}`);
+    res.end();
+    return;
+  }
+  const listId = listResult.id;
   let contactId = '';
   if (!contactResult || (contactResult && !contactResult.id)) {
     const contact = {
@@ -117,6 +134,7 @@ async function usePayload(payload, res, next) {
   }
   let taggedContact;
   try {
+    // We want to ensure the tag is set before adding contact to list
     taggedContact = await ac.addTagToContact(contactId, tagId);
   } catch (e) {
     next(e);
@@ -126,6 +144,20 @@ async function usePayload(payload, res, next) {
     Sentry.captureMessage('failed adding tag to contact in AC', 'error');
     res.writeHead(500, { 'Content-type': 'application/json' });
     res.write('{"error":"Failed adding tag to contact in AC"}');
+    res.end();
+    return;
+  }
+  let listContact;
+  try {
+    listContact = await ac.setContactToList(contactId, listId);
+  } catch (e) {
+    next(e);
+  }
+  if (!listContact) {
+    dlog(`Failure adding contact to list, sending non-200`);
+    Sentry.captureMessage('failed adding contact to list in AC', 'error');
+    res.writeHead(500, { 'Content-type': 'application/json' });
+    res.write('{"error":"Failed adding contact to list in AC"}');
     res.end();
     return;
   }
