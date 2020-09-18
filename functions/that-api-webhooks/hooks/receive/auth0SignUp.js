@@ -132,9 +132,7 @@ async function usePayload(payload, res, next) {
     return;
   }
 
-  res.writeHead(200, { 'Content-type': 'application/json' });
-  res.json({ contactId, tagId, email: payload.email });
-  res.end();
+  res.json({ contactId, tagId, email: payload.email }).end();
 }
 
 /* payload from Auth0
