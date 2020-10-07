@@ -31,7 +31,9 @@ function slackDigest(hours) {
   return (req, res) => {
     const query = queries.slackDigest.graphQl;
     const variables = {
-      communityName: 'that',
+      communityInput: {
+        slug: 'that',
+      },
       hours,
       start: hours === 1 ? 'NEXT_HOUR' : 'CURRENT_HOUR',
     };
@@ -50,7 +52,12 @@ function slackDigest(hours) {
 function thatStats(req, res) {
   dlog('call thatStats');
   const query = queries.communityStats.graphQl;
-  return sendGraphReq({ query }).then(result => {
+  const variables = {
+    communityInput: {
+      slug: 'that',
+    },
+  };
+  return sendGraphReq({ query, variables }).then(result => {
     dlog('result of graph req %O', result);
     res
       .set('content-type', 'application/json')
