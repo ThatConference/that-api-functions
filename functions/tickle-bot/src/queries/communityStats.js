@@ -2,7 +2,7 @@ export default {
   graphQl: `
     query getCommunityStats($communityInput: CommunityQueryInput!) {
       communities {
-        community(input: $communityInput) {
+        community(findBy: $communityInput) {
           stats {
             totalMembers
             totalActivities
