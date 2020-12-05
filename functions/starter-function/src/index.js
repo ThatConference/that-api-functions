@@ -16,10 +16,10 @@ function postSession(req, res) {
    *
    */
   if (req.method === 'POST') {
-    console.log('dump: ', req.body);
+    dlog('dump: %o', req.body);
     res.end();
   } else {
-    console.error(`Non POST request, ${req.method}`);
+    dlog(`Non POST request %s`, req.method);
     res.writeHead(405, { 'Content-Type': 'text/plain' });
     res.write(`Unsupported request method`);
     res.end();
