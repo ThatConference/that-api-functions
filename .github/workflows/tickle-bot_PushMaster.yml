@@ -40,8 +40,9 @@ jobs:
           name: tc-api
           path: functions/tickle-bot/__build__
       - name: Slack Notification
-        uses: 8398a7/action-slack@v2
+        uses: 8398a7/action-slack@v3
         with:
+          fields: repo,message,commit,author,eventName,ref,workflow,job,took
           status: ${{ job.status }}
           author: Push Master CI
         env:
@@ -59,14 +60,11 @@ jobs:
         with:
           name: tc-api
       - name: Setup GCP Actions
-        uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+        uses: google-github-actions/setup-gcloud@master
         with:
           version: "305.0.0"
           service_account_key: ${{ secrets.GCLOUD_AUTH }}
-      # - name: Load gcloud beta bits
-      #   run: gcloud components install beta
-      #   env:
-      #     CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
       - name: write .env file
         run: |
           gcloud secrets versions access latest --secret prod-api-that-tickle-bot-env > tc-api/.env
@@ -75,7 +73,7 @@ jobs:
           SENTRYREL=SENTRY_VERSION=that-tickle-bot@$(cat tc-api/package.json | jq '.version' | tr -d '"')-$C_CNT.$(echo $GITHUB_SHA | cut -c1-7)
           echo "" >> tc-api/.env
           echo $SENTRYREL >> tc-api/.env
-          echo "::set-env name=SENTRYREL::$SENTRYREL"
+          echo "SENTRYREL=$SENTRYREL" >> $GITHUB_ENV
         env:
           CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
       - name: Checks and verifications
@@ -92,8 +90,9 @@ jobs:
         env:
           CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
       - name: Slack Notification
-        uses: 8398a7/action-slack@v2
+        uses: 8398a7/action-slack@v3
         with:
+          fields: repo,message,commit,author,eventName,ref,workflow,job,took
           status: ${{ job.status }}
           author: Push Master CI
         env:
