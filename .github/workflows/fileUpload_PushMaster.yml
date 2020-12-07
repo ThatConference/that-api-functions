@@ -73,7 +73,8 @@ jobs:
           SENTRYREL=SENTRY_VERSION=that-imgage-upload@$(cat tc-api/package.json | jq '.version' | tr -d '"')-$C_CNT.$(echo $GITHUB_SHA | cut -c1-7)
           echo "" >> tc-api/.env
           echo $SENTRYREL >> tc-api/.env
-          echo "::set-env name=SENTRYREL::$SENTRYREL"
+          # echo "::set-env name=SENTRYREL::$SENTRYREL"
+          echo "SENTRYREL=$SENTRYREL" >> $GITHUB_ENV
         env:
           CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
       - name: Checks and verifications

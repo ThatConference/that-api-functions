@@ -1,6 +1,8 @@
 # THAT Functions
 
-A collection of functions
+## File Upload
+
+Function used for uploading profile images to google bucket.
 
 ## Image Upload REST Service
 
