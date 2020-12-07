@@ -44,7 +44,7 @@ jobs:
         with:
           fields: repo,message,commit,author,eventName,ref,workflow,job,took
           status: ${{ job.status }}
-          author: Push Master CI
+          author_name: Push Master CI
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_DEV_NOTIFICATIONS }}
@@ -94,7 +94,7 @@ jobs:
         with:
           fields: repo,message,commit,author,eventName,ref,workflow,job,took
           status: ${{ job.status }}
-          author: Push Master CI
+          author_name: Push Master CI
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_DEV_NOTIFICATIONS }}

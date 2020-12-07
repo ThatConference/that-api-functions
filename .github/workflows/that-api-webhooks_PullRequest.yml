@@ -14,10 +14,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@master
-      - name: Use node.js 10.x
+      - name: Use node.js 12.x
         uses: actions/setup-node@master
         with:
-          node-version: 10.x
+          node-version: 12.x
       - name: npm ci, run
         run: |
           cd functions/that-api-webhooks
@@ -25,3 +25,15 @@ jobs:
           npm ci
           npm run lint
           npm run test
+        env:
+          CI: true
+      - name: Slack Notification
+        uses: 8398a7/action-slack@v3
+        with:
+          fields: repo,message,commit,author,eventName,ref,workflow,job,took
+          status: ${{ job.status }}
+          author_name: PullReq CI Webhooks
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_DEV_NOTIFICATIONS }}
+        if: always()
