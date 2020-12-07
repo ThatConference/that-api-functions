@@ -30,7 +30,7 @@ jobs:
         with:
           fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
           status: ${{ job.status }}
-          author: PullReq CI
+          author_name: PullReq CI
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_DEV_NOTIFICATIONS }}
