@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import connect from 'connect';
+import express from 'express';
 import debug from 'debug';
 import * as Sentry from '@sentry/node';
 import responseTime from 'response-time';
@@ -7,7 +7,7 @@ import envConfig from './envConfig';
 import stripeHandler from './middleware/stripeHandler';
 
 const dlog = debug('that:api:functions:bouncer');
-const api = connect();
+const api = express();
 
 let version;
 (async () => {
@@ -56,7 +56,7 @@ export const handler = api
   .use(Sentry.Handlers.requestHandler())
   .use(responseTime())
   .use('/newsession', postSession)
-  .use('/stripe', stripeHandler)
+  .post('/stripe', stripeHandler)
 
   .use(Sentry.Handlers.errorHandler())
   .use(failure);

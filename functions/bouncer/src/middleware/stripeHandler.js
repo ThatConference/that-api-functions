@@ -7,14 +7,7 @@ const dlog = debug('that:api:functions:bouncer:middleware');
 const stripe = stripelib(envConfig.stripe.apiKey);
 
 export default function stripeHandler(req, res, next) {
-  dlog('verify Stripe request');
-  if (req.method !== 'POST') {
-    dlog(`Non POST request %s`, req.method);
-    res.writeHead(405, { 'Content-Type': 'text/plain' });
-    res.write(`Unsupported request method`);
-    res.end();
-    return;
-  }
+  dlog('strope handler called');
 
   const sig = req.headers['stripe-signature'];
   dlog('here is our sig %s', sig);
