@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import debug from 'debug';
 import stripelib from 'stripe';
 import envConfig from '../envConfig';
@@ -6,8 +7,14 @@ import pubSub from '../gcp/pubSub';
 const dlog = debug('that:api:functions:bouncer:middleware');
 const stripe = stripelib(envConfig.stripe.apiKey);
 
+const eventsToQueue = ['checkout.session.completed', 'customer.created'];
+
 export default function stripeHandler(req, res, next) {
-  dlog('strope handler called');
+  dlog('stripe handler called');
+  const whRes = {
+    bouncer: true,
+    queued: false,
+  };
 
   const sig = req.headers['stripe-signature'];
   dlog('here is our sig %s', sig);
@@ -21,30 +28,31 @@ export default function stripeHandler(req, res, next) {
     );
     dlog('signature verification succeeded. Event Type:', event.type);
   } catch (err) {
-    dlog('Bork, unable to verify sig %s', err.message);
-    res.status(400).send(`Webhook Error: ${err.message}`);
-    res.end();
+    console.error('Bork, unable to verify sig %s', err.message);
+    whRes.error = `webhook verfication error: ${err.message}`;
+    res.status(400).json(whRes);
     return;
   }
 
-  switch (event.type) {
-    case 'payment_intent.created':
-      dlog('payment intent created');
-      break;
-    case 'payment_intent.succeeded':
-      dlog('payment intent succeeded');
-      event.someShit = 'Brett set this';
-      pubSub
-        .sendMessage(event)
-        .then(k => dlog('success %o', k))
-        .catch(err => dlog('not so good %o', err));
-      break;
-    case 'charge.succeeded':
-      dlog('charge succeded');
-      break;
-    default:
-      throw new Error(`Unhandled Stripe webhook event ${event.type}`);
+  if (eventsToQueue.includes(event.type)) {
+    dlog('queuing event type %s', event.type);
+    event.someShit = 'Brett set this';
+    pubSub
+      .sendMessage(event)
+      .then(k => {
+        dlog('queue success %o', k);
+        whRes.queued = true;
+        whRes.message = k;
+        res.status(200).json(whRes);
+      })
+      .catch(err => {
+        dlog('not so good %o', err);
+        whRes.error = err.message;
+        res.status(500).json(whRes);
+      });
+  } else {
+    console.log(`unhandled Stripe webhook event received ${event.type}`);
+    whRes.error = `unhandled Stripe webhook event received ${event.type}`;
+    res.status(200).json(whRes);
   }
-
-  res.status(200).json({});
 }

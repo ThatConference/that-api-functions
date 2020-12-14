@@ -46,6 +46,15 @@ Executing: /usr/local/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/platform
 [pubsub] INFO: Server started, listening on 8085
 ```
 
+To setup the PubSub Emulator with needed topic(s), etc. use our [beam cli](https://github.com/ThatConference/beam) project. See the readme for instructions. To bootstrap our emulator use: `npx babel-node -- ./src/index.js bs-pubsub`
+
+The shell you run the cli in will require two environment variables
+
+```sh
+$(gcloud beta emulators pubsub env-init)
+export PUBSUB_PROJECT_ID=dev-that
+```
+
 ---
 
 Terminal window: **Bouncer Project**
@@ -59,7 +68,15 @@ $(gcloud beta emulators pubsub env-init)
 export PUBSUB_PROJECT_ID=dev-that
 ```
 
-The command `gcloud beta emulators pubsub env-init` outputs something like `export PUBSUB_EMULATOR_HOST=localhost:8085` to sent an env variable. And in case you're not aware, the `$()` executes that command, exports the variable to the environment.
+The command `gcloud beta emulators pubsub env-init` outputs something like `export PUBSUB_EMULATOR_HOST=localhost:8085` to sent an env variable. And in case you're not aware, the `$()` executes that command; exports the variable to the environment.
+
+Jan 2021 - a recent update has `env-init` returning ipv6 address. I had issues with this and had to change the `::1` to `localhost` manually for proper operation.
+
+```sh
+npm run start:watch
+```
+
+Runs bouncer with nodemon. Default listening port is `9090`
 
 ---
 
@@ -67,15 +84,25 @@ Terminal window: **Brinks Project**
 
 Brinks is our order taker which pulls messages from PubSub and does the needful.
 
+There is a wrapper fix for brinks for a long-standing bug in pub/sub emulator. Details can be found in the brinks/src/pubsubfix/readme.md.
+
+To run brinks with the fix as well:
+
+```sh
+npm run start:watch:fix
+```
+
 ---
 
 Terminal window: **Stripe Listener**
 
-Stripe listener is part of the Stripe CLI which listens for dev webhook activity and redirect to your locally running code.
+Stripe listener is part of the Stripe CLI which listens for dev webhook activity and redirect to your locally running code. In our case this will throw requests to `Bouncer`.
 
 ```sh
-stripe listen --forward-to localhost:9191/stripe
+stripe listen --forward-to localhost:9090/stripe
 ```
+
+Once executed and running the console will output a webhook signing secret. This secret rarely changes though ensure it is the same secret you have set in the `.env` under key `STRIPE_ENDPOINT_SECRET=`
 
 ---
 
@@ -91,4 +118,14 @@ stripe trigger payment_intent.succeeded
 
 Terminal window: **Firestore Emulator**
 
-gcloud Firestore emulator. Future thing for our testing
+gcloud Firestore emulator. Future thing for our testing. Currently not in use here.
+
+## Troubleshooting
+
+**When running `beam` and receive an error like, `'Received RST_STREAM with code 2 (Internal server error)'`.** This turned out to be that the gcloud sdk was at an older version than the pubsub emulator running. The fix was to update `@google-cloud/pubsub` to the latest version.
+
+## Process Flow
+
+### Basics
+
+The basic process flow for a Stipe Checkout process is as follows:
