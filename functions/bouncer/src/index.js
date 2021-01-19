@@ -3,7 +3,6 @@ import express from 'express';
 import debug from 'debug';
 import * as Sentry from '@sentry/node';
 import responseTime from 'response-time';
-import envConfig from './envConfig';
 import stripeHandler from './middleware/stripeHandler';
 
 const dlog = debug('that:api:functions:bouncer');
@@ -28,6 +27,7 @@ Sentry.init({
 });
 Sentry.configureScope(scope => {
   scope.setTag('thatApp', 'bouncer');
+  scope.setTag('subSystem', 'checkout');
 });
 
 function failure(err, req, res, next) {

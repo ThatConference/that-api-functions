@@ -124,6 +124,8 @@ gcloud Firestore emulator. Future thing for our testing. Currently not in use he
 
 **When running `beam` and receive an error like, `'Received RST_STREAM with code 2 (Internal server error)'`.** This turned out to be that the gcloud sdk was at an older version than the pubsub emulator running. The fix was to update `@google-cloud/pubsub` to the latest version.
 
+**`beam` 'hangs' when sending a command** Check the value of the `PUBSUB_EMULATOR_HOST` environment variable set by `env-init`. It may be that your system isn't working well with IP6 and `::1` should be replaced with `localhost`.
+
 ## Process Flow
 
 ### Basics

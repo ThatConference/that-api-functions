@@ -1,0 +1,22 @@
+// validates metadata from checkout session object
+import * as yup from 'yup';
+
+const csMetadataSchema = yup.object().shape({
+  data: yup.object({
+    object: yup.object({
+      metadata: yup.object({
+        memberId: yup.string().required().min(5),
+        eventId: yup.string().required().min(5),
+        productsIds: yup.string().required().min(5),
+      }),
+    }),
+  }),
+});
+
+export default checkoutMetadata =>
+  csMetadataSchema
+    .validate(checkoutMetadata)
+    .then(() => true)
+    .catch(err => {
+      throw err;
+    });

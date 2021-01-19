@@ -1,0 +1,55 @@
+{
+  "id": "evt_1I9wlHBvVBgmhQW41YgXhHGh",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "created": 1610734263,
+  "data": {
+    "object": {
+      "id": "cs_test_b1HRs4vYGFKnlRjl9YMGg22HUhx2sF22jjlsAn02Fw2MWgntjqqyaY6aGb",
+      "object": "checkout.session",
+      "allow_promotion_codes": true,
+      "amount_subtotal": 8985,
+      "amount_total": 8985,
+      "billing_address_collection": null,
+      "cancel_url": "https://that.us/",
+      "client_reference_id": "google-oauth2|113016658049923232156",
+      "currency": "usd",
+      "customer": "cus_IiqoY7w2ydinMd",
+      "customer_details": {
+        "email": "brett@thatconference.com",
+        "tax_exempt": "none",
+        "tax_ids": []
+      },
+      "customer_email": null,
+      "livemode": false,
+      "locale": null,
+      "metadata": {
+        "memberId": "google-oauth2|113016658049923232156",
+        "eventId": "YWavA70szR8rxSwrLJaL",
+        "productsIds": "[\"9XqtZwB3QAp9P0SjEO63\"]"
+      },
+      "mode": "payment",
+      "payment_intent": "pi_1I9whaBvVBgmhQW4dCkGM0I2",
+      "payment_method_types": ["card"],
+      "payment_status": "paid",
+      "setup_intent": null,
+      "shipping": null,
+      "shipping_address_collection": null,
+      "submit_type": null,
+      "subscription": null,
+      "success_url": "https://that.us/",
+      "total_details": {
+        "amount_discount": 0,
+        "amount_tax": 0
+      }
+    }
+  },
+  "livemode": false,
+  "pending_webhooks": 1,
+  "request": {
+    "id": null,
+    "idempotency_key": null
+  },
+  "type": "checkout.session.completed",
+  "someShit": "Brett set this"
+}
