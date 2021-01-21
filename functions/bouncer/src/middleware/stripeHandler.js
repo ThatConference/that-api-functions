@@ -5,7 +5,7 @@ import * as Sentry from '@sentry/node';
 import envConfig from '../envConfig';
 import pubSub from '../gcp/pubSub';
 import {
-  csCompleteValidate,
+  csCompletedValidate,
   csMetadataValidate,
   custCreatedValidate,
   custMetadataValidate,
@@ -48,7 +48,7 @@ export default async function stripeHandler(req, res, next) {
     case 'checkout.session.completed':
       // check stripe object (stripe issue)
       try {
-        await csCompleteValidate(event);
+        await csCompletedValidate(event);
       } catch (err) {
         Sentry.setTag('check', 'csComleteValidate');
         Sentry.captureException(err);

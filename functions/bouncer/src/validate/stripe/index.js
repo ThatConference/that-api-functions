@@ -1,10 +1,10 @@
-import csCompleteValidate from './csComplete';
+import csCompletedValidate from './csCompleted';
 import csMetadataValidate from './csMetadata';
 import custCreatedValidate from './customerCreated';
 import custMetadataValidate from './customerMetadata';
 
 export {
-  csCompleteValidate,
+  csCompletedValidate,
   csMetadataValidate,
   custCreatedValidate,
   custMetadataValidate,

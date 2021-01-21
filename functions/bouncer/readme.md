@@ -98,8 +98,16 @@ Terminal window: **Stripe Listener**
 
 Stripe listener is part of the Stripe CLI which listens for dev webhook activity and redirect to your locally running code. In our case this will throw requests to `Bouncer`.
 
+To listen for all events:
+
 ```sh
 stripe listen --forward-to localhost:9090/stripe
+```
+
+To listen for specific events we're interested in:
+
+```sh
+stripe listen --events checkout.session.completed,customer.created --forward-to localhost:9090/stripe
 ```
 
 Once executed and running the console will output a webhook signing secret. This secret rarely changes though ensure it is the same secret you have set in the `.env` under key `STRIPE_ENDPOINT_SECRET=`

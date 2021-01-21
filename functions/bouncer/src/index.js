@@ -3,7 +3,14 @@ import express from 'express';
 import debug from 'debug';
 import * as Sentry from '@sentry/node';
 import responseTime from 'response-time';
-import stripeHandler from './middleware/stripeHandler';
+import {
+  stripeEventParse,
+  stripeEventCsCompleted,
+  stripeEventCustCreated,
+  stripeEventQueue,
+  stripeEventEnd,
+  errorHandler,
+} from './middleware';
 
 const dlog = debug('that:api:functions:bouncer');
 const api = express();
@@ -30,13 +37,6 @@ Sentry.configureScope(scope => {
   scope.setTag('subSystem', 'checkout');
 });
 
-function failure(err, req, res, next) {
-  dlog('middleware catchall error %O', err);
-  // res.set('Content-type', 'application/json').status(500).json(err);
-  res.statusCode = 500;
-  res.end(`${res.sentry} \n`);
-}
-
 function postSession(req, res) {
   /*
    *
@@ -56,7 +56,11 @@ export const handler = api
   .use(Sentry.Handlers.requestHandler())
   .use(responseTime())
   .use('/newsession', postSession)
-  .post('/stripe', stripeHandler)
+  .post('/stripe', stripeEventParse)
+  .post('/stripe', stripeEventCsCompleted)
+  .post('/stripe', stripeEventCustCreated)
+  .post('/stripe', stripeEventQueue)
+  .post('/stripe', stripeEventEnd)
 
   .use(Sentry.Handlers.errorHandler())
-  .use(failure);
+  .use(errorHandler);

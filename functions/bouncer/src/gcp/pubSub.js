@@ -10,20 +10,12 @@ function sendMessage(message) {
   const topic = pubSubClient.topic(envConfig.gcp.stripeEventTopic);
 
   const messageSend = {
-    data: {
-      message,
-    },
+    data: message,
   };
 
   const messageBuffer = Buffer.from(JSON.stringify(messageSend), 'utf8');
 
-  return topic
-    .publish(messageBuffer)
-    .then(messageId => ({ messageId }))
-    .catch(err => {
-      dlog('error sending message %o', err);
-      return Error(err);
-    });
+  return topic.publish(messageBuffer).then(messageId => ({ messageId }));
 }
 
 export default {
