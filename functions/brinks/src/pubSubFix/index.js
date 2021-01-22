@@ -19,11 +19,6 @@ export const pubSubFix = (_nothing, data) => {
   dlog('data length %d', JSON.stringify(data).length);
   if (_nothing) throw new Error('YO, we have data in _nothing argument');
 
-  const message = {
-    message: data.message,
-    subscription: data.subscription,
-    '@type': 'type.googleapis.com/google.pubsub.v1.PubsubMessage',
-  };
   const now = new Date();
   const context = {
     eventId: `manual-regen-by-pubsubfix-${now.getTime()}`,
@@ -35,7 +30,7 @@ export const pubSubFix = (_nothing, data) => {
   fetch(defaultPostUrl, {
     method: 'post',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ data: message, context }),
+    body: JSON.stringify({ data: data.message, context }),
   })
     .then(res => {
       if (res.ok) dlog('pubSubFix successful');
