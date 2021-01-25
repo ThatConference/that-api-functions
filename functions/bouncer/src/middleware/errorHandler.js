@@ -8,16 +8,21 @@ export default function errorHandler(err, req, res, next) {
   if (err instanceof Error) {
     console.log(`errorHandler: ${err.message}`);
     // not sure if this error needs to be renewed:
-    Sentry.captureException(err);
+    const issueId = Sentry.captureException(err);
+    whRes.sentryIssueId = issueId;
     return res.status(500).json(whRes);
   }
 
   // for known errors
+  let issueId;
   if (err.status === 200) {
-    Sentry.captureMessage(whRes.errorMsg, scope => scope.setLevel('info'));
+    issueId = Sentry.captureMessage(whRes.errorMsg, scope =>
+      scope.setLevel('info'),
+    );
   } else {
-    Sentry.captureException(new Error(whRes.error));
+    issueId = Sentry.captureException(new Error(whRes.error));
   }
   console.log(`errorHandler known error: ${whRes.errorbMsg}`);
+  whRes.sentryIssueId = issueId;
   return res.status(err.status || 400).json(whRes);
 }

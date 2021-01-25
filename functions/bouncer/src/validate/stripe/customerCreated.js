@@ -4,6 +4,11 @@ import * as yup from 'yup';
 const checkoutSchema = yup.object().shape({
   type: yup.string().matches(/customer\.created/),
   id: yup.string().required(),
+  created: yup
+    .string()
+    .transform(epoch => epoch.toString())
+    .required()
+    .max(10),
   object: yup.string().matches(/event/),
   data: yup.object({
     object: yup.object({
