@@ -1,9 +1,13 @@
 /* eslint-disable no-console */
 import debug from 'debug';
 import * as Sentry from '@sentry/node';
+import { dataSources } from '@thatconference/api';
+import { Firestore } from '@google-cloud/firestore';
 import pubSub from '../gcp/pubSub';
 
 const dlog = debug('that:api:functions:bouncer:middleware:stripeEventQueue');
+const historyStore = dataSources.history;
+const firestore = new Firestore();
 
 export default function stripeEventQueue(req, res, next) {
   dlog('stripe event queue to pubsub called');
@@ -24,7 +28,12 @@ export default function stripeEventQueue(req, res, next) {
     stripeEvent.type,
     stripeEvent.id,
   );
-  return pubSub
+  const writeEventHistory = historyStore(firestore)
+    .stripeEventSet(stripeEvent)
+    .catch(err => {
+      Sentry.captureException(err);
+    });
+  const queueToPubSub = pubSub
     .sendMessage(stripeEvent)
     .then(k => {
       dlog('queue success %o', k);
@@ -43,4 +52,6 @@ export default function stripeEventQueue(req, res, next) {
         whRes,
       });
     });
+
+  return Promise.all([writeEventHistory, queueToPubSub]);
 }

@@ -21,6 +21,26 @@
         "tax_ids": []
       },
       "customer_email": null,
+      "line_items": {
+        "object": "list",
+        "data": [
+          {
+            "id": "li_lineitemid",
+            "object": "item",
+            "amount_subtotal": 5990,
+            "amount_total": 5990,
+            "currency": "usd",
+            "description": "THAT January Event",
+            "price": {
+              "id": "price_priceid",
+              "object": "price",
+              "active": true,
+              "product": "product_productidvalue"
+            },
+            "quantity": 1
+          }
+        ]
+      },
       "livemode": false,
       "locale": null,
       "metadata": {

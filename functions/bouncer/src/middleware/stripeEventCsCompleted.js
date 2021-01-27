@@ -2,10 +2,11 @@
 import debug from 'debug';
 import * as Sentry from '@sentry/node';
 import { csCompletedValidate, csMetadataValidate } from '../validate/stripe';
+import getExpandedCheckoutSession from '../lib/stripe/getExpandedCheckoutSession';
 
 const dlog = debug('that:api:functions:bouncer:stripeEventCsCompleted');
 
-export default function stripeEventCsCompleted(req, res, next) {
+export default async function stripeEventCsCompleted(req, res, next) {
   dlog('stripe event checkout session succeeded called');
 
   const { whRes, stripeEvent } = req;
@@ -14,6 +15,18 @@ export default function stripeEventCsCompleted(req, res, next) {
     dlog('next(), not type checkout.session.completed ');
     return next();
   }
+
+  let expCheckoutSession;
+  try {
+    expCheckoutSession = await getExpandedCheckoutSession(
+      stripeEvent.data.object.id,
+    );
+  } catch (err) {
+    return next(err);
+  }
+
+  // replace checkout session in event object with expanded version.
+  stripeEvent.data.object = expCheckoutSession;
 
   return Promise.all([
     csCompletedValidate(stripeEvent).catch(err => {

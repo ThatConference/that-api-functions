@@ -16,6 +16,10 @@ const checkoutSchema = yup.object().shape({
       object: yup.string().matches(/checkout\.session/),
       amount_total: yup.number().min(100),
       mode: yup.string().required(),
+      line_items: yup.object({
+        object: yup.string().required().matches(/list/),
+        data: yup.array().required().min(1),
+      }),
     }),
   }),
 });
