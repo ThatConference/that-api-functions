@@ -13,7 +13,11 @@ const checkoutSchema = yup.object().shape({
   data: yup.object({
     object: yup.object({
       id: yup.string().required(),
-      object: yup.string().matches(/checkout\.session/),
+      object: yup
+        .string()
+        .required()
+        .matches(/checkout\.session/),
+      payment_status: yup.string().required().matches(/paid/),
       amount_total: yup.number().min(100),
       mode: yup.string().required(),
       line_items: yup.object({
