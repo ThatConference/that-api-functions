@@ -28,20 +28,24 @@ export default function stripeEventQueue(req, res, next) {
     stripeEvent.type,
     stripeEvent.id,
   );
-  const writeEventHistory = historyStore(firestore)
-    .stripeEventSet(stripeEvent)
-    .catch(err => {
-      Sentry.captureException(err);
-    });
-  const queueToPubSub = pubSub
+
+  return pubSub
     .sendMessage(stripeEvent)
     .then(k => {
       dlog('queue success %o', k);
       whRes.isQueued = true;
       whRes.message = k;
       whRes.status = 200;
-      return next();
     })
+    .then(r =>
+      historyStore(firestore)
+        .stripeEventSet(stripeEvent)
+        .then(() => {
+          whRes.isInHistory = true;
+          whRes.pubsubId = r;
+          return next();
+        }),
+    )
     .catch(err => {
       whRes.error = err;
       whRes.errorMsg = `queuing event in error: ${err.message}`;
@@ -52,6 +56,4 @@ export default function stripeEventQueue(req, res, next) {
         whRes,
       });
     });
-
-  return Promise.all([writeEventHistory, queueToPubSub]);
 }
