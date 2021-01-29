@@ -1,0 +1,38 @@
+name: brinks Pull Request
+
+on:
+  pull_request:
+    paths:
+      - "functions/brinks/**"
+
+jobs:
+  build:
+    name: build brinks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout PR
+        uses: actions/checkout@v2
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - name: npm ci, run validate
+        run: |
+          cd functions/brinks
+          pwd
+          cp ./.env.sample .env
+          npm ci
+          npm run validate
+        env:
+          CI: true
+      - name: Slack Notification
+        uses: 8398a7/action-slack@v3
+        with:
+          fields: repo,message,commit,author,eventName,ref,workflow,job,took
+          status: ${{ job.status }}
+          author_name: PullReq CI
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_DEV_NOTIFICATIONS }}
+        if: always()

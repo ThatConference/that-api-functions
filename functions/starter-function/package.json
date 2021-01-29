@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "rimraf __build__ && babel ./src -d ./__build__ --copy-files --ignore ./**/__tests__",
+    "postbuild": "cp -v .env package.json package-lock.json __build__",
     "predeploy:api:thatusBot": "npm run build",
     "deploy:api:thatusBot": "functions-framework --target=handler --port=8080 --source=./__build__",
     "start:watch": "nodemon -e env,js,json,graphql --watch src --ignore '*.test.js' --exec npm run deploy:api:thatusBot",
