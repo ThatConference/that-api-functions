@@ -21,7 +21,7 @@ Terminal Window TLDR; list:
 - brinks
 - Stripe listener
 - Stripe trigger
-- Firestore emulator
+- Firestore emulator (future)
 
 #### Terminal Windows Details
 
@@ -54,6 +54,10 @@ The shell you run the cli in will require two environment variables
 $(gcloud beta emulators pubsub env-init)
 export PUBSUB_PROJECT_ID=dev-that
 ```
+
+##### Stopping Emulator
+
+**Ctrl-c does stop the Python process for the emulator**. What it doesn't stop is a java process spawned (for a jetty session or similar). Anyway, this process also needs to be killed to clean thing up properly. If there is a message stuck in the queue even if you **stop the emulator process** this java process will continue to try and deliver the message. If you aren't running other java processes, something like `killall java` works fine.
 
 ---
 
@@ -133,6 +137,8 @@ gcloud Firestore emulator. Future thing for our testing. Currently not in use he
 **When running `beam` and receive an error like, `'Received RST_STREAM with code 2 (Internal server error)'`.** This turned out to be that the gcloud sdk was at an older version than the pubsub emulator running. The fix was to update `@google-cloud/pubsub` to the latest version.
 
 **`beam` 'hangs' when sending a command** Check the value of the `PUBSUB_EMULATOR_HOST` environment variable set by `env-init`. It may be that your system isn't working well with IP6 and `::1` should be replaced with `localhost`.
+
+**Messages may still be sent after PubSub emulator is stopped**. Using ctrl + c stops the emulators Python process, but what it doesn't stop is a java process spawned (we think for a jetty session). This process also needs to be killed to clean thing up properly. If there is a message stuck in the queue even if you **stop the emulator process** this java process will continue to try and deliver the message. If you aren't running other java processes, something like `killall java` works fine.
 
 ## Process Flow
 

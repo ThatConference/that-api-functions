@@ -4,7 +4,7 @@ import stripelib from 'stripe';
 import * as Sentry from '@sentry/node';
 import envConfig from '../envConfig';
 
-const dlog = debug('that:api:functions:bouncer:stripeWhParse');
+const dlog = debug('that:api:functions:bouncer:stripeParseMw');
 const stripe = stripelib(envConfig.stripe.apiKey);
 
 export default function stripeEventParse(req, res, next) {
@@ -14,6 +14,7 @@ export default function stripeEventParse(req, res, next) {
     bouncer: true,
     isQueued: false,
     isValid: false,
+    stages: ['stripeEventParse'],
   };
 
   const sig = req.headers['stripe-signature'];

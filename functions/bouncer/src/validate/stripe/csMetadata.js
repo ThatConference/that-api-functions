@@ -7,7 +7,7 @@ const csMetadataSchema = yup.object().shape({
       metadata: yup.object({
         memberId: yup.string().required().min(5),
         eventId: yup.string().required().min(5),
-        productsIds: yup.string().required().min(5),
+        productIds: yup.string().required().min(5),
       }),
     }),
   }),

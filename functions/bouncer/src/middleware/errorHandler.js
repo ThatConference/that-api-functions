@@ -2,12 +2,13 @@
 import * as Sentry from '@sentry/node';
 
 export default function errorHandler(err, req, res, next) {
-  const { whRes, stripeEvent } = req;
+  const { whRes } = req;
+  whRes.stages.push('errorHandler');
+  Sentry.setContext('whRes', JSON.stringify(whRes));
 
   // for unknown errors
   if (err instanceof Error) {
-    console.log(`errorHandler: ${err.message}`);
-    // not sure if this error needs to be renewed:
+    console.log(`errorHandler unknown error: ${err.message}`);
     const issueId = Sentry.captureException(err);
     whRes.sentryIssueId = issueId;
     return res.status(500).json(whRes);
@@ -22,7 +23,7 @@ export default function errorHandler(err, req, res, next) {
   } else {
     issueId = Sentry.captureException(new Error(whRes.error));
   }
-  console.log(`errorHandler known error: ${whRes.errorbMsg}`);
+  console.log(`errorHandler known error: ${whRes.errorMsg}`);
   whRes.sentryIssueId = issueId;
   return res.status(err.status || 400).json(whRes);
 }

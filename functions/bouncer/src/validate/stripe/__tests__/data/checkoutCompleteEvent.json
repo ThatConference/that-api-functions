@@ -46,7 +46,7 @@
       "metadata": {
         "memberId": "test-clientid_01234ab",
         "eventId": "YWavatMEA70szRwrLJaL",
-        "productsIds": "[\"9XqtZwBggn82sP0SjEO63\"]"
+        "productIds": "[\"9XqtZwBggn82sP0SjEO63\"]"
       },
       "mode": "payment",
       "payment_intent": "pi_1I9whaBvVBgmhQW4dCkGM0I2",

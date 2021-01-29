@@ -3,12 +3,13 @@ import debug from 'debug';
 import * as Sentry from '@sentry/node';
 import { custCreatedValidate, custMetadataValidate } from '../validate/stripe';
 
-const dlog = debug('that:api:functions:bouncer:stripeEventCustCreated');
+const dlog = debug('that:api:functions:bouncer:stripeEventCustCreatedMw');
 
 export default function stripeEventCustCreated(req, res, next) {
   dlog('stripe event customer created called');
 
   const { whRes, stripeEvent } = req;
+  whRes.stages.push('stripeEventCustCreated');
 
   if (stripeEvent.type !== 'customer.created') {
     dlog('next(), not type customer.created');

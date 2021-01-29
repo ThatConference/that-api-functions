@@ -1,18 +1,18 @@
 /* eslint-disable no-console */
 import debug from 'debug';
-import * as Sentry from '@sentry/node';
 import { dataSources } from '@thatconference/api';
 import { Firestore } from '@google-cloud/firestore';
 import pubSub from '../gcp/pubSub';
 
-const dlog = debug('that:api:functions:bouncer:middleware:stripeEventQueue');
-const historyStore = dataSources.history;
+const dlog = debug('that:api:functions:bouncer:middleware:stripeEventQueueMw');
+const historyStore = dataSources.cloudFirestore.history;
 const firestore = new Firestore();
 
 export default function stripeEventQueue(req, res, next) {
   dlog('stripe event queue to pubsub called');
 
   const { whRes, stripeEvent } = req;
+  whRes.stages.push('stripeEventQueue');
 
   if (!whRes.isValid) {
     dlog(`unhandled stripe event passed through, ${stripeEvent.type}`);
@@ -50,10 +50,6 @@ export default function stripeEventQueue(req, res, next) {
       whRes.error = err;
       whRes.errorMsg = `queuing event in error: ${err.message}`;
       console.log(whRes.errorMsg);
-      Sentry.captureException(err);
-      return next({
-        status: 500,
-        whRes,
-      });
+      return next(err);
     });
 }
