@@ -96,6 +96,8 @@ To run brinks with the fix as well:
 npm run start:watch:fix
 ```
 
+Runs brinks with nodemon. Default listening port is `8080`
+
 ---
 
 Terminal window: **Stripe Listener**
