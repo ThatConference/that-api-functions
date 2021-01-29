@@ -20,7 +20,8 @@
     "jest/prefer-to-have-length": "warn",
     "jest/valid-expect": "error",
     "no-underscore-dangle": "off",
-    "import/prefer-default-export": "off"
+    "import/prefer-default-export": "off",
+    "no-console": "off"
   },
   "plugins": ["jest"],
   "parser": "babel-eslint"
