@@ -8,7 +8,5 @@ describe('Test checkout complete object', () => {
     return csMetadataValidate(checkoutJson).then(result => {
       expect(result).toBe(true);
     });
-
-    // expect(csMetadata({ metadata })).toBe(true);
   });
 });

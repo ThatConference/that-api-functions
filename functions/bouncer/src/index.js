@@ -2,6 +2,7 @@ import 'dotenv/config';
 import express from 'express';
 import * as Sentry from '@sentry/node';
 import responseTime from 'response-time';
+import { Firestore } from '@google-cloud/firestore';
 import {
   stripeEventParse,
   stripeEventCsCompleted,
@@ -12,6 +13,9 @@ import {
 } from './middleware';
 
 const api = express();
+const firestore = new Firestore();
+
+api.set('firestore', firestore);
 
 let version;
 (async () => {

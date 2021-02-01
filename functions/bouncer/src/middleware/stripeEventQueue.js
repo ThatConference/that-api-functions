@@ -1,16 +1,15 @@
 /* eslint-disable no-console */
 import debug from 'debug';
 import { dataSources } from '@thatconference/api';
-import { Firestore } from '@google-cloud/firestore';
 import pubSub from '../gcp/pubSub';
 
 const dlog = debug('that:api:functions:bouncer:middleware:stripeEventQueueMw');
 const historyStore = dataSources.cloudFirestore.history;
-const firestore = new Firestore();
 
 export default function stripeEventQueue(req, res, next) {
   dlog('stripe event queue to pubsub called');
 
+  const firestore = req.app.get('firestore');
   const { whRes, stripeEvent } = req;
   whRes.stages.push('stripeEventQueue');
 
