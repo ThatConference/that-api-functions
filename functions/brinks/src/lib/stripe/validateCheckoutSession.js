@@ -1,14 +1,15 @@
 import debug from 'debug';
 import * as Sentry from '@sentry/node';
 import { dataSources } from '@thatconference/api';
-import { Firestore } from '@google-cloud/firestore';
 
 const dlog = debug('that:api:functions:brinks:validateCheckoutSession');
 const memberStore = dataSources.cloudFirestore.member;
 const productStore = dataSources.cloudFirestore.product;
-const firestore = new Firestore();
 
-export default function validateCheckoutSession(checkoutSession) {
+export default function validateCheckoutSession({
+  checkoutSession,
+  firestore,
+}) {
   dlog('validateCheckoutSession called id: %s', checkoutSession.id);
 
   const checkoutLineItems = checkoutSession.line_items.data;

@@ -7,6 +7,7 @@ const dlog = debug('that:api:functions:brinks:stripeEventCustCreatedMw');
 export default async function stripeEventCustCreated(req, res, next) {
   dlog('stripe event customerCreated called');
 
+  const firestore = req.get('firestore');
   const { thatBrinks, stripeEvent } = req;
   thatBrinks.stages.push('stripeEventCustCreated');
 
@@ -23,7 +24,7 @@ export default async function stripeEventCustCreated(req, res, next) {
     stripeCustomerId,
   });
 
-  return compareMemberToCustomer({ memberId, stripeCustomerId })
+  return compareMemberToCustomer({ memberId, stripeCustomerId, firestore })
     .then(result => {
       if (!result) {
         thatBrinks.errorMsg(`New Stipe customer validation failed`);

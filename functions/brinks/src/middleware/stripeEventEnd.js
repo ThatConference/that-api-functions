@@ -8,9 +8,6 @@ export default function stripeEventEnd(req, res) {
   const { thatBrinks } = req;
   thatBrinks.stages.push('stripeEventEnd');
 
-  // Check for a status being set.
-  // What to return?
-  // return value doesn't matter, PubSub will not? do anything with it
   if (!thatBrinks.isProcessed) {
     Sentry.setContext('thatBrinks', { thatBrinks: JSON.stringify(thatBrinks) });
     const sentryIssueId = Sentry.captureMessage(

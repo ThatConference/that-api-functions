@@ -6,10 +6,11 @@ const dlog = debug('that:api:functions:brinks:eventProcessedCheckMw');
 
 export default function eventProccessedCheck(req, res, next) {
   dlog('eventProccessedCheck called');
+  const firestore = req.app.get('firestore');
   const { thatBrinks, stripeEvent } = req;
   thatBrinks.stages.push('eventProcessCheck');
 
-  return isEventProcessed(stripeEvent.id)
+  return isEventProcessed({ stripeEventId: stripeEvent.id, firestore })
     .then(result => {
       if (result) {
         thatBrinks.errorMsg = `Event ${stripeEvent.id} already processed. leaving gracefully`;

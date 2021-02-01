@@ -3,6 +3,7 @@ import express from 'express';
 import debug from 'debug';
 import * as Sentry from '@sentry/node';
 import responseTime from 'response-time';
+import { Firestore } from '@google-cloud/firestore';
 import {
   decodeMessage,
   eventProcessedCheck,
@@ -14,6 +15,9 @@ import {
 
 const dlog = debug('that:api:functions:brinks');
 const api = express();
+const firestore = new Firestore();
+
+api.set('firestore', firestore);
 
 let version;
 (async () => {
