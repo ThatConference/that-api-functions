@@ -1,0 +1,74 @@
+{
+  "id": "evt_1I9wlHBvVBgmhQW41YgXhHGh",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "created": 1610734263,
+  "data": {
+    "object": {
+      "id": "cs_test_b1HRs4vYGFKnaiEBeaeAn02Fw2MWgntjqqyaY6aGb",
+      "object": "checkout.session",
+      "allow_promotion_codes": true,
+      "amount_subtotal": 8985,
+      "amount_total": 8985,
+      "billing_address_collection": null,
+      "cancel_url": "https://that.us/",
+      "client_reference_id": "test-clientid_01234ab",
+      "currency": "usd",
+      "customer": "cus_Iiqzzy7ErEe387s",
+      "customer_details": {
+        "email": "brett@example.com",
+        "tax_exempt": "none",
+        "tax_ids": []
+      },
+      "customer_email": null,
+      "line_items": {
+        "object": "list",
+        "data": [
+          {
+            "id": "li_lineitemid",
+            "object": "item",
+            "amount_subtotal": 5990,
+            "amount_total": 5990,
+            "currency": "usd",
+            "description": "THAT January Event",
+            "price": {
+              "id": "price_priceid",
+              "object": "price",
+              "active": true,
+              "product": "product_productidvalue"
+            },
+            "quantity": 1
+          }
+        ]
+      },
+      "livemode": false,
+      "locale": null,
+      "metadata": {
+        "memberId": "test-clientid_01234ab",
+        "eventId": "YWavatMEA70szRwrLJaL",
+        "productIds": "[\"9XqtZwBggn82sP0SjEO63\"]"
+      },
+      "mode": "payment",
+      "payment_intent": "pi_1I9whaBvVBgmhQW4dCkGM0I2",
+      "payment_method_types": ["card"],
+      "payment_status": "paid",
+      "setup_intent": null,
+      "shipping": null,
+      "shipping_address_collection": null,
+      "submit_type": null,
+      "subscription": null,
+      "success_url": "https://that.us/",
+      "total_details": {
+        "amount_discount": 0,
+        "amount_tax": 0
+      }
+    }
+  },
+  "livemode": false,
+  "pending_webhooks": 1,
+  "request": {
+    "id": null,
+    "idempotency_key": null
+  },
+  "type": "checkout.session.completed"
+}

@@ -3,7 +3,7 @@ import connect from 'connect';
 import debug from 'debug';
 import responseTime from 'response-time';
 
-const dlog = debug('that:api:functions:thatus-session-bot');
+const dlog = debug('that:api:functions:[CHANGE-ME]');
 const api = connect();
 
 function failure(err, req, res, next) {

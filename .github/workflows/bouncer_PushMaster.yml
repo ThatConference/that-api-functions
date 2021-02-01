@@ -1,0 +1,101 @@
+name: bouncer Push Master
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "functions/bouncer/**"
+
+jobs:
+  build:
+    name: Build bouncer
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - name: npm ci, run validate
+        run: |
+          cd functions/bouncer
+          pwd
+          cp .env.sample .env
+          npm ci
+          npm run validate
+      - name: Post-Build Copies
+        run: |
+          cd functions/bouncer
+          pwd
+          cp ./package.json __build__/
+          cp ./package-lock.json __build__/
+          git rev-list --count master > __build__/ccnt.txt
+      - name: Archive Build Artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: tc-api
+          path: functions/bouncer/__build__
+      - name: Slack Notification
+        uses: 8398a7/action-slack@v3
+        with:
+          fields: repo,message,commit,author,eventName,ref,workflow,job,took
+          status: ${{ job.status }}
+          author_name: Push Master CI
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_DEV_NOTIFICATIONS }}
+        if: job.status == 'failure' || job.status == 'cancelled'
+
+  deploy-image:
+    name: Deploy Bouncer
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v1
+        with:
+          name: tc-api
+      - name: Setup GCP Actions
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          version: "305.0.0"
+          service_account_key: ${{ secrets.GCLOUD_AUTH }}
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+      - name: write .env file
+        run: |
+          gcloud secrets versions access latest --secret prod-bouncer-env > tc-api/.env
+          C_CNT=$(cat tc-api/ccnt.txt)
+          rm -f tc-api/ccnt.txt
+          SENTRYREL=SENTRY_VERSION=bouncer@$(cat tc-api/package.json | jq '.version' | tr -d '"')-$C_CNT.$(echo $GITHUB_SHA | cut -c1-7)
+          echo "" >> tc-api/.env
+          echo $SENTRYREL >> tc-api/.env
+          echo "SENTRYREL=$SENTRYREL" >> $GITHUB_ENV
+        env:
+          CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
+      - name: Checks and verifications
+        run: |
+          echo "**********"
+          echo $SENTRYREL
+          echo $GITHUB_SHA
+          echo $GITHUB_REF
+          echo "**********"
+          echo $PWD
+          ls -lasiR
+      - name: Run GCP Deploy Function - bouncer
+        run: gcloud functions deploy bouncer --runtime nodejs12 --trigger-http --source $PWD/tc-api --entry-point handler --allow-unauthenticated --memory 256MB
+        env:
+          CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
+      - name: Slack Notification
+        uses: 8398a7/action-slack@v3
+        with:
+          fields: repo,message,commit,author,eventName,ref,workflow,job,took
+          status: ${{ job.status }}
+          author_name: Push Master CI
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_DEV_NOTIFICATIONS }}
+        if: always()

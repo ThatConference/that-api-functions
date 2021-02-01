@@ -1,0 +1,47 @@
+{
+  "id": "evt_1IBMkVBvVBgmhQW4Oexgge6n",
+  "object": "event",
+  "api_version": "2020-08-27",
+  "created": 1611072487,
+  "data": {
+    "object": {
+      "id": "cus_abcdef123456",
+      "object": "customer",
+      "address": null,
+      "balance": 0,
+      "created": 1611072487,
+      "currency": null,
+      "default_source": null,
+      "delinquent": false,
+      "description": null,
+      "discount": null,
+      "email": "hello@example.com",
+      "invoice_prefix": "814E9269",
+      "invoice_settings": {
+        "custom_fields": null,
+        "default_payment_method": null,
+        "footer": null
+      },
+      "livemode": false,
+      "metadata": {
+        "memberId": "test_member-1234zy",
+        "slug": "that-slug",
+        "firstName": "Anna",
+        "lastName": "Awesome"
+      },
+      "name": "Anna Awesome",
+      "next_invoice_sequence": 1,
+      "phone": null,
+      "preferred_locales": [],
+      "shipping": null,
+      "tax_exempt": "none"
+    }
+  },
+  "livemode": false,
+  "pending_webhooks": 2,
+  "request": {
+    "id": "req_g5PBAGeT3kT2sQ",
+    "idempotency_key": null
+  },
+  "type": "customer.created"
+}
