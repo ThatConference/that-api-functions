@@ -16,8 +16,8 @@ export default function decodePubSubMessage(req, res, next) {
   };
   req.thatBrinks = thatBrinks;
 
-  const { data, messageId, attributes } = req.body.message;
-  if (!data || !messageId || !attributes) {
+  const { data, messageId, publishTime } = req.body.message;
+  if (!data || !messageId) {
     thatBrinks.errorMsg = `Invalid PubSub message received, missing properties`;
     thatBrinks.sentryLevel = 'error';
     console.log(thatBrinks.errorMsg);
@@ -38,7 +38,7 @@ export default function decodePubSubMessage(req, res, next) {
   req.pubSubMessage = {
     data: decodedData,
     messageId,
-    attributes,
+    publishTime,
   };
   thatBrinks.stripeEventType = decodedData.data.type;
   thatBrinks.stripeEventId = decodedData.data.id;
