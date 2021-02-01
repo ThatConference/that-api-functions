@@ -86,7 +86,7 @@ jobs:
           echo $PWD
           ls -lasiR
       - name: Run GCP Deploy Function - bouncer
-        run: gcloud functions deploy bouncer --runtime nodejs12 --trigger-http --source $PWD/tc-api --entry-point handler --allow-unauthenticated --memory 256MB
+        run: gcloud functions deploy bouncer --runtime nodejs12 --trigger-http --source $PWD/tc-api --allow-unauthenticated --entry-point handler --memory 256MB
         env:
           CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
       - name: Slack Notification
