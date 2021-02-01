@@ -147,3 +147,5 @@ gcloud Firestore emulator. Future thing for our testing. Currently not in use he
 ### Basics
 
 The basic process flow for a Stipe Checkout process is as follows:
+
+stripe > bouncer > pubsub > brinks
