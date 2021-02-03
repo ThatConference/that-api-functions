@@ -9,6 +9,6 @@ export default function getExpandedCheckoutSession(checkoutSessionId) {
   dlog('getExpandedCheckoutSession called for %s', checkoutSessionId);
 
   return stripe.checkout.sessions.retrieve(checkoutSessionId, {
-    expand: ['line_items'],
+    expand: ['line_items', 'total_details.breakdown'],
   });
 }
