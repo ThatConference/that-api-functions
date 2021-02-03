@@ -25,12 +25,25 @@ export default function createOrderFromCheckout({ checkoutSession, products }) {
     };
   });
 
+  const { breakdown } = checkoutSession.total_details;
+  const discounts = breakdown
+    ? breakdown.discounts.map(d => ({
+        amount: d.amount,
+        promotionCode: d.discount.promotion_code,
+        name: d.discount.coupon.name,
+        amountOff: d.discount.coupon.amount_off,
+        percentOff: d.discount.coupon.percent_off,
+      }))
+    : [];
+
   const newOrder = {
     member: memberId,
     event: eventId,
     stripePaymentIntentId: checkoutSession.payment_intent,
     stripeCheckoutSessionId: checkoutSession.id,
     total: checkoutSession.amount_total / 100,
+    amountDiscounted: checkoutSession.total_details.amount_discount,
+    discounts,
     lineItems,
   };
 

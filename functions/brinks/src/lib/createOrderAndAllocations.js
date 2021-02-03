@@ -16,14 +16,14 @@ export default function createOrderAndAllocations({
   dlog('createOrderAndAllocations called id: %s', checkoutSession.id);
 
   const newOrder = createOrderFromCheckout({ checkoutSession, products });
-  newOrder.stripEventId = stripeEvent.id;
+  newOrder.stripeEventId = stripeEvent.id;
   newOrder.orderDate = thatBrinks.orderCreatedAt;
   const orderAllocations = generateAllocationsFromOrder({
     order: newOrder,
     orderCreatedAt: thatBrinks.orderCreatedAt,
   });
 
-  return orderStore(firestore).batchWriteOrderAndAllocations({
+  return orderStore(firestore).transactionWriteOrderAndAllocations({
     newOrder,
     allocations: orderAllocations,
   });
