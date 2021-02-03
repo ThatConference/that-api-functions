@@ -23,11 +23,6 @@ export default function createOrderAndAllocations({
     orderCreatedAt: thatBrinks.orderCreatedAt,
   });
 
-  // return orderStore(firestore).batchWriteOrderAndAllocations({
-  //   newOrder,
-  //   allocations: orderAllocations,
-  // });
-
   return orderStore(firestore).transactionWriteOrderAndAllocations({
     newOrder,
     allocations: orderAllocations,
