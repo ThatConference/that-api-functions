@@ -1,10 +1,9 @@
 import debug from 'debug';
-import { dataSources } from '@thatconference/api';
 import createOrderFromCheckout from './createOrderFromCheckout';
 import generateAllocationsFromOrder from './generateAllocationsFromOrder';
+import orderStore from '../dataSources/cloudFirestore/order';
 
 const dlog = debug('that:api:functions:brinks:createOrderAndAllocations');
-const orderStore = dataSources.cloudFirestore.order;
 
 export default function createOrderAndAllocations({
   stripeEvent,
