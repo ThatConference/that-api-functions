@@ -1,6 +1,6 @@
 {
   "name": "brinks",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Our order taker",
   "main": "index.js",
   "scripts": {
@@ -34,10 +34,10 @@
   },
   "homepage": "https://github.com/ThatConference/that-api-functions#readme",
   "devDependencies": {
-    "@babel/cli": "^7.12.10",
-    "@babel/core": "^7.12.10",
-    "@babel/node": "^7.12.10",
-    "@babel/preset-env": "^7.12.11",
+    "@babel/cli": "^7.12.13",
+    "@babel/core": "^7.12.13",
+    "@babel/node": "^7.12.13",
+    "@babel/preset-env": "^7.12.13",
     "@google-cloud/functions-framework": "^1.7.1",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^26.6.3",
@@ -57,14 +57,14 @@
   },
   "dependencies": {
     "@google-cloud/firestore": "^4.9.1",
-    "@sentry/node": "^6.0.4",
-    "@thatconference/api": "^1.17.0",
+    "@sentry/node": "^6.1.0",
+    "@thatconference/api": "~1.18.0",
     "debug": "^4.3.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "node-fetch": "^2.6.1",
     "response-time": "^2.3.2",
-    "stripe": "^8.132.0"
+    "stripe": "^8.133.0"
   },
   "husky": {
     "hooks": {

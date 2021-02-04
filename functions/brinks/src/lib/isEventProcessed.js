@@ -1,9 +1,8 @@
 // determines if stripe event has already been processed
 import debug from 'debug';
-import { dataSources } from '@thatconference/api';
+import orderStore from '../dataSources/cloudFirestore/order';
 
 const dlog = debug('that:api:functions:brinks:isEventProcessed');
-const orderStore = dataSources.cloudFirestore.order;
 
 export default ({ stripeEventId, firestore }) => {
   dlog('isEventProcessed called for %s', stripeEventId);

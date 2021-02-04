@@ -36,15 +36,23 @@ export default function createOrderFromCheckout({ checkoutSession, products }) {
       }))
     : [];
 
+  const now = new Date();
   const newOrder = {
     member: memberId,
     event: eventId,
     stripePaymentIntentId: checkoutSession.payment_intent,
     stripeCheckoutSessionId: checkoutSession.id,
+    stripeMode: checkoutSession.mode,
+    stripeSubscription: checkoutSession.subscription,
+    stripeLivemode: checkoutSession.livemode,
     total: checkoutSession.amount_total / 100,
     amountDiscounted: checkoutSession.total_details.amount_discount,
     discounts,
     lineItems,
+    createdAt: now,
+    lastUpdatedAt: now,
+    createdBy: memberId,
+    lastUpdatedBy: memberId,
   };
 
   return newOrder;
