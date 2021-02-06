@@ -8,6 +8,7 @@ const csMetadataSchema = yup.object().shape({
         memberId: yup.string().required().min(5),
         eventId: yup.string().required().min(5),
         productIds: yup.string().required().min(5),
+        checkoutLineItems: yup.string().required().min(70),
       }),
     }),
   }),
