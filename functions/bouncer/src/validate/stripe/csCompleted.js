@@ -22,7 +22,7 @@ const checkoutSchema = yup.object().shape({
       mode: yup.string().required(),
       line_items: yup.object({
         object: yup.string().required().matches(/list/),
-        data: yup.array().required().min(1),
+        data: yup.array().required().min(1).max(6),
       }),
     }),
   }),

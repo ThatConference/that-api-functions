@@ -5,7 +5,7 @@
   "created": 1610734263,
   "data": {
     "object": {
-      "id": "cs_test_b1HRs4vYGFKnaiEBeaeAn02Fw2MWgntjqqyaY6aGb",
+      "id": "cs_test_b1HRcheckoutSessionIdValuehereinthisfield",
       "object": "checkout.session",
       "allow_promotion_codes": true,
       "amount_subtotal": 8985,
@@ -14,7 +14,7 @@
       "cancel_url": "https://that.us/",
       "client_reference_id": "test-clientid_01234ab",
       "currency": "usd",
-      "customer": "cus_Iiqzzy7ErEe387s",
+      "customer": "cus_Iistripecustid",
       "customer_details": {
         "email": "brett@example.com",
         "tax_exempt": "none",
@@ -45,11 +45,12 @@
       "locale": null,
       "metadata": {
         "memberId": "test-clientid_01234ab",
-        "eventId": "YWavatMEA70szRwrLJaL",
-        "productIds": "[\"9XqtZwBggn82sP0SjEO63\"]"
+        "eventId": "THATEventidstring",
+        "productIds": "[\"ThatProductIDforAProduct\"]",
+        "checkoutLineItems": "[{\"productId\":\"ThatProductIDforAProduct\",\"quantity\":1,\"isBulkPurchase\":false}]"
       },
       "mode": "payment",
-      "payment_intent": "pi_1I9whaBvVBgmhQW4dCkGM0I2",
+      "payment_intent": "pi_1IstripePaymentIntentId",
       "payment_method_types": ["card"],
       "payment_status": "paid",
       "setup_intent": null,
@@ -60,7 +61,11 @@
       "success_url": "https://that.us/",
       "total_details": {
         "amount_discount": 0,
-        "amount_tax": 0
+        "amount_tax": 0,
+        "breakdown": {
+          "discounts": [],
+          "taxes": []
+        }
       }
     }
   },

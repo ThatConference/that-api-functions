@@ -21,6 +21,8 @@ export default async function stripeEventCsCompleted(req, res, next) {
 
   let validateResult;
   try {
+    // validates checkoutSession between database references
+    // returning a member and products objects needed later
     validateResult = await validateCheckoutSession({
       checkoutSession: checkoutData,
       firestore,

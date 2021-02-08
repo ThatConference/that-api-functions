@@ -2,10 +2,11 @@ import debug from 'debug';
 import createOrderFromCheckout from './createOrderFromCheckout';
 import generateAllocationsFromOrder from './generateAllocationsFromOrder';
 import orderStore from '../dataSources/cloudFirestore/order';
+import getPaymentIntentReceiptUrl from './stripe/getPaymentIntentReceiptUrl';
 
 const dlog = debug('that:api:functions:brinks:createOrderAndAllocations');
 
-export default function createOrderAndAllocations({
+export default async function createOrderAndAllocations({
   stripeEvent,
   products,
   thatBrinks,
@@ -21,6 +22,14 @@ export default function createOrderAndAllocations({
     order: newOrder,
     orderCreatedAt: thatBrinks.orderCreatedAt,
   });
+
+  let paymentIntentReceiptUrl = null;
+  if (newOrder.stripePaymentIntentId) {
+    paymentIntentReceiptUrl = await getPaymentIntentReceiptUrl(
+      newOrder.stripePaymentIntentId,
+    );
+  }
+  newOrder.stripePaymentIntentReceiptUrl = paymentIntentReceiptUrl;
 
   return orderStore(firestore).transactionWriteOrderAndAllocations({
     newOrder,
