@@ -61,7 +61,11 @@
       "success_url": "https://that.us/",
       "total_details": {
         "amount_discount": 0,
-        "amount_tax": 0
+        "amount_tax": 0,
+        "breakdown": {
+          "discounts": [],
+          "taxes": []
+        }
       }
     }
   },
