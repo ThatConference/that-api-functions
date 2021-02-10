@@ -18,7 +18,7 @@ const order = dbInstance => {
       .get()
       .then(docSnapshot => {
         let result = null;
-        if (docSnapshot.size > 0) result = docSnapshot.doc[0].id;
+        if (docSnapshot.size > 0) result = docSnapshot.docs[0].id;
 
         return result;
       });

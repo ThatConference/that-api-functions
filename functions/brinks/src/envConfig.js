@@ -16,6 +16,11 @@ const requiredConfig = () => ({
       process.env.MESSAGE_TOPIC_STRIPE_EVENTS ||
       configMissing('MESSAGE_TOPIC_STRIPE_EVENTS'),
   },
+  that: {
+    systemUpdatedBy:
+      process.env.THAT_SYSTEM_UPDATED_BY ||
+      configMissing('THAT_SYSTEM_UPDATED_BY'),
+  },
 });
 
 export default requiredConfig();
