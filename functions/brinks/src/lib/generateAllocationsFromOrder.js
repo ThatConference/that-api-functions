@@ -15,13 +15,14 @@ export default function generateAllocationsFromOrder({
   lineItems.forEach(lineItem => {
     const qty = lineItem.quantity;
     const { isBulkPurchase } = lineItem;
-    dlog(`line item isBulkPurchase: ${isBulkPurchase}`);
+    dlog(`line item isBulkPurchase: %s, qty: %d`, isBulkPurchase, qty);
     for (let i = 0; i < qty; i += 1) {
       // note, we don't have an order id yet
       const allocation = {
         event: order.event,
         purchasedBy: order.member,
         product: lineItem.product,
+        productType: lineItem.productType,
         isAllocated: !isBulkPurchase,
         allocatedTo: isBulkPurchase ? null : order.member,
         hasCheckedIn: false,

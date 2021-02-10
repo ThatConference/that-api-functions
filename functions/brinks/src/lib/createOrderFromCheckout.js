@@ -30,6 +30,7 @@ export default function createOrderFromCheckout({ checkoutSession, products }) {
       totalAmount: stripeLi.amount_total / 100,
       stripeProductId: stripeLi.price.product,
       isBulkPurchase: coLineItem.isBulkPurchase,
+      productType: product.type,
     };
   });
 
@@ -52,7 +53,7 @@ export default function createOrderFromCheckout({ checkoutSession, products }) {
     stripePaymentIntentId: checkoutSession.payment_intent,
     stripeCheckoutSessionId: checkoutSession.id,
     stripeMode: checkoutSession.mode,
-    stripeSubscription: checkoutSession.subscription,
+    stripeSubscriptionId: checkoutSession.subscription,
     stripeLivemode: checkoutSession.livemode,
     total: checkoutSession.amount_total / 100,
     amountDiscounted: checkoutSession.total_details.amount_discount,

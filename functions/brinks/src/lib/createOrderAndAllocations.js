@@ -3,6 +3,7 @@ import createOrderFromCheckout from './createOrderFromCheckout';
 import generateAllocationsFromOrder from './generateAllocationsFromOrder';
 import orderStore from '../dataSources/cloudFirestore/order';
 import getPaymentIntentReceiptUrl from './stripe/getPaymentIntentReceiptUrl';
+import applyMembershipAllocationsToMembers from './applyMembershipAllocationsToMembers';
 
 const dlog = debug('that:api:functions:brinks:createOrderAndAllocations');
 
@@ -31,8 +32,15 @@ export default async function createOrderAndAllocations({
   }
   newOrder.stripePaymentIntentReceiptUrl = paymentIntentReceiptUrl;
 
-  return orderStore(firestore).transactionWriteOrderAndAllocations({
-    newOrder,
-    allocations: orderAllocations,
-  });
+  return Promise.all([
+    orderStore(firestore).transactionWriteOrderAndAllocations({
+      newOrder,
+      allocations: orderAllocations,
+    }),
+    applyMembershipAllocationsToMembers({
+      order: newOrder,
+      allocations: orderAllocations,
+      firestore,
+    }),
+  ]);
 }
