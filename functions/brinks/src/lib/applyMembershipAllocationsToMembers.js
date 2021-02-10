@@ -20,7 +20,7 @@ export default async function applyMembershipAllocationsToMembers({
     a =>
       a.isAllocated &&
       a.allocatedTo &&
-      a.productType === constants.that.productType.membership,
+      a.productType === constants.THAT.PRODUCT_TYPE.MEMBERSHIP,
   );
   if (applyAllocations < 1) {
     dlog('no allocations are allocated, nothing to do, leaving');
@@ -35,7 +35,7 @@ export default async function applyMembershipAllocationsToMembers({
   const baseMemberUpdate = {
     stripeSubscriptionId: stripeSubscription.id,
     isMember:
-      stripeSubscription.status === constants.stripe.subscriptionStatus.active,
+      stripeSubscription.status === constants.STRIPE.SUBSCRIPTION_STATUS.ACTIVE,
     membershipExpirationDate: new Date(
       stripeSubscription.current_period_end * 1000,
     ),

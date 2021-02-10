@@ -1,25 +1,25 @@
-const constants = () => ({
-  that: {
-    productType: {
-      ticket: 'TICKET',
-      membership: 'MEMBERSHIP',
-      partnership: 'PARTNERSHIP',
-      food: 'FOOD',
+const constants = {
+  THAT: {
+    PRODUCT_TYPE: {
+      TICKET: 'TICKET',
+      MEMBERSHIP: 'MEMBERSHIP',
+      PARTNERSHIP: 'PARTNERSHIP',
+      FOOD: 'FOOD',
     },
   },
-  stripe: {
-    checkoutMode: {
-      payment: 'payment',
-      subscription: 'subscription',
+  STRIPE: {
+    CHECKOUT_MODE: {
+      PAYMENT: 'payment',
+      SUBSCRIPTION: 'subscription',
     },
-    subscriptionStatus: {
-      active: 'active',
-      cancelled: 'canceled',
-      pastDue: 'past_due',
-      unpaid: 'unpaid',
-      incomplete: 'incomplete',
-      incompleteExpired: 'incomplete_expried',
+    SUBSCRIPTION_STATUS: {
+      ACTIVE: 'active',
+      CANCELLED: 'canceled',
+      PAST_DUE: 'past_due',
+      UNPAID: 'unpaid',
+      INCOMPLETE: 'incomplete',
+      INCOMPLETE_EXPIRED: 'incomplete_expired',
     },
   },
-});
-export default constants();
+};
+export default constants;
