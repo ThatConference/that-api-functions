@@ -30,8 +30,8 @@ export default function createOrderAndAllocations({
     amountDiscounted: '100%',
     createdAt: now,
     lastUpdatedAt: now,
-    createdBy: orderData.adminSubmitted,
-    lastUpdatedBy: orderData.adminSubmitted,
+    createdBy: orderData.createdBy,
+    lastUpdatedBy: orderData.createdBy,
     stripeEventId: thatBrinks.stripeEventId, // The id used to verify if processed already (thatEvent.id)
     stripePaymentIntentReceiptUrl: null,
     lineItems: newLineItems,

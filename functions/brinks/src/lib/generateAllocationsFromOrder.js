@@ -28,9 +28,7 @@ export default function generateAllocationsFromOrder({
         hasCheckedIn: false,
         createdAt: orderCreatedAt,
         lastUpdatedAt: orderCreatedAt,
-        lastUpdatedBy: order.adminSubmitted
-          ? order.adminSubmitted
-          : order.member,
+        lastUpdatedBy: order.createdBy,
       };
       orderAllocations.push(allocation);
     }

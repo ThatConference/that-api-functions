@@ -22,6 +22,7 @@ const manualOrderSchema = yup.object().shape({
     .required()
     .max(10),
   order: yup.object({
+    createdBy: yup.string().required().min(9),
     event: yup.string().required().min(19),
     lineItems: yup.array().min(1).max(6).required().of(lineItemSchema),
     member: yup.string().required().min(9),

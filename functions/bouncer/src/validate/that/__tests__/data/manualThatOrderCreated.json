@@ -3,7 +3,7 @@
   "eventId": "that_event_id_at_19",
   "created": "1613602775",
   "order": {
-    "adminSubmitted": "admin_who_created_order|manually",
+    "createdBy": "admin_who_created_order|manually",
     "event": "that_event_id_at_19",
     "lineItems": [
       {

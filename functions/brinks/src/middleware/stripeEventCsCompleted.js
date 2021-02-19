@@ -35,6 +35,7 @@ export default async function stripeEventCsCompleted(req, res, next) {
   Sentry.setTags({
     memberId: member.id,
     stripeCustomerId: member.stripeCustomerId,
+    createdBy: member.id,
   });
 
   return createOrderAndAllocations({

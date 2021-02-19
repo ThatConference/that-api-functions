@@ -22,7 +22,8 @@ export default async function thatEventManualOrderCreated(req, res, next) {
 
   Sentry.setTags({
     memberId: orderData.member,
-    adminSubmitted: orderData.adminSubmitted,
+    stripeCustomerId: 'n/a',
+    createdBy: orderData.createdBy,
   });
 
   await validateManualOrder({ orderData, firestore });
