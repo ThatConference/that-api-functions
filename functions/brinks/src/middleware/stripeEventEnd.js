@@ -1,7 +1,7 @@
 import debug from 'debug';
 import * as Sentry from '@sentry/node';
 
-const dlog = debug('that:api:functions:brinks:stripeEventEndMw');
+const dlog = debug('that:api:brinks:stripeEventEndMw');
 
 export default function stripeEventEnd(req, res) {
   dlog('stripeEventEnd called');

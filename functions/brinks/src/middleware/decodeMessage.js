@@ -2,7 +2,7 @@ import debug from 'debug';
 import * as Sentry from '@sentry/node';
 import { decodeMessage } from '../gcp/pubsub';
 
-const dlog = debug('that:api:functions:brinks:decodeMessageMw');
+const dlog = debug('that:api:brinks:decodeMessageMw');
 
 export default function decodePubSubMessage(req, res, next) {
   dlog('decodeMessage middleware called');

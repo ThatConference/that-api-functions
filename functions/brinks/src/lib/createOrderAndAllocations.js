@@ -5,7 +5,7 @@ import orderStore from '../dataSources/cloudFirestore/order';
 import getPaymentIntentReceiptUrl from './stripe/getPaymentIntentReceiptUrl';
 import applyMembershipAllocationsToMembers from './applyMembershipAllocationsToMembers';
 
-const dlog = debug('that:api:functions:brinks:createOrderAndAllocations');
+const dlog = debug('that:api:brinks:createOrderAndAllocations');
 
 export default async function createOrderAndAllocations({
   stripeEvent,

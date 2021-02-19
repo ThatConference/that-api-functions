@@ -1,6 +1,6 @@
 import debug from 'debug';
 
-const dlog = debug('that:api:functions:brinks:pubsub');
+const dlog = debug('that:api:brinks:pubsub');
 function decodeMessage(encodedMessage) {
   dlog('decode message called');
   dlog('raw message %s', encodedMessage);

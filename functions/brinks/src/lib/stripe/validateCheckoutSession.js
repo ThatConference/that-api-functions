@@ -2,7 +2,7 @@ import debug from 'debug';
 import * as Sentry from '@sentry/node';
 import { dataSources } from '@thatconference/api';
 
-const dlog = debug('that:api:functions:brinks:validateCheckoutSession');
+const dlog = debug('that:api:brinks:validateCheckoutSession');
 const memberStore = dataSources.cloudFirestore.member;
 const productStore = dataSources.cloudFirestore.product;
 

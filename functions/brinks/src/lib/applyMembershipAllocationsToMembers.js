@@ -6,7 +6,7 @@ import getStripeSubscription from './stripe/getStripeSubscription';
 import envConfig from '../envConfig';
 import constants from '../constants';
 
-const dlog = debug('that:api:functions:brinks:applyAllocationsToMembers');
+const dlog = debug('that:api:brinks:applyAllocationsToMembers');
 const memberStore = dataSources.cloudFirestore.member;
 
 export default async function applyMembershipAllocationsToMembers({

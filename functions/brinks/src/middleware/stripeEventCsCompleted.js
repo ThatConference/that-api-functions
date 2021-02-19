@@ -3,7 +3,7 @@ import * as Sentry from '@sentry/node';
 import validateCheckoutSession from '../lib/stripe/validateCheckoutSession';
 import createOrderAndAllocations from '../lib/createOrderAndAllocations';
 
-const dlog = debug('that:api:functions:brinks:stripeEventCsCompletedMw');
+const dlog = debug('that:api:brinks:stripeEventCsCompletedMw');
 
 export default async function stripeEventCsCompleted(req, res, next) {
   dlog('stripeEventCsCompleted middleware called');

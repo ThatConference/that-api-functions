@@ -9,11 +9,12 @@ import {
   eventProcessedCheck,
   stripeEventCsCompleted,
   stripeEventCustCreated,
+  thatEventManualOrderCreated,
   stripeEventEnd,
   errorHandler,
 } from './middleware';
 
-const dlog = debug('that:api:functions:brinks');
+const dlog = debug('that:api:brinks');
 const api = express();
 const firestore = new Firestore();
 
@@ -60,6 +61,7 @@ export const handler = api
   .post('/stripe-event', eventProcessedCheck)
   .post('/stripe-event', stripeEventCsCompleted)
   .post('/stripe-event', stripeEventCustCreated)
+  .post('/stripe-event', thatEventManualOrderCreated)
   .post('/stripe-event', stripeEventEnd)
 
   .use(Sentry.Handlers.errorHandler())
