@@ -3,7 +3,7 @@ import debug from 'debug';
 import * as Sentry from '@sentry/node';
 import { custCreatedValidate, custMetadataValidate } from '../validate/stripe';
 
-const dlog = debug('that:api:functions:bouncer:stripeEventCustCreatedMw');
+const dlog = debug('that:api:bouncer:stripeEventCustCreatedMw');
 
 export default function stripeEventCustCreated(req, res, next) {
   dlog('stripe event customer created called');

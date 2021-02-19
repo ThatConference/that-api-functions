@@ -1,35 +1,35 @@
 /* eslint-disable no-console */
 import debug from 'debug';
 import { dataSources } from '@thatconference/api';
-import pubSub from '../gcp/pubSub';
+import pubSub from '../../gcp/pubSub';
 
-const dlog = debug('that:api:bouncer:middleware:stripeEventQueueMw');
+const dlog = debug('that:api:bouncer:middleware:manualEventQueueMw');
 const historyStore = dataSources.cloudFirestore.history;
 
-export default function stripeEventQueue(req, res, next) {
-  dlog('stripe event queue to pubsub called');
+export default function manualEventQueue(req, res, next) {
+  dlog('manual event queue to pubsub called');
 
   const firestore = req.app.get('firestore');
-  const { whRes, stripeEvent } = req;
-  whRes.stages.push('stripeEventQueue');
+  const { whRes, manualEvent } = req;
+  whRes.stages.push('manualEventQueue');
 
   if (!whRes.isValid) {
-    dlog(`unhandled stripe event passed through, ${stripeEvent.type}`);
-    whRes.errorMsg = `Stripe Event ${stripeEvent.type} not handled`;
+    dlog(`unhandled THAT event passed through, ${manualEvent.type}`);
+    whRes.errorMsg = `THAT Event ${manualEvent.type} not handled`;
     return next({
-      status: 200,
+      status: 406,
       whRes,
     });
   }
 
   dlog(
     'queuing event type %s with id %s to pubsub',
-    stripeEvent.type,
-    stripeEvent.id,
+    manualEvent.type,
+    manualEvent.id,
   );
 
   return pubSub
-    .sendMessage(stripeEvent)
+    .sendMessage(manualEvent)
     .then(k => {
       dlog('queue success %o', k);
       whRes.isQueued = true;
@@ -38,7 +38,7 @@ export default function stripeEventQueue(req, res, next) {
     })
     .then(r =>
       historyStore(firestore)
-        .stripeEventSet(stripeEvent)
+        .thatEventSet(manualEvent)
         .then(() => {
           whRes.isInHistory = true;
           whRes.pubsubId = r;

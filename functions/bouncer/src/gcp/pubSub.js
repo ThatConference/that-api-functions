@@ -2,7 +2,7 @@ import debug from 'debug';
 import { PubSub } from '@google-cloud/pubsub';
 import envConfig from '../envConfig';
 
-const dlog = debug('that:api:functions:bouncer:pubsub');
+const dlog = debug('that:api:bouncer:pubsub');
 const pubSubClient = new PubSub();
 
 function sendMessage(message) {

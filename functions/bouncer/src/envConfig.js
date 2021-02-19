@@ -16,6 +16,14 @@ const requiredConfig = () => ({
       process.env.MESSAGE_TOPIC_STRIPE_EVENTS ||
       configMissing('MESSAGE_TOPIC_STRIPE_EVENTS'),
   },
+  security: {
+    jwksUri: process.env.AUTH0_JWKS_URI || configMissing('AUTH0_JWKS_URI'),
+    audience: process.env.AUTH0_AUDIENCE || configMissing('AUTH0_AUDIENCE'),
+    issuer: process.env.AUTH0_ISSUER || configMissing('AUTH0_ISSUER'),
+    jwksCache: process.env.JWKS_CACHE,
+    jwksRateLimit: process.env.JWKS_RATE_LIMIT,
+    jwksRpm: process.env.JWKS_RPM,
+  },
 });
 
 export default requiredConfig();
