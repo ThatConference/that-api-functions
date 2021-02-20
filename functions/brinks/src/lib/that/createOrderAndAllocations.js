@@ -7,16 +7,19 @@ const dlog = debug('that:api:brinks:that:createOrderAndAllocations');
 
 export default function createOrderAndAllocations({
   orderData,
+  products,
   thatBrinks,
   firestore,
 }) {
   dlog('createOrderAndAllocations for THAT event called');
 
-  // update order (createOrderFrom checkout not required)
+  // update order (createOrderFrom `checkout` not required)
   const newLineItems = orderData.lineItems.map(li => {
+    const product = products.find(p => p.id === li.productId);
     const newLi = {
       ...li,
       product: li.productId,
+      productType: product.type,
       unitPrice: 0,
       totalAmount: 0,
     };

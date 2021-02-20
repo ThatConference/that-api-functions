@@ -19,6 +19,7 @@ export default async function thatEventManualOrderCreated(req, res, next) {
 
   dlog('stripeEvent:: %o', stripeEvent);
   const orderData = stripeEvent.order;
+  orderData.orderDate = new Date(orderData.orderDate);
 
   Sentry.setTags({
     memberId: orderData.member,
@@ -26,10 +27,11 @@ export default async function thatEventManualOrderCreated(req, res, next) {
     createdBy: orderData.createdBy,
   });
 
-  await validateManualOrder({ orderData, firestore });
+  const { products } = await validateManualOrder({ orderData, firestore });
 
   return thatCreateOrderAndAllocations({
     orderData,
+    products,
     thatBrinks,
     firestore,
   })

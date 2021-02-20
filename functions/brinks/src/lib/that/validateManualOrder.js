@@ -34,10 +34,15 @@ export default function validateManualOrder({ orderData, firestore }) {
         `Product(s) in manual order which don't exist in eventId ${eventId}`,
       );
     }
+    if (products.filter(p => p.type === 'MEMBERSHIP').length > 0) {
+      errorList.push(
+        `'MEMBERSHIP' type products cannot be added to manual orders`,
+      );
+    }
 
     if (errorList.length > 0) {
       Sentry.setContext('products', { products });
-      Sentry.setContent('order', { orderData });
+      Sentry.setContext('order', { orderData });
       Sentry.setContext('errors', errorList);
       const issueId = Sentry.captureException(
         new Error('Manual order validation failed', scope =>
