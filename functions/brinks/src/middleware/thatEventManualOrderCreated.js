@@ -8,6 +8,7 @@ const dlog = debug('that:api:brinks:thatEventManualOrderCreatedMw');
 export default async function thatEventManualOrderCreated(req, res, next) {
   dlog('thatEventManualOrderCreated middleware called');
 
+  const orderEvents = req.app.get('orderEvents');
   const firestore = req.app.get('firestore');
   const { thatBrinks, stripeEvent } = req;
   thatBrinks.stages.push('thatEventManualOrderCreated');
@@ -38,6 +39,11 @@ export default async function thatEventManualOrderCreated(req, res, next) {
     .then(r => {
       dlog('orders written result: %o', r);
       thatBrinks.isProcessed = true;
+      orderEvents.emit('orderCreated', {
+        products,
+        order: r || {},
+      });
+
       return next();
     })
     .catch(err => next(err));

@@ -8,6 +8,7 @@ const dlog = debug('that:api:brinks:stripeEventCsCompletedMw');
 export default async function stripeEventCsCompleted(req, res, next) {
   dlog('stripeEventCsCompleted middleware called');
 
+  const orderEvents = req.app.get('orderEvents');
   const firestore = req.app.get('firestore');
   const { thatBrinks, stripeEvent } = req;
   thatBrinks.stages.push('stripeEventCsCompleted');
@@ -47,6 +48,12 @@ export default async function stripeEventCsCompleted(req, res, next) {
     .then(r => {
       dlog('batch write result: %o', r);
       thatBrinks.isProcessed = true;
+      const [order] = r;
+      orderEvents.emit('orderCreated', {
+        member,
+        products,
+        order: order || {},
+      });
       return next();
     })
     .catch(err => next(err));

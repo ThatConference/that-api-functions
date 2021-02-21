@@ -13,12 +13,14 @@ import {
   stripeEventEnd,
   errorHandler,
 } from './middleware';
+import orderEventEmitter from './lib/events/orders';
 
 const dlog = debug('that:api:brinks');
 const api = express();
 const firestore = new Firestore();
 
 api.set('firestore', firestore);
+api.set('orderEvents', orderEventEmitter());
 
 let version;
 (async () => {
