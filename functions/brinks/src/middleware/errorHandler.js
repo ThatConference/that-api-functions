@@ -7,6 +7,7 @@ export default function errorHandler(err, req, res, next) {
   // unknown error
   if (err instanceof Error) {
     console.log(`errorHandler: ${err.message}`);
+    Sentry.setTag('errorType', 'unknown');
     const issueId = Sentry.captureException(err);
     return res.status(500).json({ issueId });
   }
@@ -17,6 +18,7 @@ export default function errorHandler(err, req, res, next) {
   // known(ish) errors
   let issueId;
   if (res.status === 200) {
+    Sentry.setTag('errorType', 'known');
     issueId = Sentry.captureMessage(thatBrinks.errorMsg, scope =>
       scope.setLevel('info'),
     );

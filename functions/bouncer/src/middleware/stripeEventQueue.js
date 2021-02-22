@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import debug from 'debug';
+import * as Sentry from '@sentry/node';
 import { dataSources } from '@thatconference/api';
 import pubSub from '../gcp/pubSub';
 
@@ -16,6 +17,7 @@ export default function stripeEventQueue(req, res, next) {
   if (!whRes.isValid) {
     dlog(`unhandled stripe event passed through, ${stripeEvent.type}`);
     whRes.errorMsg = `Stripe Event ${stripeEvent.type} not handled`;
+    Sentry.setTag('stripe', 'unknownEventType');
     return next({
       status: 200,
       whRes,
@@ -49,6 +51,7 @@ export default function stripeEventQueue(req, res, next) {
       whRes.error = err;
       whRes.errorMsg = `queuing event in error: ${err.message}`;
       console.log(whRes.errorMsg);
+      Sentry.setTag('pubsub', 'queueFailure');
       return next(err);
     });
 }

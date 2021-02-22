@@ -1,5 +1,6 @@
 // verify that this stripe event id has not yet been processed.
 import debug from 'debug';
+import * as Sentry from '@sentry/node';
 import isEventProcessed from '../lib/isEventProcessed';
 
 const dlog = debug('that:api:brinks:eventProcessedCheckMw');
@@ -17,6 +18,7 @@ export default function eventProccessedCheck(req, res, next) {
         thatBrinks.isProcessed = true;
         thatBrinks.sentryLevel = 'info';
         console.log(thatBrinks.errorMsg);
+        Sentry.setTag('stripe', 'eventSeenAgain');
         res.status(200);
         return next(thatBrinks.errorMsg);
       }

@@ -29,6 +29,7 @@ export default async function stripeEventCsCompleted(req, res, next) {
       firestore,
     });
   } catch (err) {
+    Sentry.setTag('stripe', 'validateCheckoutFailed');
     return next(err);
   }
   const { products, member } = validateResult;
