@@ -20,6 +20,8 @@ const requiredConfig = () => ({
     systemUpdatedBy:
       process.env.THAT_SYSTEM_UPDATED_BY ||
       configMissing('THAT_SYSTEM_UPDATED_BY'),
+    slackWebhookUrl: process.env.SLACK_WEBHOOK_URL,
+    slackChannelOrder: process.env.SLACK_CHANNEL_ORDER || '#orders',
   },
 });
 

@@ -2,7 +2,7 @@ import debug from 'debug';
 import * as Sentry from '@sentry/node';
 import { dataSources } from '@thatconference/api';
 
-const dlog = debug('that:api:functions:brinks:compareMemberToCustomer');
+const dlog = debug('that:api:brinks:compareMemberToCustomer');
 const memberStore = dataSources.cloudFirestore.member;
 
 export default function compareMemberToCustomer({

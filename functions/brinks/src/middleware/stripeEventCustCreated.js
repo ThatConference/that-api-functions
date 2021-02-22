@@ -2,7 +2,7 @@ import debug from 'debug';
 import * as Sentry from '@sentry/node';
 import compareMemberToCustomer from '../lib/stripe/compareMemberToCustomer';
 
-const dlog = debug('that:api:functions:brinks:stripeEventCustCreatedMw');
+const dlog = debug('that:api:brinks:stripeEventCustCreatedMw');
 
 export default async function stripeEventCustCreated(req, res, next) {
   dlog('stripe event customerCreated called');

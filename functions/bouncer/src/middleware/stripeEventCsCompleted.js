@@ -4,7 +4,7 @@ import * as Sentry from '@sentry/node';
 import { csCompletedValidate, csMetadataValidate } from '../validate/stripe';
 import getExpandedCheckoutSession from '../lib/stripe/getExpandedCheckoutSession';
 
-const dlog = debug('that:api:functions:bouncer:stripeEventCsCompletedMw');
+const dlog = debug('that:api:bouncer:stripeEventCsCompletedMw');
 
 export default async function stripeEventCsCompleted(req, res, next) {
   dlog('stripeEventCsCompleted middleware called');

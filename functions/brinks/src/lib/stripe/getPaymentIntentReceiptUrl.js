@@ -2,7 +2,7 @@ import debug from 'debug';
 import stripelib from 'stripe';
 import envConfig from '../../envConfig';
 
-const dlog = debug('that:api:functions:brinks:getPaymentIntnentReceiptUrl');
+const dlog = debug('that:api:brinks:getPaymentIntnentReceiptUrl');
 const stripe = stripelib(envConfig.stripe.apiSecretKey);
 
 export default function getPaymentIntentReceiptUrl(paymentIntentId) {

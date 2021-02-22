@@ -66,6 +66,8 @@ const order = dbInstance => {
             transaction.create(allocationCollection.doc(), oa),
           );
         }
+
+        return newOrder;
       });
     });
   }

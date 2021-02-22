@@ -2,7 +2,7 @@
 import debug from 'debug';
 import orderStore from '../dataSources/cloudFirestore/order';
 
-const dlog = debug('that:api:functions:brinks:isEventProcessed');
+const dlog = debug('that:api:brinks:isEventProcessed');
 
 export default ({ stripeEventId, firestore }) => {
   dlog('isEventProcessed called for %s', stripeEventId);

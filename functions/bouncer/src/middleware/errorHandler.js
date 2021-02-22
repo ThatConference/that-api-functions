@@ -2,7 +2,8 @@
 import * as Sentry from '@sentry/node';
 
 export default function errorHandler(err, req, res, next) {
-  const { whRes } = req;
+  let { whRes } = req;
+  if (!whRes || !whRes.stages) whRes = { stages: [] };
   whRes.stages.push('errorHandler');
   Sentry.setContext('whRes', JSON.stringify(whRes));
 

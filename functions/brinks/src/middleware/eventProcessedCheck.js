@@ -2,7 +2,7 @@
 import debug from 'debug';
 import isEventProcessed from '../lib/isEventProcessed';
 
-const dlog = debug('that:api:functions:brinks:eventProcessedCheckMw');
+const dlog = debug('that:api:brinks:eventProcessedCheckMw');
 
 export default function eventProccessedCheck(req, res, next) {
   dlog('eventProccessedCheck called');

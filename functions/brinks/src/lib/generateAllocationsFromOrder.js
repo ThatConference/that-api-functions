@@ -1,6 +1,6 @@
 import debug from 'debug';
 
-const dlog = debug('that:api:functions:brinks:generateAllocationsFromOrder');
+const dlog = debug('that:api:brinks:generateAllocationsFromOrder');
 
 export default function generateAllocationsFromOrder({
   order,
@@ -28,7 +28,7 @@ export default function generateAllocationsFromOrder({
         hasCheckedIn: false,
         createdAt: orderCreatedAt,
         lastUpdatedAt: orderCreatedAt,
-        lastUpdatedBy: order.member,
+        lastUpdatedBy: order.createdBy,
       };
       orderAllocations.push(allocation);
     }

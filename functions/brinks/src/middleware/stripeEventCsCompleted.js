@@ -3,11 +3,12 @@ import * as Sentry from '@sentry/node';
 import validateCheckoutSession from '../lib/stripe/validateCheckoutSession';
 import createOrderAndAllocations from '../lib/createOrderAndAllocations';
 
-const dlog = debug('that:api:functions:brinks:stripeEventCsCompletedMw');
+const dlog = debug('that:api:brinks:stripeEventCsCompletedMw');
 
 export default async function stripeEventCsCompleted(req, res, next) {
   dlog('stripeEventCsCompleted middleware called');
 
+  const orderEvents = req.app.get('orderEvents');
   const firestore = req.app.get('firestore');
   const { thatBrinks, stripeEvent } = req;
   thatBrinks.stages.push('stripeEventCsCompleted');
@@ -35,6 +36,7 @@ export default async function stripeEventCsCompleted(req, res, next) {
   Sentry.setTags({
     memberId: member.id,
     stripeCustomerId: member.stripeCustomerId,
+    createdBy: member.id,
   });
 
   return createOrderAndAllocations({
@@ -46,6 +48,12 @@ export default async function stripeEventCsCompleted(req, res, next) {
     .then(r => {
       dlog('batch write result: %o', r);
       thatBrinks.isProcessed = true;
+      const [order] = r;
+      orderEvents.emit('orderCreated', {
+        member,
+        products,
+        order: order || {},
+      });
       return next();
     })
     .catch(err => next(err));

@@ -1,6 +1,6 @@
 import debug from 'debug';
 
-const dlog = debug('that:api:functions:brinks:createOrderFromCheckout');
+const dlog = debug('that:api:brinks:createOrderFromCheckout');
 
 // member and products must be validated before being processed here
 export default function createOrderFromCheckout({ checkoutSession, products }) {
