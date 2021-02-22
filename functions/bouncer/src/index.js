@@ -59,11 +59,14 @@ const jwtCheck = jwt({
 
 function authz(role) {
   return (req, res, next) => {
+    Sentry.setTag('userId', req.user.sub);
     if (req.user.permissions.includes(role)) {
       dlog('passed permissions check');
       next();
     } else {
       dlog('failed permission validation');
+      Sentry.setContext('permissions', JSON.stringify(req.user.permissions));
+      Sentry.setTag('auth', 'failedPermissions');
       res.status(401).send('Permissions Denied');
     }
   };
