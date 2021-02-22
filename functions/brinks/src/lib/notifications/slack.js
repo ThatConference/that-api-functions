@@ -20,7 +20,10 @@ function callSlackHook(hookBody) {
     })
       .then(res => res.text())
       .then(res => dlog('slack webhook response: %o', res))
-      .catch(err => dlog('ERROR sending slack notification: %O', err));
+      .catch(err => {
+        dlog('ERROR sending slack notification: %O', err);
+        throw err;
+      });
   } else {
     dlog('DEVELOPMENT Env: SLACK PAYLOAD TO SEND: %o', hookBody);
   }
