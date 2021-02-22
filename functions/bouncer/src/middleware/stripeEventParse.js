@@ -38,6 +38,7 @@ export default function stripeEventParse(req, res, next) {
     whRes.errorMsg = `webhook verfication error: ${err.message}`;
     whRes.error = err;
     req.whRes = whRes;
+    Sentry.setTag('stripe', 'hookValidationFailed');
     return next({
       status: 400,
       whRes,

@@ -1,5 +1,6 @@
 import fetch from 'node-fetch';
 import debug from 'debug';
+import * as Sentry from '@sentry/node';
 import envConfig from '../../envConfig';
 
 const dlog = debug('that:api:brinks:notifications:slack');
@@ -22,7 +23,9 @@ function callSlackHook(hookBody) {
       .then(res => dlog('slack webhook response: %o', res))
       .catch(err => {
         dlog('ERROR sending slack notification: %O', err);
-        throw err;
+        Sentry.setContext('slackPayload', hookBody);
+        Sentry.setTag('nodeEvent', 'slackNotificationFailure');
+        Sentry.captureException(err);
       });
   } else {
     dlog('DEVELOPMENT Env: SLACK PAYLOAD TO SEND: %o', hookBody);

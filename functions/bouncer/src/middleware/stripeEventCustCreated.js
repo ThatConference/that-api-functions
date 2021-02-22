@@ -47,6 +47,7 @@ export default function stripeEventCustCreated(req, res, next) {
         Sentry.setTag('check', value.name);
         whRes.errorMsg = value.err.message;
         whRes.error = value.err;
+        Sentry.setTag('stripe', 'failedCustomerCreatedValidation');
         return next({
           status: value.status,
           whRes,

@@ -30,6 +30,7 @@ export default async function stripeEventCustCreated(req, res, next) {
         thatBrinks.errorMsg(`New Stipe customer validation failed`);
         thatBrinks.sentryLevel = 'error';
         console.log(thatBrinks.errorMsg);
+        Sentry.setTag('stripe', 'invalidCustomer');
         res.status(200);
         return next(thatBrinks.errorMsg);
       }

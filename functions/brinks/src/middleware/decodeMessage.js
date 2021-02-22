@@ -21,6 +21,7 @@ export default function decodePubSubMessage(req, res, next) {
     thatBrinks.errorMsg = `Invalid PubSub message received, missing properties`;
     thatBrinks.sentryLevel = 'error';
     console.log(thatBrinks.errorMsg);
+    Sentry.setTag('pubsub', 'invalidMessage');
     res.status(400);
     return next(thatBrinks.errorMsg);
   }
@@ -30,6 +31,7 @@ export default function decodePubSubMessage(req, res, next) {
     thatBrinks.errorMsg = `Unable to decode message data`;
     thatBrinks.sentryLevel = 'error';
     console.log(thatBrinks.errorMsg);
+    Sentry.setTag('pubsub', 'invalidMessage');
     res.status(400);
     return next(thatBrinks.errorMsg);
   }

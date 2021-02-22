@@ -23,6 +23,7 @@ export default async function stripeEventCsCompleted(req, res, next) {
       stripeEvent.data.object.id,
     );
   } catch (err) {
+    Sentry.setTag('stripe', 'failed_getExpandedCheckoutSession');
     return next(err);
   }
 
@@ -60,6 +61,7 @@ export default async function stripeEventCsCompleted(req, res, next) {
         Sentry.setTag('check', value.name);
         whRes.errorMsg = value.err.message;
         whRes.error = value.err;
+        Sentry.setTag('stripe', 'failedCheckoutSessionValidation');
         return next({
           status: value.status,
           whRes,
