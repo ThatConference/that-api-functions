@@ -38,10 +38,13 @@ export default async function thatEventManualOrderCreated(req, res, next) {
   })
     .then(r => {
       dlog('orders written result: %o', r);
+      const { order, orderAllocations } = r;
       thatBrinks.isProcessed = true;
       orderEvents.emit('orderCreated', {
+        firestore,
         products,
-        order: r || {},
+        order: order || {},
+        orderAllocations: orderAllocations || [],
       });
 
       return next();

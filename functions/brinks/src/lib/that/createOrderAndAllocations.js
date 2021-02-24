@@ -47,6 +47,7 @@ export default function createOrderAndAllocations({
 
   dlog('newOrder:: %o', newOrder);
   dlog('orderAllocations:: %o', orderAllocations);
+
   let orderStore;
   try {
     orderStore = orderStoreFunc(firestore);

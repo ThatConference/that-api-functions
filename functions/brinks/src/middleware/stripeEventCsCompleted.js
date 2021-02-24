@@ -49,11 +49,14 @@ export default async function stripeEventCsCompleted(req, res, next) {
     .then(r => {
       dlog('batch write result: %o', r);
       thatBrinks.isProcessed = true;
-      const [order] = r;
+      const [result] = r;
+      const { order, orderAllocations } = result;
       orderEvents.emit('orderCreated', {
+        firestore,
         member,
         products,
         order: order || {},
+        orderAllocations: orderAllocations || [],
       });
       return next();
     })

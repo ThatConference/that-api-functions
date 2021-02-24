@@ -5,6 +5,7 @@ const constants = {
       MEMBERSHIP: 'MEMBERSHIP',
       PARTNERSHIP: 'PARTNERSHIP',
       FOOD: 'FOOD',
+      COUPON: 'COUPON',
     },
   },
   STRIPE: {
