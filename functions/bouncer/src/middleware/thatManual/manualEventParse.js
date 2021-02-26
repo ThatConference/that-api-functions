@@ -30,5 +30,20 @@ export default function manualEventParse(req, res, next) {
   });
 
   req.manualEvent = req.body;
+
+  const isProduction = process.env.NODE_ENV === 'production';
+  if (req.body.livemode && !isProduction) {
+    whRes.errorMsg = 'TEST mode manual THAT event sent to PRODUCTION Bouncer';
+    Sentry.setTag('stripe', 'livemode failure');
+    Sentry.setContext('that event', JSON.stringify(req.body));
+    Sentry.level(Sentry.Severity.Error);
+    Sentry.captureMessage(whRes.errorMsg); // force capture as 'error'
+    console.error(whRes.errorMsg);
+    return next({
+      status: 200, // resolve the hook, we dont' want it sent again
+      whRes,
+    });
+  }
+
   return next();
 }

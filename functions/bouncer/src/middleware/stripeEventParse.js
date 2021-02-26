@@ -52,5 +52,20 @@ export default function stripeEventParse(req, res, next) {
 
   req.stripeEvent = event;
   req.whRes = whRes;
+
+  const isProduction = process.env.NODE_ENV === 'production';
+  if (event.livemode && !isProduction) {
+    whRes.errorMsg = 'TEST mode stripe event sent to PRODUCTION Bouncer';
+    Sentry.setTag('stripe', 'livemode failure');
+    Sentry.setContext('stripe event', JSON.stringify(event));
+    Sentry.level(Sentry.Severity.Error);
+    Sentry.captureMessage(whRes.errorMsg); // force capture as 'error'
+    console.error(whRes.errorMsg);
+    return next({
+      status: 200, // resolve the hook, we dont' want it sent again
+      whRes,
+    });
+  }
+
   return next();
 }
