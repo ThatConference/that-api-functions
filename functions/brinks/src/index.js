@@ -66,7 +66,7 @@ export const handler = api
   .post('/stripe-event', thatEventManualOrderCreated)
   .post('/stripe-event', stripeEventEnd)
 
-  .use(Sentry.Handlers.errorHandler())
+  // .use(Sentry.Handlers.errorHandler())
   .use(errorHandler);
 
 /* steps

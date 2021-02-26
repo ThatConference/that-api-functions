@@ -1,4 +1,7 @@
+import { constants as apiConstants } from '@thatconference/api';
+
 const constants = {
+  ...apiConstants,
   THAT: {
     PRODUCT_TYPE: {
       TICKET: 'TICKET',
@@ -8,19 +11,13 @@ const constants = {
       COUPON: 'COUPON',
     },
   },
-  STRIPE: {
-    CHECKOUT_MODE: {
-      PAYMENT: 'payment',
-      SUBSCRIPTION: 'subscription',
-    },
-    SUBSCRIPTION_STATUS: {
-      ACTIVE: 'active',
-      CANCELLED: 'canceled',
-      PAST_DUE: 'past_due',
-      UNPAID: 'unpaid',
-      INCOMPLETE: 'incomplete',
-      INCOMPLETE_EXPIRED: 'incomplete_expired',
+  POSTMARK: {
+    TEMPLATES: {
+      PURCHASE_TICKET: 'ticket-purchase-thank-you',
+      PURCHASE_MEMBERSHIP: 'membership-purchase-thank-you',
+      ONLINE_IN_X_DAYS: '',
     },
   },
 };
+
 export default constants;

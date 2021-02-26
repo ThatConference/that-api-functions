@@ -1,4 +1,5 @@
 import SetFollowError from './setFollowError';
 import SendSlackError from './sendSlackError';
+import SendEmailError from './sendEmailError';
 
-export { SetFollowError, SendSlackError };
+export { SetFollowError, SendSlackError, SendEmailError };
