@@ -17,5 +17,6 @@
     "orderDate": "2021-02-17T22:52:16.123Z",
     "status": "SUBMITTED"
   },
-  "type": "that.order.manual.created"
+  "type": "that.order.manual.created",
+  "livemode": false
 }

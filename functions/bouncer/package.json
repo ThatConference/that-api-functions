@@ -1,6 +1,6 @@
 {
   "name": "bouncer",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Our frond door person to manage incoming stripe hooks",
   "main": "index.js",
   "scripts": {
@@ -33,17 +33,17 @@
   },
   "homepage": "https://github.com/ThatConference/that-api-functions/tree/master/functions/bouncer",
   "devDependencies": {
-    "@babel/cli": "^7.12.17",
-    "@babel/core": "^7.12.17",
-    "@babel/node": "^7.12.17",
-    "@babel/preset-env": "^7.12.17",
+    "@babel/cli": "^7.13.0",
+    "@babel/core": "^7.13.8",
+    "@babel/node": "^7.13.0",
+    "@babel/preset-env": "^7.13.8",
     "@google-cloud/functions-framework": "^1.7.1",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^26.6.3",
-    "concurrently": "^5.3.0",
+    "concurrently": "^6.0.0",
     "eslint": "^7.20.0",
     "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-config-prettier": "^7.2.0",
+    "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-babel": "^5.3.1",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jest": "^24.1.5",
@@ -56,14 +56,14 @@
   },
   "dependencies": {
     "@google-cloud/firestore": "^4.9.4",
-    "@google-cloud/pubsub": "^2.9.0",
+    "@google-cloud/pubsub": "^2.10.0",
     "@sentry/node": "^6.2.0",
-    "@thatconference/api": "~1.19.0",
+    "@thatconference/api": "~1.21.0",
     "debug": "^4.3.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-jwt": "^6.0.0",
-    "jwks-rsa": "^1.12.2",
+    "jwks-rsa": "^1.12.3",
     "response-time": "^2.3.2",
     "stripe": "^8.137.0",
     "yup": "^0.32.9"
@@ -71,12 +71,12 @@
   "husky": {
     "hooks": {
       "pre-push": "npm run validate"
-    },
-    "jest": {
-      "testEnvironment": "node",
-      "verbose": true,
-      "rootDir": "./src",
-      "coverageDirectory": "../__testCoverage__"
     }
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "verbose": true,
+    "rootDir": "./src",
+    "coverageDirectory": "../__testCoverage__"
   }
 }
