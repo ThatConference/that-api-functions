@@ -7,9 +7,9 @@ const requiredConfig = () => ({
     apiKey: process.env.STRIPE_API_KEY || configMissing('STRIPE_API_KEY'),
     apiSecretKey:
       process.env.STRIPE_PRIVATE_KEY || configMissing('STRIPE_PRIVATE_KEY'),
-    endpointSecret:
-      process.env.STRIPE_ENDPOINT_SECRET ||
-      configMissing('STRIPE_ENDPOINT_SECRET'),
+    signingSecret:
+      process.env.STRIPE_SIGNING_SECRET ||
+      configMissing('STRIPE_SIGNING_SECRET'),
   },
   gcp: {
     stripeEventTopic:

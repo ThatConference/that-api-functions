@@ -40,7 +40,7 @@ export default function manualEventParse(req, res, next) {
     Sentry.captureMessage(whRes.errorMsg); // force capture as 'error'
     console.error(whRes.errorMsg);
     return next({
-      status: 200, // resolve the hook, we dont' want it sent again
+      status: 400, // Tell GraphQL invalid request
       whRes,
     });
   }

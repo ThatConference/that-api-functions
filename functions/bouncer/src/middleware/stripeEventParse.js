@@ -26,7 +26,7 @@ export default function stripeEventParse(req, res, next) {
     event = stripe.webhooks.constructEvent(
       req.rawBody,
       sig,
-      envConfig.stripe.endpointSecret,
+      envConfig.stripe.signingSecret,
     );
     dlog(
       'signature verification succeeded. Event Type (%s), id: %s',
