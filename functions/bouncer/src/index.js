@@ -87,5 +87,5 @@ export const handler = api
   .post('/thatmanualorder', manualMw.manualEventQueue)
   .post('/thatmanualorder', manualMw.manualEventEnd)
 
-  .use(Sentry.Handlers.errorHandler())
+  // .use(Sentry.Handlers.errorHandler())
   .use(errorHandler);

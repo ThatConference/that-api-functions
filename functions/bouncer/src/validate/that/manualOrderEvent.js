@@ -30,6 +30,7 @@ const manualOrderSchema = yup.object().shape({
     status: yup.string().strict().min(3).uppercase(),
   }),
   type: yup.string().required().min(5),
+  livemode: yup.boolean().required(),
 });
 
 export default manualOrder =>

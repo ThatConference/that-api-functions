@@ -7,14 +7,6 @@ const requiredConfig = () => ({
     apiKey: process.env.STRIPE_API_KEY || configMissing('STRIPE_API_KEY'),
     apiSecretKey:
       process.env.STRIPE_PRIVATE_KEY || configMissing('STRIPE_PRIVATE_KEY'),
-    endpointSecret:
-      process.env.STRIPE_ENDPOINT_SECRET ||
-      configMissing('STRIPE_ENDPOINT_SECRET'),
-  },
-  gcp: {
-    stripeEventTopic:
-      process.env.MESSAGE_TOPIC_STRIPE_EVENTS ||
-      configMissing('MESSAGE_TOPIC_STRIPE_EVENTS'),
   },
   that: {
     systemUpdatedBy:
@@ -22,6 +14,11 @@ const requiredConfig = () => ({
       configMissing('THAT_SYSTEM_UPDATED_BY'),
     slackWebhookUrl: process.env.SLACK_WEBHOOK_URL,
     slackChannelOrder: process.env.SLACK_CHANNEL_ORDER || '#orders',
+  },
+  postmark: {
+    apiToken:
+      process.env.POSTMARK_API_TOKEN || configMissing('POSTMARK_API_TOKEN'),
+    emailFrom: process.env.POSTMARK_EMAIL_FROM || 'hello@thatconference.com',
   },
 });
 

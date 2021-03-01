@@ -3,6 +3,7 @@ import * as yup from 'yup';
 
 const checkoutSchema = yup.object().shape({
   type: yup.string().matches(/checkout\.session\.completed/),
+  livemode: yup.boolean().required(),
   id: yup.string().required(),
   created: yup
     .string()

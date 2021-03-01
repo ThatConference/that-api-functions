@@ -116,7 +116,7 @@ To listen for specific events we're interested in:
 stripe listen --events checkout.session.completed,customer.created --forward-to localhost:9090/stripe
 ```
 
-Once executed and running the console will output a webhook signing secret. This secret rarely changes though ensure it is the same secret you have set in the `.env` under key `STRIPE_ENDPOINT_SECRET=`
+Once executed and running the console will output a webhook signing secret. This secret rarely changes though ensure it is the same secret you have set in the `.env` under key `STRIPE_SIGNING_SECRET=`
 
 ---
 
