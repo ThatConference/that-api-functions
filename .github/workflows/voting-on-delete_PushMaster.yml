@@ -15,10 +15,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Use node.js 10.x
+      - name: Use node.js 12.x
         uses: actions/setup-node@v1
         with:
-          node-version: 10.x
+          node-version: 12.x
       - name: npm ci,  run validate
         run: |
           cd functions/voting-on-delete
@@ -38,10 +38,11 @@ jobs:
           name: tc-api
           path: functions/voting-on-delete/__build__
       - name: Slack Notification
-        uses: 8398a7/action-slack@v2
+        uses: 8398a7/action-slack@v3
         with:
+          fields: repo,message,commit,author,eventName,ref,workflow,job,took
           status: ${{ job.status }}
-          author: Push Master CI
+          author_name: Push Master CI
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_DEV_NOTIFICATIONS }}
@@ -59,21 +60,18 @@ jobs:
       - name: Setup GCP Deploy Function - voting-on-delete
         uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
         with:
-          version: "274.0.1"
+          version: '305.0.0'
           service_account_key: ${{ secrets.GCLOUD_AUTH }}
-      - name: Load gcloud beta bits
-        run: gcloud components install beta
-        env:
-          CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
       - name: write .env file
         run: |
-          gcloud beta secrets versions access latest --secret prod-voting-on-delete-env > tc-api/.env
+          gcloud secrets versions access latest --secret prod-voting-on-delete-env > tc-api/.env
           C_CNT=$(cat tc-api/ccnt.txt)
           rm -f tc-api/ccnt.txt
           SENTRYREL=SENTRY_VERSION=voting-on-delete$(cat tc-api/package.json | jq '.version' | tr -d '"')-$C_CNT.$(echo $GITHUB_SHA | cut -c1-7)
           echo "" >> tc-api/.env
           echo $SENTRYREL >> tc-api/.env
-          echo "::set-env name=SENTRYREL::$SENTRYREL"
+          echo "SENTRYREL=$SENTRYREL" >> $GITHUB_ENV
         env:
           CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
       - name: Checks and verifications
@@ -88,14 +86,15 @@ jobs:
       - name: Run GCP Deploy Function - voting-on-delete
         run: |
           cd tc-api
-          gcloud functions deploy voting-on-delete --runtime nodejs10 --trigger-event providers/cloud.firestore/eventTypes/document.delete --trigger-resource "projects/all-that/databases/(default)/documents/votes/{vote}" --entry-point handler
+          gcloud functions deploy voting-on-delete --runtime nodejs12 --trigger-event providers/cloud.firestore/eventTypes/document.delete --trigger-resource "projects/all-that/databases/(default)/documents/votes/{vote}" --entry-point handler
         env:
           CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
       - name: Slack Notification
-        uses: 8398a7/action-slack@v2
+        uses: 8398a7/action-slack@v3
         with:
+          fields: repo,message,commit,author,eventName,ref,workflow,job,took
           status: ${{ job.status }}
-          author: Push Master CI
+          author_name: Push Master CI
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_DEV_NOTIFICATIONS }}
