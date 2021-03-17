@@ -70,12 +70,12 @@
   "husky": {
     "hooks": {
       "pre-push": "npm run validate"
-    },
-    "jest": {
-      "testEnvironment": "node",
-      "verbose": true,
-      "rootDir": "./src",
-      "coverageDirectory": "../__testCoverage__"
     }
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "verbose": true,
+    "rootDir": "./src",
+    "coverageDirectory": "../__testCoverage__"
   }
 }
