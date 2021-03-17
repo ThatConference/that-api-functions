@@ -1,15 +1,18 @@
+import constants from './constants';
+
 function configMissing(configKey) {
   throw new Error(`missing required .env setting for ${configKey}`);
 }
 
 const requiredConfig = () => ({
-  // that: {
-  //   systemUpdatedBy:
-  //     process.env.THAT_SYSTEM_UPDATED_BY ||
-  //     configMissing('THAT_SYSTEM_UPDATED_BY'),
-  //   slackWebhookUrl: process.env.SLACK_WEBHOOK_URL,
-  //   slackChannelOrder: process.env.SLACK_CHANNEL_ORDER || '#orders',
-  // },
+  that: {
+    messagingReadQueueRate:
+      process.env.MESSAGING.READ_QUEUE_RATE ||
+      constants.THAT.MESSAGING.MESSAGING.READ_QUEUE_RATE ||
+      configMissing('MESSAGING.READ_QUEUE_RATE'),
+    slackWebhookUrl: process.env.SLACK_WEBHOOK_URL,
+    slackChannelOrder: process.env.SLACK_CHANNEL_ORDER || '#orders',
+  },
   postmark: {
     apiToken:
       process.env.POSTMARK_API_TOKEN || configMissing('POSTMARK_API_TOKEN'),

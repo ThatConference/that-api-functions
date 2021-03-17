@@ -2,7 +2,7 @@
 import debug from 'debug';
 import * as Sentry from '@sentry/node';
 import msgQueueFunc from '../dataSources/cloudFirestore/messageQueue';
-import constants from '../constants';
+import envConfig from '../envConfig';
 import sendTemplateBatch from '../lib/postmark/sendTemplateBatch';
 
 const dlog = debug('that:function:newman:queueReaderMw');
@@ -19,7 +19,7 @@ export default async function queueReader(req, res, next) {
   const firestore = req.app.get('firestore');
   const msgQueueStore = msgQueueFunc(firestore);
 
-  const batchSize = constants.THAT.MESSAGING.READ_QUEUE_RATE;
+  const batchSize = envConfig.that.messagingReadQueueRate;
   const sendQueue = await msgQueueStore.readQueue(batchSize);
   if (sendQueue.length > 0) {
     dlog('%d messages grabbed from queue', sendQueue.length);
