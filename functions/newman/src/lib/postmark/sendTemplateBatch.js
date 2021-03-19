@@ -42,9 +42,12 @@ export default async msgQueue => {
       TemplateAlias: msg.postmarkAlias,
       TemplateModel: msg.templateModel,
       MessageStream,
+      TrackOpens: true,
+      TrackLinks: 'None',
       Tag: msg.thatMessageType || '',
       Metadata: {
         msgQueueId: msg.id,
+        messageQueuedOnLogId: msg.messageQueuedOnLogId || '',
       },
     });
     sentMessageIds.push(msg.id);

@@ -7,9 +7,9 @@ function configMissing(configKey) {
 const requiredConfig = () => ({
   that: {
     messagingReadQueueRate:
-      process.env.MESSAGING.READ_QUEUE_RATE ||
+      process.env.MESSAGING_READ_QUEUE_RATE ||
       constants.THAT.MESSAGING.MESSAGING.READ_QUEUE_RATE ||
-      configMissing('MESSAGING.READ_QUEUE_RATE'),
+      configMissing('MESSAGING_READ_QUEUE_RATE'),
     slackWebhookUrl: process.env.SLACK_WEBHOOK_URL,
     slackChannelOrder: process.env.SLACK_CHANNEL_ORDER || '#orders',
   },

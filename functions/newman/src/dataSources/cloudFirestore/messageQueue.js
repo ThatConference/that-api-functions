@@ -9,7 +9,7 @@ const forgeFields = ['createdAt', 'sendOnDate', 'queuedAt'];
 const queueDateForge = entityDateForge({ fields: forgeFields });
 
 const collectionname = 'messageQueue';
-const logCollectionname = 'messageLog';
+const logCollectionname = 'messageQueueReaderLog';
 
 const messageQueue = dbInstance => {
   dlog('messageQueue instance created');
@@ -18,6 +18,7 @@ const messageQueue = dbInstance => {
   const msgLogCollection = dbInstance.collection(logCollectionname);
 
   function readQueue(batchSize = 100) {
+    dlog('readingQueue of size %d', batchSize);
     return msgQueueCollection
       .where('isQueuedToSend', '==', false)
       .where('isSent', '==', false)

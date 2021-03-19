@@ -19,10 +19,10 @@ export default async function queueReader(req, res, next) {
   const firestore = req.app.get('firestore');
   const msgQueueStore = msgQueueFunc(firestore);
 
-  const batchSize = envConfig.that.messagingReadQueueRate;
+  const batchSize = parseInt(envConfig.that.messagingReadQueueRate, 10);
   const sendQueue = await msgQueueStore.readQueue(batchSize);
+  dlog('%d messages grabbed from queue', sendQueue.length);
   if (sendQueue.length > 0) {
-    dlog('%d messages grabbed from queue', sendQueue.length);
     const queuedAt = new Date();
     let msgResult;
     try {
@@ -50,7 +50,6 @@ export default async function queueReader(req, res, next) {
       totalInQueue: sendQueue.length,
       batchSize,
       queuedAt,
-      queueReaderTime: new Date().getTime() - queueReaderStart,
     };
 
     try {
@@ -67,8 +66,10 @@ export default async function queueReader(req, res, next) {
       // it does go to Sentry.
     }
 
+    sendStats.queueReaderTime = new Date().getTime() - queueReaderStart;
+
     return res.json(sendStats);
-  } // sendQueue.length > 0
+  }
 
   return res.json({
     sent: 0,
