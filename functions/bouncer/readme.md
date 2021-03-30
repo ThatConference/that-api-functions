@@ -6,6 +6,8 @@ An http-triggered function
 
 ## Guides
 
+Live on March 30, 2021
+
 ### PubSub local testing
 
 See project **dev-that** in this `that-api-functions` repo for gcloud cli and bootstrapping for local emulators.
