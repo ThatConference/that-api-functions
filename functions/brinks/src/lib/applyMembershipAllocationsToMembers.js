@@ -2,7 +2,9 @@
 // they are allocated to.
 import debug from 'debug';
 import { dataSources } from '@thatconference/api';
+import dcStore from '../dataSources/cloudFirestore/discountCode';
 import getStripeSubscription from './stripe/getStripeSubscription';
+import createPromotionCode from './stripe/createPromotionCode';
 import envConfig from '../envConfig';
 import constants from '../constants';
 
@@ -32,6 +34,31 @@ export default async function applyMembershipAllocationsToMembers({
     order.stripeSubscriptionId,
   );
 
+  const camperDiscountCode = await createPromotionCode({
+    couponId: constants.STRIPE.COUPON.MEMBERSHIP_CAMPER,
+    customerId: stripeSubscription.customer,
+    expiresAt: stripeSubscription.current_period_end * 1000,
+    maxRedemptions: 1,
+    metadata: {
+      memberId: order.member,
+    },
+  });
+  const membershipCamperDiscountCode = {
+    code: camperDiscountCode,
+    title: 'Membership Camper Discount',
+    type: constants.THAT.DISCOUNT_CODE.TYPE.TICKET,
+    expiresAt: new Date(stripeSubscription.current_period_end * 1000),
+  };
+  const storeCode = constants.THAT.PROMO_CODE.MEMBERSHIP_STORE_DISCOUNT;
+  const msExpire = 86400000 * storeCode.EXPIRE_IN_DAYS;
+  const expiresAt = new Date(new Date().getTime() + msExpire);
+  const storeDiscountCode = {
+    code: storeCode.CODE,
+    title: storeCode.TITLE,
+    type: constants.THAT.DISCOUNT_CODE.TYPE.STORE,
+    expiresAt,
+  };
+
   const baseMemberUpdate = {
     stripeSubscriptionId: stripeSubscription.id,
     isMember:
@@ -55,7 +82,22 @@ export default async function applyMembershipAllocationsToMembers({
     };
   });
 
-  // write updatest to member(s)
+  // write discountCodes for members
+  const dcFuncs = memberUpdates.map(mu => {
+    const [key] = Object.keys(mu);
+    return dcStore(firestore).batchCreate([
+      {
+        ...membershipCamperDiscountCode,
+        memberId: key,
+      },
+      {
+        ...storeDiscountCode,
+        memberId: key,
+      },
+    ]);
+  });
+
+  // write updates to member(s)
   const updateFuncs = memberUpdates.map(mu => {
     const [key] = Object.keys(mu);
     return memberStore(firestore).update({
@@ -65,5 +107,5 @@ export default async function applyMembershipAllocationsToMembers({
   });
   dlog('update functions:: %o', updateFuncs);
 
-  return Promise.all(updateFuncs);
+  return Promise.all([...updateFuncs, ...dcFuncs]);
 }

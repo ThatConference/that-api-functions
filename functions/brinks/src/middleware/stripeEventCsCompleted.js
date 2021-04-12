@@ -1,6 +1,6 @@
 import debug from 'debug';
 import * as Sentry from '@sentry/node';
-import validateCheckoutSession from '../lib/stripe/validateCheckoutSession';
+import validateCheckoutSession from '../lib/that/validateCheckoutSession';
 import createOrderAndAllocations from '../lib/createOrderAndAllocations';
 
 const dlog = debug('that:api:brinks:stripeEventCsCompletedMw');

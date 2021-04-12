@@ -16,8 +16,8 @@ const app = express();
 // eslint-disable-next-line no-unused-vars
 function failure(err, req, res, next) {
   dlog('middleware catcall error %O', err);
-  Sentry.captureException(err);
-  res.status(500).json({ error: err.message });
+  const referenceId = Sentry.captureException(err);
+  res.status(500).json({ referenceId });
 }
 
 exports.hooks = app

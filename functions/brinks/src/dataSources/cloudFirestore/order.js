@@ -1,12 +1,12 @@
 import debug from 'debug';
 
-const dlog = debug('that:api:garage:datasources:firebase:order');
+const dlog = debug('that:api:brinks:datasources:firebase:order');
 
 const collectionName = 'orders';
 const collectionAllocationName = 'orderAllocations';
 
 const order = dbInstance => {
-  dlog('instance created');
+  dlog('order instance created');
 
   const orderCollection = dbInstance.collection(collectionName);
   const allocationCollection = dbInstance.collection(collectionAllocationName);

@@ -26,6 +26,8 @@ async function usePayload(payload, res, next) {
   // end state goal is contact is added to AC automation "User Sign-up No Profile"
   // see automation for trigger details
 
+  Sentry.setContext({ payload });
+
   if (!payload.email) {
     dlog('stopping. missing email in payload');
     res.writeHead(400, { 'Content-type': 'text/plain' });
@@ -44,6 +46,7 @@ async function usePayload(payload, res, next) {
     ]);
   } catch (e) {
     next(e);
+    return;
   }
   dlog('contactResult %o', contactResult);
   dlog('tagResult %o', tagResult);
@@ -52,6 +55,7 @@ async function usePayload(payload, res, next) {
     dlog(`tag, ${SIGNUP_TAG}, not found at AC`);
     Sentry.captureMessage(`Failed to find tag at AC ${SIGNUP_TAG}`, 'error');
     next(new Error('Unable to locate tag', { tag: SIGNUP_TAG }));
+    return;
   }
   const tagId = tagResult.id;
   if (!listResult || (listResult && !listResult.id)) {
@@ -61,6 +65,7 @@ async function usePayload(payload, res, next) {
       'error',
     );
     next(new Error('Unable to locate list', { list: THATUS_SYSTEMS_MSG_LIST }));
+    return;
   }
   const listId = listResult.id;
   let contactId = '';
@@ -83,11 +88,13 @@ async function usePayload(payload, res, next) {
       newContact = await ac.createContact(contact);
     } catch (e) {
       next(e);
+      return;
     }
     if (!newContact) {
       dlog(`failed creating contact in AC %o`, contact);
       Sentry.captureMessage('failed creating contact in AC', 'error');
       next(new Error('Failed creating new contact in AC', { contact }));
+      return;
     }
     contactId = newContact.id;
   } else {
@@ -112,6 +119,7 @@ async function usePayload(payload, res, next) {
     taggedContact = await ac.addTagToContact(contactId, tagId);
   } catch (e) {
     next(e);
+    return;
   }
   if (!taggedContact) {
     dlog(`Tag didn't set, sending non-200`);
@@ -124,6 +132,7 @@ async function usePayload(payload, res, next) {
     listContact = await ac.setContactToList(contactId, listId);
   } catch (e) {
     next(e);
+    return;
   }
   if (!listContact) {
     dlog(`Failure adding contact to list, sending non-200`);
