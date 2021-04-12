@@ -22,7 +22,6 @@ Terminal Window TLDR; list:
 - bouncer
 - brinks
 - Stripe listener
-- Stripe trigger
 - Firestore emulator (future)
 
 #### Terminal Windows Details
@@ -88,14 +87,12 @@ Runs bouncer with nodemon. Default listening port is `9090`
 
 Terminal window: **Brinks Project**
 
-Brinks is our order taker which pulls messages from PubSub and does the needful.
+Brinks is our order taker which responds to http requests from PubSub and does the needful.
 
-There is a wrapper fix for brinks for a long-standing bug in pub/sub emulator. Details can be found in the brinks/src/pubsubfix/readme.md.
-
-To run brinks with the fix as well:
+To run brinks:
 
 ```sh
-npm run start:watch:fix
+npm run start:watch
 ```
 
 Runs brinks with nodemon. Default listening port is `8080`
