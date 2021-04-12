@@ -26,6 +26,8 @@ async function usePayload(payload, res, next) {
   // end state goal is contact is added to AC automation "User Sign-up No Profile"
   // see automation for trigger details
 
+  Sentry.setContext({ payload });
+
   if (!payload.email) {
     dlog('stopping. missing email in payload');
     res.writeHead(400, { 'Content-type': 'text/plain' });
