@@ -4,7 +4,6 @@ const constants = {
   ...apiConstants,
   POSTMARK: {
     TEMPLATES: {
-      PURCHASE_TICKET: 'ticket-purchase-thank-you',
       PURCHASE_MEMBERSHIP: 'membership-purchase-thank-you',
       ONLINE_IN_X_DAYS: '',
     },

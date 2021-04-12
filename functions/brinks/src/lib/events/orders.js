@@ -66,6 +66,18 @@ export default function orderEvents() {
       return `Skipped, event ${ticket.event} not found`;
     }
 
+    if (!event.emailTemplateTicketPurchased) {
+      Sentry.configureScope(scope => {
+        scope.setTag('ticketEventId', ticket.event);
+        scope.setContext({ ticket });
+        scope.setLevel(Sentry.Severity.Warning);
+        Sentry.captureMessage(
+          `Event ${event.name} (${event.id}), doesn't have an ticket thank you email template set`,
+        );
+      });
+      return undefined;
+    }
+
     const templateModel = {
       member: {
         firstName: member.firstName,
@@ -82,7 +94,7 @@ export default function orderEvents() {
 
     return sendTransactionEmail({
       mailTo: member.email,
-      templateAlias: constants.POSTMARK.TEMPLATES.PURCHASE_TICKET,
+      templateAlias: event.emailTemplateTicketPurchased,
       templateModel,
     })
       .then(r => dlog('sendTicketThankYou result: %o', r))
