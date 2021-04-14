@@ -44,7 +44,8 @@ export default async function applyMembershipAllocationsToMembers({
     },
   });
   const membershipCamperDiscountCode = {
-    code: camperDiscountCode,
+    code: camperDiscountCode.code,
+    promoCodeId: camperDiscountCode.promoCodeId,
     title: 'Membership Camper Discount',
     type: constants.THAT.DISCOUNT_CODE.TYPE.TICKET,
     expiresAt: new Date(stripeSubscription.current_period_end * 1000),

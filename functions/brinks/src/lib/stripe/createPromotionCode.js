@@ -24,5 +24,7 @@ export default function createPromotionCode({
   };
 
   // Returns new promotion code value (string) just created)
-  return stripe.promotionCodes.create(payload).then(r => r.code);
+  return stripe.promotionCodes
+    .create(payload)
+    .then(r => ({ code: r.code, promoCodeId: r.id }));
 }

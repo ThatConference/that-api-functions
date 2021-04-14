@@ -18,7 +18,7 @@ constants.THAT.DISCOUNT_CODE = {
 // Hey you found the codes, use hAckEr12 for 12% off instead!!!
 constants.THAT.PROMO_CODE = {
   MEMBERSHIP_STORE_DISCOUNT: {
-    TITLE: 'Membership THAT Store discount 10%',
+    TITLE: 'Membership THAT Store Discount 10%',
     CODE: 'THATMembership2021',
     EXPIRE_IN_DAYS: 1825,
   },
