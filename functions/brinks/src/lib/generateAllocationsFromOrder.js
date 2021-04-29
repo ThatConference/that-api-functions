@@ -26,6 +26,7 @@ export default function generateAllocationsFromOrder({
         isAllocated: !isBulkPurchase,
         allocatedTo: isBulkPurchase ? null : order.member,
         hasCheckedIn: false,
+        hasCompletedQuestions: false,
         createdAt: orderCreatedAt,
         lastUpdatedAt: orderCreatedAt,
         lastUpdatedBy: order.createdBy,
