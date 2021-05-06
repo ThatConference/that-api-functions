@@ -27,7 +27,7 @@ export default async function stripeEventCustCreated(req, res, next) {
   return compareMemberToCustomer({ memberId, stripeCustomerId, firestore })
     .then(result => {
       if (!result) {
-        thatBrinks.errorMsg(`New Stipe customer validation failed`);
+        thatBrinks.errorMsg = `New Stipe customer validation failed`;
         thatBrinks.sentryLevel = 'error';
         console.log(thatBrinks.errorMsg);
         Sentry.setTag('stripe', 'invalidCustomer');
