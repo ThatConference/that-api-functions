@@ -38,6 +38,7 @@ export default function createOrderAndAllocations({
     stripeEventId: thatBrinks.stripeEventId, // The id used to verify if processed already (thatEvent.id)
     stripePaymentIntentReceiptUrl: null,
     lineItems: newLineItems,
+    status: orderData.status ? orderData.status : 'COMPLETE',
   };
 
   const orderAllocations = generateAllocationsFromOrder({
