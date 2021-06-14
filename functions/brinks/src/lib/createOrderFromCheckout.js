@@ -63,6 +63,7 @@ export default function createOrderFromCheckout({ checkoutSession, products }) {
     lastUpdatedAt: now,
     createdBy: memberId,
     lastUpdatedBy: memberId,
+    status: 'COMPLETE',
   };
 
   return newOrder;
