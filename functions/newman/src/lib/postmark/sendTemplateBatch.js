@@ -36,6 +36,12 @@ export default async msgQueue => {
       return;
     }
     dlog('setting up email for %s', msg.emailTo);
+    const msgQueueId = Buffer.from(msg.id, 'base64')
+      .toString('utf-8')
+      .substring(0, 79);
+    const messageQueuedOnLogId = msg.messageQueuedOnLogId
+      ? msg.messageQueuedOnLogId.substring(0, 79)
+      : '';
     templatedMessages.push({
       From,
       To: msg.emailTo,
@@ -46,8 +52,8 @@ export default async msgQueue => {
       TrackLinks: 'None',
       Tag: msg.thatMessageType || '',
       Metadata: {
-        msgQueueId: msg.id,
-        messageQueuedOnLogId: msg.messageQueuedOnLogId || '',
+        msgQueueId,
+        messageQueuedOnLogId,
       },
     });
     sentMessageIds.push(msg.id);

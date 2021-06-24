@@ -10,6 +10,7 @@ const queueDateForge = entityDateForge({ fields: forgeFields });
 
 const collectionname = 'messageQueue';
 const logCollectionname = 'messageQueueReaderLog';
+const logErrorsSubCollectionName = 'errors';
 
 const messageQueue = dbInstance => {
   dlog('messageQueue instance created');
@@ -75,9 +76,23 @@ const messageQueue = dbInstance => {
     return batch.commit();
   }
 
-  function newLogEntry(logData) {
-    dlog('newLogEntry called');
-    return msgLogCollection.add(logData).then(docRef => docRef.id);
+  async function newLogEntry({ logData, postmarkSendErrors = [] }) {
+    dlog('newLogEntry called:: %o', logData);
+    const logDocRef = await msgLogCollection.add(logData);
+
+    if (Array.isArray(postmarkSendErrors) && postmarkSendErrors.length > 0) {
+      const batch = dbInstance.batch();
+      postmarkSendErrors.forEach(b => {
+        const docRef = msgLogCollection
+          .doc(logDocRef.id)
+          .collection(logErrorsSubCollectionName)
+          .doc();
+        batch.create(docRef, b);
+      });
+      await batch.commit();
+    }
+
+    return logDocRef.id;
   }
 
   return { readQueue, updateOne, updateMany, updateBatch, newLogEntry };

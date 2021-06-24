@@ -42,18 +42,23 @@ export default async function queueReader(req, res, next) {
     }
 
     dlog('postmark result\n %o', msgResult.postmarkResponse);
+    const postmarkSendErrors = msgResult.postmarkResponse.filter(
+      p => p.ErrorCode !== 0,
+    );
     const sendStats = {
       sent: msgResult.sentMessageIds.length,
       inTemplateError: msgResult.inErrorMessages.length,
-      inSendingError: msgResult.postmarkResponse.filter(p => p.ErrorCode !== 0)
-        .length,
+      inSendingError: postmarkSendErrors.length,
       totalInQueue: sendQueue.length,
       batchSize,
       queuedAt,
     };
 
     try {
-      const logid = await msgQueueStore.newLogEntry(sendStats);
+      const logid = await msgQueueStore.newLogEntry({
+        logData: sendStats,
+        postmarkSendErrors,
+      });
       console.log('log id:', logid);
     } catch (err) {
       Sentry.addBreadcrumb({
