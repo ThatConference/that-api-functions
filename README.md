@@ -34,10 +34,10 @@ A collection of functions used for THAT
 
 ## [bouncer](functions/bouncer)
 
-![bouncer Pull Request](https://github.com/ThatConference/that-api-functions/workflows/bouncer%20Pull%20Request/badge.svg)
-![bouncer Push Master](https://github.com/ThatConference/that-api-functions/workflows/bouncer%%20Push%20Master/badge.svg)
+![bouncer Pull Request](https://github.com/ThatConference/that-api-functions/workflows/bouncer%20Pull%20Request/badge.svg)  
+![bouncer Push Master](https://github.com/ThatConference/that-api-functions/workflows/bouncer%20Push%20Master/badge.svg)
 
 ## [brinks](functions/brinks)
 
-![brinks Pull Request](https://github.com/ThatConference/that-api-functions/workflows/brinks%20Pull%20Request/badge.svg)
-![brinks Push Master](https://github.com/ThatConference/that-api-functions/workflows/brinks%%20Push%20Master/badge.svg)
+![brinks Pull Request](https://github.com/ThatConference/that-api-functions/workflows/brinks%20Pull%20Request/badge.svg)  
+![brinks Push Master](https://github.com/ThatConference/that-api-functions/workflows/brinks%20Push%20Master/badge.svg)
