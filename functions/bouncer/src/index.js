@@ -27,6 +27,7 @@ let version;
 (async () => {
   let p;
   try {
+    // eslint-disable-next-line import/no-unresolved
     p = await import('./package.json');
   } catch {
     p = await import('../package.json');
