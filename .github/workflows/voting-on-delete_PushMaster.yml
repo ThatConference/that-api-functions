@@ -57,10 +57,10 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: tc-api
-      - name: Setup GCP Deploy Function - voting-on-delete
-        uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+      - name: Setup gcloud Actions
+        uses: google-github-actions/setup-gcloud@master
         with:
-          version: '305.0.0'
+          version: '356.0.0'
           service_account_key: ${{ secrets.GCLOUD_AUTH }}
           project_id: ${{ secrets.GCP_PROJECT_ID }}
       - name: write .env file
@@ -83,7 +83,7 @@ jobs:
           echo "**********"
           echo $PWD
           ls -lasiR
-      - name: Run GCP Deploy Function - voting-on-delete
+      - name: Run gcloud Deploy Function - voting-on-delete
         run: |
           cd tc-api
           gcloud functions deploy voting-on-delete --runtime nodejs12 --trigger-event providers/cloud.firestore/eventTypes/document.delete --trigger-resource "projects/all-that/databases/(default)/documents/votes/{vote}" --entry-point handler

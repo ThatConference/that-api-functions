@@ -59,10 +59,10 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: tc-api
-      - name: Setup GCP Actions
+      - name: Setup gcloud Actions
         uses: google-github-actions/setup-gcloud@master
         with:
-          version: "305.0.0"
+          version: '356.0.0'
           service_account_key: ${{ secrets.GCLOUD_AUTH }}
           project_id: ${{ secrets.GCP_PROJECT_ID }}
       - name: write .env file
