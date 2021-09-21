@@ -45,10 +45,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@master
-      - name: Setup GCP Deploy Function - webhooks
+      - name: Setup gcloud Actions
         uses: google-github-actions/setup-gcloud@master
         with:
-          version: "305.0.0"
+          version: '356.0.0'
           service_account_key: ${{ secrets.GCLOUD_AUTH }}
           project_id: ${{ secrets.GCP_PROJECT_ID }}
       - name: write .env file

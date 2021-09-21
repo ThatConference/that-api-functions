@@ -8,6 +8,7 @@ let version;
 (async () => {
   let p;
   try {
+    // eslint-disable-next-line import/no-unresolved
     p = await import('./package.json');
   } catch {
     p = await import('../package.json');
@@ -32,6 +33,7 @@ Sentry.configureScope(scope => {
   scope.setTag('thatApp', 'voting-on-create');
 });
 
+// eslint-disable-next-line import/prefer-default-export
 export const handler = (event, context) => {
   /*
     ( vote created - not updated )

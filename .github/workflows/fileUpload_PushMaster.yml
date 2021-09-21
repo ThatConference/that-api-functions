@@ -59,10 +59,10 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: tc-api
-      - name: Setup GCP Actions
+      - name: Setup gcloud Actions
         uses: google-github-actions/setup-gcloud@master
         with:
-          version: "305.0.0"
+          version: '356.0.0'
           service_account_key: ${{ secrets.GCLOUD_AUTH }}
           project_id: ${{ secrets.GCP_PROJECT_ID }}
       - name: write .env file
@@ -87,7 +87,7 @@ jobs:
           echo $PWD
           ls -lasiR
       - name: Run GCP Deploy Function - imageUpload
-        run: gcloud functions deploy fileUploadGateway --allow-unauthenticated --runtime nodejs10 --trigger-http --source $PWD/tc-api --entry-point handler --memory 512MB
+        run: gcloud functions deploy fileUploadGateway --allow-unauthenticated --runtime nodejs12 --trigger-http --source $PWD/tc-api --entry-point handler --memory 512MB
         env:
           CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
       - name: Slack Notification
