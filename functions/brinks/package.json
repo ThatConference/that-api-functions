@@ -62,10 +62,10 @@
     "debug": "^4.3.2",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
-    "node-fetch": "^2.6.4",
+    "node-fetch": "^2.6.5",
     "postmark": "^2.7.8",
     "response-time": "^2.3.2",
-    "stripe": "^8.176.0"
+    "stripe": "^8.178.0"
   },
   "husky": {
     "hooks": {
