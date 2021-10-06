@@ -22,7 +22,7 @@ const invoiceSchema = yup.object().shape({
         .string()
         .required()
         .matches(/invoice/),
-      amount_due: yup.number().min(100),
+      amount_due: yup.number().required().strict({ isStrict: true }),
       // subscription section checks
       subscription: yup.object({
         id: yup.string().required(),
