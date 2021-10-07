@@ -32,11 +32,14 @@ const invoiceSchema = yup.object().shape({
           .matches(/subscription/),
         billing_cycle_anchor: epochTest,
         current_period_end: epochTest,
+        current_period_start: epochTest,
         cancel_at_period_end: yup
           .boolean()
           .required()
           .strict({ isStrict: true }),
         customer: yup.string().required(),
+        status: yup.string().required(),
+        start_date: epochTest,
       }),
     }),
   }),

@@ -21,8 +21,11 @@ const custSubUpdatedSchema = yup.object().shape({
         .required()
         .matches(/subscription/),
       current_period_end: epochTest,
+      current_period_start: epochTest,
       customer: yup.string().required(),
       cancel_at_period_end: yup.boolean().required().strict({ isStrict: true }),
+      status: yup.string().required(),
+      start_date: epochTest,
     }),
   }),
 });
