@@ -14,13 +14,14 @@ import {
   errorHandler,
 } from './middleware';
 import orderEventEmitter from './lib/events/orders';
+import constants from './constants';
 
 const dlog = debug('that:api:brinks');
 const api = express();
 const firestore = new Firestore();
 
-api.set('firestore', firestore);
-api.set('orderEvents', orderEventEmitter());
+api.set(constants.BRINKS.FIRESTORE, firestore);
+api.set(constants.BRINKS.FIRESTORE, orderEventEmitter());
 
 let version;
 (async () => {

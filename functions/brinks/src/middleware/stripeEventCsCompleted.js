@@ -2,14 +2,15 @@ import debug from 'debug';
 import * as Sentry from '@sentry/node';
 import validateCheckoutSession from '../lib/that/validateCheckoutSession';
 import createOrderAndAllocations from '../lib/createOrderAndAllocations';
+import constants from '../constants';
 
 const dlog = debug('that:api:brinks:stripeEventCsCompletedMw');
 
 export default async function stripeEventCsCompleted(req, res, next) {
   dlog('stripeEventCsCompleted middleware called');
 
-  const orderEvents = req.app.get('orderEvents');
-  const firestore = req.app.get('firestore');
+  const orderEvents = req.app.get(constants.BRINKS.ORDER_EVENTS);
+  const firestore = req.app.get(constants.BRINKS.FIRESTORE);
   const { thatBrinks, stripeEvent } = req;
   thatBrinks.stages.push('stripeEventCsCompleted');
 

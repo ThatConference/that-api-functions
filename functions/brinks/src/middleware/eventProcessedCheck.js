@@ -2,12 +2,13 @@
 import debug from 'debug';
 import * as Sentry from '@sentry/node';
 import isEventProcessed from '../lib/isEventProcessed';
+import constants from '../constants';
 
 const dlog = debug('that:api:brinks:eventProcessedCheckMw');
 
 export default function eventProccessedCheck(req, res, next) {
   dlog('eventProccessedCheck called');
-  const firestore = req.app.get('firestore');
+  const firestore = req.app.get(constants.BRINKS.FIRESTORE);
   const { thatBrinks, stripeEvent } = req;
   thatBrinks.stages.push('eventProcessCheck');
 
