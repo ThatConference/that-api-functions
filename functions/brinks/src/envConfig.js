@@ -14,6 +14,8 @@ const requiredConfig = () => ({
       configMissing('THAT_SYSTEM_UPDATED_BY'),
     slackWebhookUrl: process.env.SLACK_WEBHOOK_URL,
     slackChannelOrder: process.env.SLACK_CHANNEL_ORDER || '#orders',
+    isTestSlackNotifications:
+      JSON.parse(process.env.TEST_SLACK_NOTIFICATIONS) || false,
   },
   postmark: {
     apiToken:

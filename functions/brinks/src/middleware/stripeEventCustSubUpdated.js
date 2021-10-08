@@ -21,7 +21,9 @@ export default function stripeEventCustSubUpdated(req, res, next) {
   const subData = stripeEvent.data.object;
 
   // check if cancel_at_period_end has changed.
-  if (subData?.previous_attributes?.cancel_at_period_end === undefined) {
+  if (
+    stripeEvent.data?.previous_attributes?.cancel_at_period_end === undefined
+  ) {
     dlog(`event does not change cancel_at_period_end, skipping event.`);
     thatBrinks.isProcessed = true;
     return next();
@@ -40,15 +42,14 @@ export default function stripeEventCustSubUpdated(req, res, next) {
   const cancelAtPeriodEnd = subData.cancel_at_period_end;
   const currentPeriodEnd = subData.current_period_end;
   if (
-    !stripeCustId ||
-    !subscriptionId ||
-    !cancelAtPeriodEnd ||
-    !currentPeriodEnd
+    !stripeCustId === undefined ||
+    !subscriptionId === undefined ||
+    !cancelAtPeriodEnd === undefined ||
+    !currentPeriodEnd === undefined
   ) {
     // should never happen fields validated in bouncer
     thatBrinks.errorMsg = `missing data from customer.subscription.updated stripe event object`;
     thatBrinks.sentryLevel = 'error';
-    console.log(thatBrinks.errorMsg);
     Sentry.setTag('stripe', 'invalid_event_data');
     Sentry.setContext('customer.subscription.updated_data', {
       stripeCustId,
@@ -73,7 +74,6 @@ export default function stripeEventCustSubUpdated(req, res, next) {
           result.reason ||
           'Stripe Customer id not found or subscription id mismatch';
         thatBrinks.sentryLevel = Sentry.Severity.Warning;
-        console.log(thatBrinks.errorMsg);
         Sentry.setContext('Subscription Info', {
           stripeCustId,
           subscriptionId,

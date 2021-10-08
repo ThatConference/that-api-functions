@@ -3,7 +3,7 @@ import * as Sentry from '@sentry/node';
 import { dataSources } from '@thatconference/api';
 import envConfig from '../../envConfig';
 
-const dlog = debug('that:api:brinks:updateSubFromInvoicePaid');
+const dlog = debug('that:api:brinks:updateSubFromStripeEvent');
 const memberStore = dataSources.cloudFirestore.member;
 
 export default function updateSubFromStripeEvent({
@@ -21,7 +21,8 @@ export default function updateSubFromStripeEvent({
   return memberStore(firestore)
     .findMemberByStripeCustId(stripeCustId)
     .then(members => {
-      if (members.count > 1) {
+      dlog('member count found: %d', members.length);
+      if (members.length > 1) {
         const errMsg = `critical: multiple members returned from stripe customer id: ${stripeCustId}`;
         dlog('%s %d', errMsg, members.length);
         Sentry.setContext('duplicateStripeCustIds', {

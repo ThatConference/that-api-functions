@@ -184,7 +184,7 @@ export default function orderEvents() {
   orderEventEmitter.on('orderCreated', sendTicketThankYou);
   orderEventEmitter.on('orderCreated', sendMembershipThankYou);
   orderEventEmitter.on('subscriptionChange', sendSubChangedSlack);
-  orderEventEmitter.on('subsdcriptionRenew', sendSubRenewalSlack);
+  orderEventEmitter.on('subscriptionRenew', sendSubRenewalSlack);
 
   orderEventEmitter.on('setFollowError', err =>
     sendEventErrorToSentry(new SetFollowError(err.message)),

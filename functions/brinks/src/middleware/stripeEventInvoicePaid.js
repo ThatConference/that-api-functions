@@ -35,7 +35,7 @@ export default function stripeEventInvoicePaid(req, res, next) {
     return next();
   }
 
-  const firstInvoiceCheck = 3600 * 24 * 1000; // one day
+  const firstInvoiceCheck = 3600 * 24; // one day (seconds)
   const startDrift =
     invoiceData.subscription.start_date -
     invoiceData.subscription.current_period_start;
@@ -54,10 +54,10 @@ export default function stripeEventInvoicePaid(req, res, next) {
   const cancelAtPeriodEnd = invoiceData.subscription.cancel_at_period_end;
   const currentPeriodEnd = invoiceData.subscription.current_period_end;
   if (
-    !stripeCustId ||
-    !subscriptionId ||
-    !cancelAtPeriodEnd ||
-    !currentPeriodEnd
+    !stripeCustId === undefined ||
+    !subscriptionId === undefined ||
+    !cancelAtPeriodEnd === undefined ||
+    !currentPeriodEnd === undefined
   ) {
     // should never happen fields validated in bouncer
     thatBrinks.errorMsg = `missing data from customer.subscription.updated stripe event object`;
@@ -87,7 +87,6 @@ export default function stripeEventInvoicePaid(req, res, next) {
           result.reason ||
           'Stripe Customer id not found or subscription id mismatch';
         thatBrinks.sentryLevel = Sentry.Severity.Warning;
-        console.log(thatBrinks.errorMsg);
         Sentry.setContext('Subscription Info', {
           stripeCustId,
           subscriptionId,
@@ -101,7 +100,7 @@ export default function stripeEventInvoicePaid(req, res, next) {
 
       dlog('update subscription from invoice.paid complete');
       thatBrinks.isProcessed = true;
-      orderEvents.emit('sendSubRenewalSlack', {
+      orderEvents.emit('subscriptionRenew', {
         member: result.member,
         subscriptionId,
       });
