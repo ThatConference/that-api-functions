@@ -8,6 +8,10 @@ const constants = {
       ONLINE_IN_X_DAYS: '',
     },
   },
+  BRINKS: {
+    ORDER_EVENTS: 'orderEvents',
+    FIRESTORE: 'firestore',
+  },
 };
 constants.THAT.DISCOUNT_CODE = {
   TYPE: {
@@ -26,10 +30,6 @@ constants.THAT.PROMO_CODE = {
 constants.STRIPE.COUPON = {
   MEMBERSHIP_CAMPER:
     process.env.NODE_ENV === 'production' ? 'Mab7foqE' : 'wjxAwiPB',
-};
-constants.BRINKS = {
-  ORDER_EVENTS: 'orderEvents',
-  FIRESTORE: 'firestore',
 };
 
 export default constants;

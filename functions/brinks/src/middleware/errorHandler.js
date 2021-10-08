@@ -20,7 +20,7 @@ export default function errorHandler(err, req, res, next) {
   if (res.status === 200) {
     Sentry.setTag('errorType', 'known');
     issueId = Sentry.captureMessage(thatBrinks.errorMsg, scope =>
-      scope.setLevel('info'),
+      scope.setLevel(thatBrinks.sentryLevel || 'info'),
     );
   }
   console.log(`errorHandler known error: ${thatBrinks.errorMsg}`);

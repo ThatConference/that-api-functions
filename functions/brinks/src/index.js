@@ -9,6 +9,8 @@ import {
   eventProcessedCheck,
   stripeEventCsCompleted,
   stripeEventCustCreated,
+  stripeEventCustSubUpdated,
+  stripeEventInvoicePaid,
   thatEventManualOrderCreated,
   stripeEventEnd,
   errorHandler,
@@ -21,7 +23,7 @@ const api = express();
 const firestore = new Firestore();
 
 api.set(constants.BRINKS.FIRESTORE, firestore);
-api.set(constants.BRINKS.FIRESTORE, orderEventEmitter());
+api.set(constants.BRINKS.ORDER_EVENTS, orderEventEmitter());
 
 let version;
 (async () => {
@@ -65,6 +67,8 @@ export const handler = api
   .post('/stripe-event', eventProcessedCheck)
   .post('/stripe-event', stripeEventCsCompleted)
   .post('/stripe-event', stripeEventCustCreated)
+  .post('/stripe-event', stripeEventCustSubUpdated)
+  .post('/stripe-event', stripeEventInvoicePaid)
   .post('/stripe-event', thatEventManualOrderCreated)
   .post('/stripe-event', stripeEventEnd)
 
