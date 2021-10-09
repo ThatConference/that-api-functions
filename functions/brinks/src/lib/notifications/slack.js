@@ -11,7 +11,7 @@ function callSlackHook(hookBody) {
   if (
     envConfig.that.slackWebhookUrl &&
     (process.env.NODE_ENV === 'production' ||
-      envConfig.that.isTestSlackNotifications === true)
+      envConfig.that.isTestSlackNotifications !== true)
   ) {
     // send the slacks
     const slackUrl = envConfig.that.slackWebhookUrl;
