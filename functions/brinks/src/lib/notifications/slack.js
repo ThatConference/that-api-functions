@@ -11,7 +11,7 @@ function callSlackHook(hookBody) {
   if (
     envConfig.that.slackWebhookUrl &&
     (process.env.NODE_ENV === 'production' ||
-      process.env.TEST_SLACK_NOTIFICATIONS === 'true')
+      envConfig.that.isTestSlackNotifications === true)
   ) {
     // send the slacks
     const slackUrl = envConfig.that.slackWebhookUrl;
@@ -31,6 +31,14 @@ function callSlackHook(hookBody) {
   } else {
     dlog('DEVELOPMENT Env: SLACK PAYLOAD TO SEND: %o', hookBody);
   }
+}
+
+function scrubSlackTitle(html) {
+  // reference: https://api.slack.com/reference/surfaces/formatting#escaping
+  return String(html)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
 }
 
 function newOrder({ order, products, member }) {
@@ -75,4 +83,82 @@ function newOrder({ order, products, member }) {
   callSlackHook(slackBody);
 }
 
-export default { newOrder };
+function subscriptionChanged({ member, subscriptionId, cancelAtPeriodEnd }) {
+  dlog('subscription changed notification called');
+  let memberName = `${member.firstName} ${member.lastName}` || 'Unknown Name';
+  memberName = scrubSlackTitle(memberName);
+  const cancelAction = cancelAtPeriodEnd ? 'cancelled' : 'reinstated';
+  const emoji = cancelAtPeriodEnd
+    ? ':woman-gesturing-no:'
+    : ':woman-gesturing-ok:';
+  let details = `*member:* <https://that.us/members/${member.profileSlug}|${memberName}>\n`;
+  details += `*subscription:* <https://dashboard.stripe.com/subscriptions/${subscriptionId}|${subscriptionId}>\n`;
+
+  const slackBody = {
+    channel: envConfig.that.slackChannelOrder,
+    username: 'THAT Bot < 🌲> ',
+    icon_emoji: emoji,
+    blocks: [
+      {
+        type: 'header',
+        text: {
+          type: 'plain_text',
+          text: `${memberName} ${cancelAction} their membership`,
+          emoji: true,
+        },
+      },
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: details,
+        },
+      },
+    ],
+  };
+
+  callSlackHook(slackBody);
+}
+
+function subscriptionRenewed({ member, subscriptionId }) {
+  dlog('subscription renewed notification called');
+  let memberName = `${member.firstName} ${member.lastName}` || 'Unknown Name';
+  memberName = scrubSlackTitle(memberName);
+  let details = `*member:* <https://that.us/members/${member.profileSlug}|${memberName}>\n`;
+  details += `*subscription:* <https://dashboard.stripe.com/subscriptions/${subscriptionId}|${subscriptionId}>\n`;
+  let userProfileImage = member.profileImage;
+  if (!userProfileImage || userProfileImage.length < 7)
+    userProfileImage =
+      'https://images.that.tech/members/person-placeholder.jpg';
+  const slackBody = {
+    channel: envConfig.that.slackChannelOrder,
+    username: 'THAT Bot < 🌲> ',
+    icon_emoji: ':bellhop_bell:',
+    blocks: [
+      {
+        type: 'header',
+        text: {
+          type: 'plain_text',
+          text: `${memberName} renewed their membership!`,
+          emoji: true,
+        },
+      },
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: details,
+        },
+        accessory: {
+          type: 'image',
+          image_url: userProfileImage,
+          alt_text: memberName,
+        },
+      },
+    ],
+  };
+
+  callSlackHook(slackBody);
+}
+
+export default { newOrder, subscriptionChanged, subscriptionRenewed };

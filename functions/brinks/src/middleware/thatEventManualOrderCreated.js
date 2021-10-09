@@ -2,14 +2,15 @@ import debug from 'debug';
 import * as Sentry from '@sentry/node';
 import validateManualOrder from '../lib/that/validateManualOrder';
 import thatCreateOrderAndAllocations from '../lib/that/createOrderAndAllocations';
+import constants from '../constants';
 
 const dlog = debug('that:api:brinks:thatEventManualOrderCreatedMw');
 
 export default async function thatEventManualOrderCreated(req, res, next) {
   dlog('thatEventManualOrderCreated middleware called');
 
-  const orderEvents = req.app.get('orderEvents');
-  const firestore = req.app.get('firestore');
+  const orderEvents = req.app.get(constants.BRINKS.ORDER_EVENTS);
+  const firestore = req.app.get(constants.BRINKS.FIRESTORE);
   const { thatBrinks, stripeEvent } = req;
   thatBrinks.stages.push('thatEventManualOrderCreated');
 

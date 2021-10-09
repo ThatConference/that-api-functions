@@ -1,15 +1,17 @@
 // validates checkout session completed event object
 import * as yup from 'yup';
 
+const epochTest = yup
+  .number()
+  .required()
+  .max(9999999999)
+  .strict({ isStrict: true });
+
 const checkoutSchema = yup.object().shape({
   type: yup.string().matches(/checkout\.session\.completed/),
-  livemode: yup.boolean().required(),
+  livemode: yup.boolean().required().strict({ isStrict: true }),
   id: yup.string().required(),
-  created: yup
-    .string()
-    .transform(epoch => epoch.toString())
-    .required()
-    .max(10),
+  created: epochTest,
   object: yup.string().matches(/event/),
   data: yup.object({
     object: yup.object({

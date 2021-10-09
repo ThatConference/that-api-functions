@@ -20,6 +20,23 @@ export default function orderEvents() {
     slackNotification.newOrder({ order, products, member });
   }
 
+  function sendSubChangedSlack({ member, subscriptionId, cancelAtPeriodEnd }) {
+    dlog('send subscription changed slack');
+    slackNotification.subscriptionChanged({
+      member,
+      subscriptionId,
+      cancelAtPeriodEnd,
+    });
+  }
+
+  function sendSubRenewalSlack({ member, subscriptionId }) {
+    dlog('send subscription renewed slack');
+    slackNotification.subscriptionRenewed({
+      member,
+      subscriptionId,
+    });
+  }
+
   function setFollowEventOnPurchase({ firestore, orderAllocations }) {
     dlog('setFollowEventOnPurcase called');
     setFollowPurchasedEvents({ orderAllocations, firestore }).catch(err =>
@@ -166,6 +183,8 @@ export default function orderEvents() {
   orderEventEmitter.on('orderCreated', setFollowEventOnPurchase);
   orderEventEmitter.on('orderCreated', sendTicketThankYou);
   orderEventEmitter.on('orderCreated', sendMembershipThankYou);
+  orderEventEmitter.on('subscriptionChange', sendSubChangedSlack);
+  orderEventEmitter.on('subscriptionRenew', sendSubRenewalSlack);
 
   orderEventEmitter.on('setFollowError', err =>
     sendEventErrorToSentry(new SetFollowError(err.message)),

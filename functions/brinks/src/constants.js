@@ -8,6 +8,10 @@ const constants = {
       ONLINE_IN_X_DAYS: '',
     },
   },
+  BRINKS: {
+    ORDER_EVENTS: 'orderEvents',
+    FIRESTORE: 'firestore',
+  },
 };
 constants.THAT.DISCOUNT_CODE = {
   TYPE: {

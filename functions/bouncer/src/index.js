@@ -11,6 +11,8 @@ import {
   stripeEventParse,
   stripeEventCsCompleted,
   stripeEventCustCreated,
+  stripeEventCustSubUpdated,
+  stripeEventInvoiceSubscription,
   stripeEventQueue,
   stripeEventEnd,
   errorHandler,
@@ -79,6 +81,8 @@ export const handler = api
   .post('/stripe', stripeEventParse)
   .post('/stripe', stripeEventCsCompleted)
   .post('/stripe', stripeEventCustCreated)
+  .post('/stripe', stripeEventCustSubUpdated)
+  .post('/stripe', stripeEventInvoiceSubscription)
   .post('/stripe', stripeEventQueue)
   .post('/stripe', stripeEventEnd)
   .post('/thatmanualorder', jwtCheck)

@@ -10,9 +10,9 @@ Live on March 30, 2021
 
 ### PubSub local testing
 
-See project **dev-that** in this `that-api-functions` repo for gcloud cli and bootstrapping for local emulators.
+See the project **beam** in repo [beam](https://github.com/thatconference/beam) for gcloud cli and bootstrapping for local emulators.
 
-This function posts messages to GCP PubSub. For local testing we utilize the `gcloud` PubSub emulator. A guide on setting up the emulator can be found here, [https://cloud.google.com/pubsub/docs/emulator](https://cloud.google.com/pubsub/docs/emulator).
+This function (bouncer) posts messages to GCP PubSub. For local testing we utilize the `gcloud` PubSub emulator. A guide on setting up the emulator can be found here, [https://cloud.google.com/pubsub/docs/emulator](https://cloud.google.com/pubsub/docs/emulator).
 
 Assuming you have the `gcloud` cli installed and other emulator prerequisites (e.g. Java 8) here is how to get started. We require multiple terminal windows to pull this off.
 
@@ -34,7 +34,7 @@ Terminal window: **PubSub Emulator**
 gcloud beta emulators pubsub start --project=dev-that
 ```
 
-you will see a similar output as the emulator starts:
+The project name is not referring to anything in our case, it is simply required and isn't tied with any gcp projects. You will see a similar output as the emulator starts:
 
 ```sh
 % gcloud beta emulators pubsub start --project=dev-that
@@ -58,6 +58,8 @@ export PUBSUB_PROJECT_ID=dev-that
 
 ##### Stopping Emulator
 
+Note: new versions of gcloud seems to have corrected this issue. I am leaving this here for historical and referential reasons.
+
 **Ctrl-c does stop the Python process for the emulator**. What it doesn't stop is a java process spawned (for a jetty session or similar). Anyway, this process also needs to be killed to clean thing up properly. If there is a message stuck in the queue even if you **stop the emulator process** this java process will continue to try and deliver the message. If you aren't running other java processes, something like `killall java` works fine.
 
 ---
@@ -66,7 +68,7 @@ Terminal window: **Bouncer Project**
 
 Bouncer waits for webhook requests from Stripe and queues them to PubSub.
 
-This sets an environment variable so our function sends topics to the emulator, not the production PubSub.
+This sets an environment variable so our function sends topics to the emulator, not the production PubSub:
 
 ```sh
 $(gcloud beta emulators pubsub env-init)
@@ -75,13 +77,14 @@ export PUBSUB_PROJECT_ID=dev-that
 
 The command `gcloud beta emulators pubsub env-init` outputs something like `export PUBSUB_EMULATOR_HOST=localhost:8085` to sent an env variable. And in case you're not aware, the `$()` executes that command; exports the variable to the environment.
 
-Jan 2021 - a recent update has `env-init` returning ipv6 address. I had issues with this and had to change the `::1` to `localhost` manually for proper operation.
+- Jan 2021 - a recent update has `env-init` returning ipv6 address. I had issues with this and had to change the `::1` to `localhost` manually for proper operation.
+- June 2020 - `env-init` is setting `localhost` again and not `::1`
+
+Run bouncer with nodemon. Default listening port is `9090`:
 
 ```sh
 npm run start:watch
 ```
-
-Runs bouncer with nodemon. Default listening port is `9090`
 
 ---
 
@@ -113,6 +116,8 @@ To listen for specific events we're interested in:
 
 ```sh
 stripe listen --events checkout.session.completed,customer.created --forward-to localhost:9090/stripe
+
+stripe listen --events checkout.session.completed,customer.created,customer.subscription.updated,invoice.paid --forward-to localhost:9090/stripe
 ```
 
 Once executed and running the console will output a webhook signing secret. This secret rarely changes though ensure it is the same secret you have set in the `.env` under key `STRIPE_SIGNING_SECRET=`
@@ -124,7 +129,13 @@ Terminal window: **Stripe Trigger**
 Strip trigger is part of the Stripe CLI which allows you to produce webhook events for testing.
 
 ```sh
+# creates payment intent succeeded event
 stripe trigger payment_intent.succeeded
+
+# creates a new subscription with a billing_cycle_anchor in the near future.
+# Stripe uses seconds-based epochs
+# e.g. Math.floor(new Date().getTime()/1000 + 600)
+stripe subscriptions create --billing-cycle-anchor=1633552826 --customer=cus_IvK5z7dZ3LWghC -d "items[0][price]=price_1IJTWcBvVBgmhQW4XjOqTsDC"
 ```
 
 ---

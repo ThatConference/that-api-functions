@@ -1,13 +1,14 @@
 import debug from 'debug';
 import * as Sentry from '@sentry/node';
 import compareMemberToCustomer from '../lib/stripe/compareMemberToCustomer';
+import constants from '../constants';
 
 const dlog = debug('that:api:brinks:stripeEventCustCreatedMw');
 
 export default async function stripeEventCustCreated(req, res, next) {
   dlog('stripe event customerCreated called');
 
-  const firestore = req.app.get('firestore');
+  const firestore = req.app.get(constants.BRINKS.FIRESTORE);
   const { thatBrinks, stripeEvent } = req;
   thatBrinks.stages.push('stripeEventCustCreated');
 
