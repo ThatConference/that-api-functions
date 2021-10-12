@@ -12,7 +12,7 @@ async function get({ _parsedUrl, params }, res) {
 	const { name } = params;
 
 	try {
-		const url = `${thatDotUs}/og-image/templates/${name}/${rawQueryString}`;
+		const url = `${thatDotUs}/templates/${name}/${rawQueryString}`;
 
 		const file = await createScreenshot(url);
 
