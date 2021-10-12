@@ -61,4 +61,5 @@ export const handler = app
 	.use(responseTime())
 	.use(useSentry)
 	.get('/api/template/:name', template.get)
+	.get('/og-image/api/template/:name', template.get)
 	.use(failure);
