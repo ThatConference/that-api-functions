@@ -1,0 +1,67 @@
+{
+	"name": "that-api-og-image",
+	"version": "1.0.0",
+	"description": "THAT og-image service.",
+	"main": "index.js",
+	"engines": {
+		"node": "^14.x"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/ThatConference/that-api-functions.git"
+	},
+	"license": "GPL-3.0",
+	"scripts": {
+		"build": "rimraf __build__ && babel ./src -d ./__build__ --copy-files --ignore ./**/__tests__",
+		"postbuild": "cp .env package* __build__",
+		"predeploy:local": "npm run build",
+		"deploy:local": "functions-framework --target=handler --port=3001 --source=./__build__",
+		"start:watch": "nodemon -e env,js,json --watch src --ignore '*.test.js' --exec npm run deploy:local",
+		"start": "node index.js",
+		"test": "jest --coverage --passWithNoTests",
+		"test:watch": "jest --watchAll",
+		"lint": "eslint 'src/**/*.js'",
+		"validate": "concurrently npm:test npm:lint npm:build"
+	},
+	"dependencies": {
+		"@sentry/node": "^6.13.3",
+		"body-parser": "^1.19.0",
+		"chrome-aws-lambda": "^10.1.0",
+		"cors": "^2.8.5",
+		"debug": "^4.3.2",
+		"dotenv": "^10.0.0",
+		"express": "^4.17.1",
+		"puppeteer-core": "^10.4.0",
+		"response-time": "^2.3.2"
+	},
+	"devDependencies": {
+		"@babel/cli": "^7.15.7",
+		"@babel/core": "^7.15.8",
+		"@babel/node": "^7.15.8",
+		"@babel/preset-env": "^7.15.8",
+		"@babel/register": "^7.15.3",
+		"@google-cloud/functions-framework": "^1.9.0",
+		"babel-eslint": "^10.1.0",
+		"babel-jest": "^27.2.5",
+		"concurrently": "^6.3.0",
+		"cross-env": "^7.0.3",
+		"eslint": "^7.32.0",
+		"eslint-config-airbnb-base": "^14.2.1",
+		"eslint-config-prettier": "^8.3.0",
+		"eslint-plugin-babel": "^5.3.1",
+		"eslint-plugin-import": "^2.25.1",
+		"eslint-plugin-jest": "^25.0.5",
+		"eslint-plugin-prettier": "^4.0.0",
+		"jest-cli": "^27.2.5",
+		"nodemon": "^2.0.13",
+		"prettier-eslint": "^13.0.0",
+		"prettier-eslint-cli": "^5.0.1",
+		"puppeteer": "^10.4.0"
+	},
+	"jest": {
+		"testEnvironment": "node",
+		"verbose": true,
+		"rootDir": "./src",
+		"coverageDirectory": "../__testCoverage__"
+	}
+}
