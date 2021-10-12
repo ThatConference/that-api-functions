@@ -20,7 +20,7 @@ async function get({ _parsedUrl, params }, res) {
 		res.setHeader('Content-Type', `image/png`);
 		res.setHeader(
 			'Cache-Control',
-			`public, immutable, no-transform, s-maxage=31536000, max-age=31536000`,
+			`public, immutable, no-transform, s-maxage=900, max-age=900`,
 		);
 		res.end(file);
 	} catch (e) {
