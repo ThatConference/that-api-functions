@@ -20,8 +20,9 @@ export async function createScreenshot(url) {
 		ignoreHTTPSErrors: true,
 	});
 
+	// leaving for future reference - await page.setViewport({ width: 2048, height: 1170, deviceScaleFactor: 2 });
+	await page.setViewport({ width: 1200, height: 630 });
 	const page = await browser.newPage();
-	await page.setViewport({ width: 2048, height: 1170, deviceScaleFactor: 2 });
 	await page.setUserAgent(userAgent);
 
 	await page.goto(url, { waitUntil: 'networkidle2' });
