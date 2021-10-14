@@ -6,12 +6,16 @@ const userAgent = `Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, li
 export async function createScreenshot(url) {
 	const { dev } = envConfig;
 
-	chromium.font(
-		'https://rawcdn.githack.com/ThatConference/that-api-og-image/0e790e048f1e12c8a087b40636a88d2ba97a5198/fonts/roboto/Roboto-Black.ttf',
-	);
-	chromium.font(
-		'https://rawcdn.githack.com/ThatConference/that-api-og-image/0e790e048f1e12c8a087b40636a88d2ba97a5198/fonts/roboto/Roboto-Bold.ttf',
-	);
+	try {
+		chromium.font(
+			'https://rawcdn.githack.com/ThatConference/that-api-functions/og-image-fonts/functions/that-api-og-image/fonts/roboto/Roboto-Black.ttf',
+		);
+		chromium.font(
+			'https://rawcdn.githack.com/ThatConference/that-api-functions/og-image-fonts/functions/that-api-og-image/fonts/roboto/Roboto-Bold.ttf',
+		);
+	} catch (e) {
+		console.error('trouble loading fonts', e);
+	}
 
 	const browser = await chromium.puppeteer.launch({
 		args: chromium.args,
