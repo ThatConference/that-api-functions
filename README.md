@@ -41,3 +41,8 @@ A collection of functions used for THAT
 
 ![brinks Pull Request](https://github.com/ThatConference/that-api-functions/workflows/brinks%20Pull%20Request/badge.svg)  
 ![brinks Push Master](https://github.com/ThatConference/that-api-functions/workflows/brinks%20Push%20Master/badge.svg)
+
+## [that-api-og-image](functions/og-image)
+
+[![that-api-og-image Pull Request](https://github.com/ThatConference/that-api-functions/actions/workflows/that-api-og-image_PullRequest.yml/badge.svg)](https://github.com/ThatConference/that-api-functions/actions/workflows/that-api-og-image_PullRequest.yml)  
+[![that-api-og-image Push Master](https://github.com/ThatConference/that-api-functions/actions/workflows/that-api-og-image_PushMaster.yml/badge.svg)](https://github.com/ThatConference/that-api-functions/actions/workflows/that-api-og-image_PushMaster.yml)

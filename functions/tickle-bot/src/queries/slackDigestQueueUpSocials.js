@@ -8,6 +8,7 @@ export default {
             title
             startTime
           }
+          queueUpSocials(socials: [TWITTER, LINKEDIN, FACEBOOK]) 
         }
       }
     }

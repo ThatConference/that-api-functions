@@ -29,7 +29,10 @@ function failure(err, req, res, next) {
 function slackDigest(hours) {
   dlog('call slackDigest with %d', hours);
   return (req, res) => {
-    const query = queries.slackDigest.graphQl;
+    // We only want to include socials on hourly request, not morning daily (24)
+    let query = queries.slackDigestQueueUpSocials.graphQl;
+    if (hours !== 1) query = queries.slackDigest.graphQl;
+
     const variables = {
       communityInput: {
         slug: 'that',
@@ -67,10 +70,25 @@ function thatStats(req, res) {
   });
 }
 
+function queueUpSocials(req, res) {
+  dlog('call queueSocials');
+  const query = queries.queueUpSocials.graphQl;
+  const variables = {
+    communityInput: {
+      slug: 'that',
+    },
+  };
+  return sendGraphReq({ query, variables }).then(result => {
+    dlog('result of graph req %o', result);
+    res.status(200).json(result.data);
+  });
+}
+
 export const handler = api
   .use(responseTime())
   .use('/dailydigest', slackDigest(24))
   .use('/hourlydigest', slackDigest(1))
   .use('/thatstats', thatStats)
+  .use('/queueUpSocials', queueUpSocials)
 
   .use(failure);
