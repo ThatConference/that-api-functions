@@ -38,7 +38,7 @@ export default async function applyMembershipAllocationsToMembers({
     couponId: constants.STRIPE.COUPON.MEMBERSHIP_CAMPER,
     customerId: stripeSubscription.customer,
     expiresAt: stripeSubscription.current_period_end * 1000,
-    maxRedemptions: 1,
+    maxRedemptions: 2,
     metadata: {
       memberId: order.member,
     },

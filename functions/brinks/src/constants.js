@@ -29,7 +29,7 @@ constants.THAT.PROMO_CODE = {
 };
 constants.STRIPE.COUPON = {
   MEMBERSHIP_CAMPER:
-    process.env.NODE_ENV === 'production' ? 'Mab7foqE' : 'wjxAwiPB',
+    process.env.NODE_ENV === 'production' ? 'cqYuFUDr' : 's6q7fjmT',
 };
 
 export default constants;
