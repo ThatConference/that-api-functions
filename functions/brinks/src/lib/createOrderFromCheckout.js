@@ -31,6 +31,7 @@ export default function createOrderFromCheckout({ checkoutSession, products }) {
       stripeProductId: stripeLi.price.product,
       isBulkPurchase: coLineItem.isBulkPurchase,
       productType: product.type,
+      uiReference: product.uiReference,
     };
   });
 
@@ -64,6 +65,7 @@ export default function createOrderFromCheckout({ checkoutSession, products }) {
     createdBy: memberId,
     lastUpdatedBy: memberId,
     status: 'COMPLETE',
+    orderType: 'REGULAR',
   };
 
   return newOrder;

@@ -20,6 +20,7 @@ export default function createOrderAndAllocations({
       ...li,
       product: li.productId,
       productType: product.type,
+      uiReference: product.uiReference,
       unitPrice: 0,
       totalAmount: 0,
     };
@@ -30,7 +31,7 @@ export default function createOrderAndAllocations({
   const newOrder = {
     ...orderData,
     total: 0,
-    amountDiscounted: '100%',
+    amountDiscounted: orderData.amountDiscounted || 0,
     createdAt: now,
     lastUpdatedAt: now,
     createdBy: orderData.createdBy,
@@ -38,7 +39,8 @@ export default function createOrderAndAllocations({
     stripeEventId: thatBrinks.stripeEventId, // The id used to verify if processed already (thatEvent.id)
     stripePaymentIntentReceiptUrl: null,
     lineItems: newLineItems,
-    status: orderData.status ? orderData.status : 'COMPLETE',
+    status: orderData.status ?? 'COMPLETE',
+    orderType: orderData.orderType ?? 'REGULAR',
   };
 
   const orderAllocations = generateAllocationsFromOrder({
