@@ -10,6 +10,7 @@ import sendTransactionEmail from '../postmark/sendTransactional';
 
 const dlog = debug('that:api:brinks:events:order');
 const eventStore = dataSources.cloudFirestore.event;
+const eventSpeakerStore = dataSources.cloudFirestore.eventSpeaker;
 
 export default function orderEvents() {
   const orderEventEmitter = new EventEmitter();
@@ -169,6 +170,44 @@ export default function orderEvents() {
       );
   }
 
+  async function setOrderOnAcceptedSpeaker({ order, firestore }) {
+    dlog('setOrderOnAcceptedSpeaker called');
+    if (order.orderType === 'SPEAKER') {
+      let eventSpeaker;
+      try {
+        eventSpeaker = await eventSpeakerStore(firestore).get({
+          eventId: order.event,
+          memberId: order.member,
+        });
+      } catch (err) {
+        process.nextTick(() => orderEventEmitter.emit('error', err));
+      }
+
+      if (!eventSpeaker) {
+        Sentry.configureScope(scope => {
+          scope.setContext({ order });
+          scope.setLevel(Sentry.Severity.Warning);
+          Sentry.captureMessage(
+            `Event accepted speaker not found writing orderId back to acceptedSpeakers collection`,
+          );
+        });
+        return undefined;
+      }
+
+      const esUpdate = { orderId: order.id };
+      return eventSpeakerStore(firestore)
+        .update({
+          eventId: order.event,
+          memberId: order.member,
+          updateObj: esUpdate,
+        })
+        .catch(err => {
+          process.nextTick(() => orderEventEmitter.emit('error', err));
+        });
+    }
+    return undefined;
+  }
+
   function sendEventErrorToSentry(error) {
     dlog('orderEventEmitter error:: %o', error);
     console.log('orderEventEmitter error:: %o', error.message);
@@ -183,6 +222,7 @@ export default function orderEvents() {
   orderEventEmitter.on('orderCreated', setFollowEventOnPurchase);
   orderEventEmitter.on('orderCreated', sendTicketThankYou);
   orderEventEmitter.on('orderCreated', sendMembershipThankYou);
+  orderEventEmitter.on('orderCreated', setOrderOnAcceptedSpeaker);
   orderEventEmitter.on('subscriptionChange', sendSubChangedSlack);
   orderEventEmitter.on('subscriptionRenew', sendSubRenewalSlack);
 

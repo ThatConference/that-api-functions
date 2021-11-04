@@ -55,8 +55,9 @@ const order = dbInstance => {
       );
       return transaction.get(query).then(docSnap => {
         let orderAllocations;
+        let orderDocRef;
         if (docSnap.size < 1) {
-          const orderDocRef = orderCollection.doc();
+          orderDocRef = orderCollection.doc();
           dlog('new order id is %s', orderDocRef.id);
           orderAllocations = allocations.map(a => ({
             ...a,
@@ -68,7 +69,11 @@ const order = dbInstance => {
           );
         }
 
-        return { order: newOrder, orderAllocations };
+        return {
+          order: newOrder,
+          orderAllocations,
+          orderId: orderDocRef.id,
+        };
       });
     });
   }
