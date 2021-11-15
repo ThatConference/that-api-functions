@@ -53,6 +53,17 @@ export default async function stripeEventCsCompleted(req, res, next) {
       const [result] = r;
       const { order, orderAllocations, orderId } = result;
       if (typeof order === 'object') order.id = orderId;
+      else {
+        Sentry.setTags({
+          order,
+          orderAllocations,
+          orderId,
+        });
+        Sentry.setContext(order, order);
+        return next(
+          new Error(`Order from createOrderAndAllocations not an object`),
+        );
+      }
       orderEvents.emit('orderCreated', {
         firestore,
         member,
