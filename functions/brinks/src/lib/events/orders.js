@@ -194,7 +194,13 @@ export default function orderEvents() {
         return undefined;
       }
 
-      const esUpdate = { orderId: order.id };
+      Sentry.withScope(scope => {
+        Sentry.setContext('order', JSON.stringify(order));
+        scope.setLevel(Sentry.Severity.Info);
+        Sentry.captureMessage(`Speaker order created.`);
+      });
+
+      const esUpdate = { orderId: order.id || 'do manual lookup' };
       return eventSpeakerStore(firestore)
         .update({
           eventId: order.event,
