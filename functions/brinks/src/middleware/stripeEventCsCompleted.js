@@ -67,6 +67,12 @@ export default async function stripeEventCsCompleted(req, res, next) {
         );
       }
       order.testValue = 'Static Testing Value';
+      Sentry.withScope(scope => {
+        Sentry.setContext('order', { orderRaw: order });
+        scope.setTag('orderId', orderId);
+        scope.setLevel(Sentry.Severity.Info);
+        Sentry.captureMessage(`Order before emit`);
+      });
       orderEvents.emit('orderCreated', {
         firestore,
         member,
