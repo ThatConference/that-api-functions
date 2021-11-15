@@ -52,23 +52,26 @@ export default async function stripeEventCsCompleted(req, res, next) {
       thatBrinks.isProcessed = true;
       const [result] = r;
       const { order, orderAllocations, orderId } = result;
-      if (typeof order === 'object') order.id = orderId;
-      else {
+      if (typeof order === 'object') {
+        order.id = orderId;
+        order.orderId = orderId;
+      } else {
         Sentry.setTags({
           order,
           orderAllocations,
           orderId,
         });
-        Sentry.setContext(order, order);
+        Sentry.setContext('order', { order });
         return next(
           new Error(`Order from createOrderAndAllocations not an object`),
         );
       }
+      order.testValue = 'Static Testing Value';
       orderEvents.emit('orderCreated', {
         firestore,
         member,
         products,
-        order: order ?? {},
+        order,
         orderAllocations: orderAllocations ?? [],
       });
       return next();
