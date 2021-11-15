@@ -55,7 +55,7 @@ const order = dbInstance => {
       );
       return transaction.get(query).then(docSnap => {
         let orderAllocations;
-        let orderDocRef;
+        let orderDocRef = docSnap.docs[0]; // just in case.
         if (docSnap.size < 1) {
           orderDocRef = orderCollection.doc();
           dlog('new order id is %s', orderDocRef.id);
