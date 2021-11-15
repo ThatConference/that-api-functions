@@ -1,6 +1,6 @@
 {
   "name": "brinks",
-  "version": "1.11.4",
+  "version": "1.11.5",
   "description": "Our order taker",
   "main": "index.js",
   "scripts": {
