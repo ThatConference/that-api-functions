@@ -195,7 +195,7 @@ export default function orderEvents() {
       }
 
       Sentry.withScope(scope => {
-        Sentry.setContext('order', JSON.stringify(order));
+        Sentry.setContext({ order: JSON.stringify(order) });
         scope.setLevel(Sentry.Severity.Info);
         Sentry.captureMessage(`Speaker order created.`);
       });
