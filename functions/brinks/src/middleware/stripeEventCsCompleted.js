@@ -52,7 +52,7 @@ export default async function stripeEventCsCompleted(req, res, next) {
       thatBrinks.isProcessed = true;
       const [result] = r;
       const { order, orderAllocations, orderId } = result;
-      if (typeof order === 'object') order.id = orderId;
+      if (typeof order === 'object') order.id = orderId || 'do manual lookup';
       else {
         Sentry.setTags({
           order,
