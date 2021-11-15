@@ -87,7 +87,7 @@ export default function orderEvents() {
     if (!event.emailTemplateTicketPurchased) {
       Sentry.configureScope(scope => {
         scope.setTag('ticketEventId', ticket.event);
-        scope.setContext({ ticket });
+        scope.setContext('ticket', { ticket });
         scope.setLevel(Sentry.Severity.Warning);
         Sentry.captureMessage(
           `Event ${event.name} (${event.id}), doesn't have an ticket thank you email template set`,
