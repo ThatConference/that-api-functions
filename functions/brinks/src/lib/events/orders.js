@@ -185,7 +185,7 @@ export default function orderEvents() {
 
       if (!eventSpeaker) {
         Sentry.configureScope(scope => {
-          scope.setContext({ order });
+          scope.setContext('order', { order });
           scope.setLevel(Sentry.Severity.Warning);
           Sentry.captureMessage(
             `Event accepted speaker not found writing orderId back to acceptedSpeakers collection`,
@@ -195,9 +195,13 @@ export default function orderEvents() {
       }
 
       Sentry.withScope(scope => {
-        Sentry.setContext({ order: JSON.stringify(order) });
+        Sentry.setContext('order stringified', {
+          orderString: JSON.stringify(order) ?? 'undefined',
+        });
+        Sentry.setContext('order', { orderRaw: order });
+        scope.setTag('orderId', order.id ?? 'undefined');
         scope.setLevel(Sentry.Severity.Info);
-        Sentry.captureMessage(`Speaker order created.`);
+        Sentry.captureMessage(`Speaker order created information.`);
       });
 
       const esUpdate = { orderId: order.id || 'do manual lookup' };
