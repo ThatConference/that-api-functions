@@ -52,7 +52,7 @@ export default async function stripeEventCsCompleted(req, res, next) {
       thatBrinks.isProcessed = true;
       const [result] = r;
       const { order, orderAllocations, orderId } = result;
-      if (typeof order === 'object') order.id = orderId || 'do manual lookup';
+      if (typeof order === 'object') order.id = orderId;
       else {
         Sentry.setTags({
           order,
@@ -68,8 +68,8 @@ export default async function stripeEventCsCompleted(req, res, next) {
         firestore,
         member,
         products,
-        order: order || {},
-        orderAllocations: orderAllocations || [],
+        order: order ?? {},
+        orderAllocations: orderAllocations ?? [],
       });
       return next();
     })
