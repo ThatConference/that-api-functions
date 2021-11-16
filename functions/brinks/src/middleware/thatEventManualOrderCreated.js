@@ -39,12 +39,25 @@ export default async function thatEventManualOrderCreated(req, res, next) {
   })
     .then(r => {
       dlog('orders written result: %o', r);
-      const { order, orderAllocations } = r;
+      const { order, orderAllocations, orderId } = r;
       thatBrinks.isProcessed = true;
+      if (typeof order === 'object') order.id = orderId;
+      else {
+        Sentry.setTags({
+          order,
+          orderAllocations,
+          orderId,
+        });
+        Sentry.setContext('order', { order });
+        return next(
+          new Error(`Order from thatCreateOrderAndAllocations not an object`),
+        );
+      }
+
       orderEvents.emit('orderCreated', {
         firestore,
         products,
-        order: order || {},
+        order,
         orderAllocations: orderAllocations || [],
       });
 

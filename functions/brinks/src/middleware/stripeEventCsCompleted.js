@@ -52,10 +52,8 @@ export default async function stripeEventCsCompleted(req, res, next) {
       thatBrinks.isProcessed = true;
       const [result] = r;
       const { order, orderAllocations, orderId } = result;
-      if (typeof order === 'object') {
-        order.id = orderId;
-        order.orderId = orderId;
-      } else {
+      if (typeof order === 'object') order.id = orderId;
+      else {
         Sentry.setTags({
           order,
           orderAllocations,
@@ -66,13 +64,7 @@ export default async function stripeEventCsCompleted(req, res, next) {
           new Error(`Order from createOrderAndAllocations not an object`),
         );
       }
-      order.testValue = 'Static Testing Value';
-      Sentry.withScope(scope => {
-        Sentry.setContext('order', { orderRaw: order });
-        scope.setTag('orderId', orderId);
-        scope.setLevel(Sentry.Severity.Info);
-        Sentry.captureMessage(`Order before emit`);
-      });
+
       orderEvents.emit('orderCreated', {
         firestore,
         member,
@@ -80,6 +72,7 @@ export default async function stripeEventCsCompleted(req, res, next) {
         order,
         orderAllocations: orderAllocations ?? [],
       });
+
       return next();
     })
     .catch(err => next(err));
