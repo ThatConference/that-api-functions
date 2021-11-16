@@ -196,12 +196,12 @@ export default function orderEvents() {
 
       Sentry.withScope(scope => {
         Sentry.setContext('order stringified', {
-          orderString: JSON.stringify(order) ?? 'undefined',
+          orderString: JSON.stringify(order),
         });
         Sentry.setContext('order', { orderRaw: order });
-        scope.setTag('orderId', order.id ?? 'undefined');
+        scope.setTag('orderId', order.id);
         scope.setLevel(Sentry.Severity.Info);
-        Sentry.captureMessage(`Speaker order created information.`);
+        Sentry.captureMessage(`Speaker Order created information.`);
       });
 
       const esUpdate = { orderId: order.id || 'do manual lookup' };
