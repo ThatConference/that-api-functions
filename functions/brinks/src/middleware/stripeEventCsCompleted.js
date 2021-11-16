@@ -51,13 +51,11 @@ export default async function stripeEventCsCompleted(req, res, next) {
       dlog('batch write result: %o', r);
       thatBrinks.isProcessed = true;
       const [result] = r;
-      const { order, orderAllocations, orderId } = result;
-      if (typeof order === 'object') order.id = orderId;
-      else {
+      const { order, orderAllocations } = result;
+      if (typeof order !== 'object') {
         Sentry.setTags({
           order,
           orderAllocations,
-          orderId,
         });
         Sentry.setContext('order', { order });
         return next(

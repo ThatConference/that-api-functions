@@ -47,35 +47,47 @@ const order = dbInstance => {
 
   function transactionWriteOrderAndAllocations({ newOrder, allocations }) {
     dlog('transactionWriteOrderAndAllocations called');
-    return dbInstance.runTransaction(transaction => {
-      const query = orderCollection.where(
-        'stripeEventId',
-        '==',
-        newOrder.stripeEventId,
-      );
-      return transaction.get(query).then(docSnap => {
-        let orderAllocations;
-        let orderDocRef = docSnap.docs[0]; // just in case.
-        if (docSnap.size < 1) {
-          orderDocRef = orderCollection.doc();
-          dlog('new order id is %s', orderDocRef.id);
-          orderAllocations = allocations.map(a => ({
-            ...a,
-            order: orderDocRef.id,
-          }));
-          transaction.create(orderDocRef, newOrder);
-          orderAllocations.forEach(oa =>
-            transaction.create(allocationCollection.doc(), oa),
+    return (
+      dbInstance
+        .runTransaction(transaction => {
+          const query = orderCollection.where(
+            'stripeEventId',
+            '==',
+            newOrder.stripeEventId,
           );
-        }
+          return transaction.get(query).then(docSnap => {
+            let orderAllocations;
+            let orderDocRef = docSnap.docs[0]; // just in case.
+            if (docSnap.size < 1) {
+              orderDocRef = orderCollection.doc();
+              dlog('new order id is %s', orderDocRef.id);
+              orderAllocations = allocations.map(a => ({
+                ...a,
+                order: orderDocRef.id,
+              }));
+              transaction.create(orderDocRef, newOrder);
+              orderAllocations.forEach(oa =>
+                transaction.create(allocationCollection.doc(), oa),
+              );
+            }
 
-        return {
-          order: newOrder,
-          orderAllocations,
-          orderId: orderDocRef.id,
-        };
-      });
-    });
+            return {
+              returnOrder: newOrder,
+              orderAllocations,
+              orderId: orderDocRef.id,
+            };
+          });
+        })
+        // we don't want to write the order id until after the transaction is done.
+        .then(({ returnOrder, orderAllocations, orderId }) => {
+          // eslint-disable-next-line no-param-reassign
+          returnOrder.id = orderId;
+          return {
+            order: returnOrder,
+            orderAllocations,
+          };
+        })
+    );
   }
 
   return {

@@ -39,14 +39,12 @@ export default async function thatEventManualOrderCreated(req, res, next) {
   })
     .then(r => {
       dlog('orders written result: %o', r);
-      const { order, orderAllocations, orderId } = r;
+      const { order, orderAllocations } = r;
       thatBrinks.isProcessed = true;
-      if (typeof order === 'object') order.id = orderId;
-      else {
+      if (typeof order !== 'object') {
         Sentry.setTags({
           order,
           orderAllocations,
-          orderId,
         });
         Sentry.setContext('order', { order });
         return next(
