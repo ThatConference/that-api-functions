@@ -63,13 +63,16 @@ const jwtCheck = jwt({
 function authz(role) {
   return (req, res, next) => {
     Sentry.setTag('userId', req.user.sub);
-    if (req.user.permissions.includes(role)) {
+    const allowRole = role.map(r => req.user.permissions.includes(r));
+    dlog('user perms: %o', req.user.permissions);
+    if (allowRole.includes(true)) {
       dlog('passed permissions check');
       next();
     } else {
       dlog('failed permission validation');
       Sentry.setContext('permissions', JSON.stringify(req.user.permissions));
       Sentry.setTag('auth', 'failedPermissions');
+      Sentry.captureException(new Error('failed permissions check'));
       res.status(401).send('Permissions Denied');
     }
   };
@@ -86,8 +89,9 @@ export const handler = api
   .post('/stripe', stripeEventQueue)
   .post('/stripe', stripeEventEnd)
   .post('/thatmanualorder', jwtCheck)
-  .post('/thatmanualorder', authz('admin'))
+  .post('/thatmanualorder', authz(['admin', 'members']))
   .post('/thatmanualorder', manualMw.manualEventParse)
+  .post('/thatmanualorder', manualMw.manualOrderCheckSpeaker)
   .post('/thatmanualorder', manualMw.manualOrderEventCreated)
   .post('/thatmanualorder', manualMw.manualEventQueue)
   .post('/thatmanualorder', manualMw.manualEventEnd)
