@@ -1,4 +1,5 @@
 import debug from 'debug';
+import * as Sentry from '@sentry/node';
 import { createScreenshot } from '../lib/chromium';
 import { uploadFile } from '../lib/googleStorage';
 import envConfig from '../envConfig';
@@ -23,20 +24,11 @@ async function get({ _parsedUrl, params, query }, res) {
 		dlog('Upload result:: %o', result);
 
 		res.json({ success: true });
-
-		// res.statusCode = 200;
-		// res.setHeader('Content-Type', `image/png`);
-		// res.setHeader(
-		// 	'Cache-Control',
-		// 	`public, immutable, no-transform, s-maxage=900, max-age=900`,
-		// );
-		// res.end(file);
 	} catch (e) {
-		res.statusCode = 500;
-		res.setHeader('Content-Type', 'text/html');
-		res.end(`<h1>Internal Error</h1><p>${e.message}</p>`);
-
+		Sentry.captureException(e);
 		console.error(e);
+
+		res.status(500).json({ success: false, error: e.message });
 	}
 }
 

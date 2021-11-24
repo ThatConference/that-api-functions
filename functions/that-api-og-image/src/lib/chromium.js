@@ -4,7 +4,7 @@ import envConfig from '../envConfig';
 const userAgent = `Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.39 Safari/537.36`;
 
 export async function createScreenshot(url) {
-	const { dev } = envConfig;
+	const { isdev } = envConfig;
 
 	try {
 		chromium.font(
@@ -20,12 +20,13 @@ export async function createScreenshot(url) {
 	const browser = await chromium.puppeteer.launch({
 		args: chromium.args,
 		executablePath: await chromium.executablePath,
-		headless: dev ? true : chromium.headless,
+		headless: isdev ? true : chromium.headless,
 		ignoreHTTPSErrors: true,
 	});
 
 	const page = await browser.newPage();
-	// leaving for future reference - await page.setViewport({ width: 2048, height: 1170, deviceScaleFactor: 2 });
+	// leaving for future reference:
+	// await page.setViewport({ width: 2048, height: 1170, deviceScaleFactor: 2 });
 	await page.setViewport({ width: 1200, height: 630 });
 	await page.setUserAgent(userAgent);
 

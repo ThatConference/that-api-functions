@@ -10,6 +10,7 @@ export function uploadFile({ filename, fileBuffer }) {
 	const storage = new Storage();
 	const bucket = storage.bucket(bucketName);
 	const fileObject = bucket.file(`${basePath}${filename}`);
+
 	return fileObject.save(fileBuffer, {
 		contentType: 'auto',
 		gzip: 'auto',

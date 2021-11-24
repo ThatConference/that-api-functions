@@ -1,5 +1,4 @@
 import 'dotenv/config';
-
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
@@ -31,6 +30,7 @@ const useSentry = async (req, res, next) => {
 		message: 'og-image init',
 		level: Sentry.Severity.Info,
 	});
+
 	next();
 };
 
@@ -40,7 +40,7 @@ Sentry.init({
 	dsn: envConfig.sentryDsn,
 	environment: envConfig.sentryEnv,
 	release: envConfig.sentryVersion || defaultVersion,
-	debug: envConfig.dev,
+	debug: envConfig.isdev,
 });
 
 Sentry.configureScope(scope => {
@@ -50,8 +50,9 @@ Sentry.configureScope(scope => {
 function failure(err, req, res, next) {
 	dlog(err);
 	Sentry.captureException(err);
+	console.error(err);
 
-	res.set('Content-Type', 'application/json').status(500).json(err);
+	res.status(500).json({ success: false, message: err });
 }
 
 export const handler = app

@@ -3,7 +3,7 @@ function configMissing(configKey) {
 }
 
 export default {
-	dev: process.env.NODE_ENV === 'development',
+	isdev: process.env.NODE_ENV === 'development',
 	port: process.env.PORT || configMissing('PORT'),
 
 	thatDotUs: process.env.THAT_US || 'https://that.us',
