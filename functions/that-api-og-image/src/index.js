@@ -37,9 +37,9 @@ const useSentry = async (req, res, next) => {
 const app = express();
 
 Sentry.init({
-	dsn: envConfig.sentryDsn,
-	environment: envConfig.sentryEnv,
-	release: envConfig.sentryVersion || defaultVersion,
+	dsn: envConfig.sentry.dsn,
+	environment: envConfig.sentry.env,
+	release: envConfig.sentry.version || defaultVersion,
 	debug: envConfig.isdev,
 });
 
