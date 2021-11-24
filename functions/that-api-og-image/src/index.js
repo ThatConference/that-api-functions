@@ -8,7 +8,7 @@ import responseTime from 'response-time';
 import * as Sentry from '@sentry/node';
 
 import template from './routes/template';
-import envConfig from './lib/envConfig';
+import envConfig from './envConfig';
 
 let version;
 (async () => {

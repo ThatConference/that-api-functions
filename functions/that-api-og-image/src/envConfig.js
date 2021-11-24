@@ -8,6 +8,10 @@ export default {
 
 	thatDotUs: process.env.THAT_US || 'https://that.us',
 
+	googleBucket:
+		process.env.GOOGLE_BUCKET_NAME || configMissing('GOOGLE_BUCKET_NAME'),
+	imageBasePath: process.env.IMAGE_BASE_PATH || 'og-image',
+
 	sentryEnv: process.env.THAT_ENVIRONMENT || configMissing('THAT_ENVIRONMENT'),
 	sentryDsn: process.env.SENTRY_DSN || configMissing('SENTRY_DSN'),
 	sentryVersion: process.env.SENTRY_VERSION || configMissing('SENTRY_VERSION'),
