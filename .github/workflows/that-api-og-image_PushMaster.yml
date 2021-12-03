@@ -59,11 +59,15 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: tc-api
+      - name: Google-Auth
+        uses: google-github-actions/auth@v0.4.1
+        with:
+          credentials_json: ${{ secrets.GCLOUD_AUTH }}
       - name: Setup gcloud Actions
         uses: google-github-actions/setup-gcloud@master
         with:
           version: '360.0.0'
-          service_account_key: ${{ secrets.GCLOUD_AUTH }}
+          # service_account_key: ${{ secrets.GCLOUD_AUTH }}
           project_id: ${{ secrets.GCP_PROJECT_ID }}
       - name: write .env file
         run: |
