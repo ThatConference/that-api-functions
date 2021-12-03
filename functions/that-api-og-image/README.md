@@ -1,6 +1,6 @@
 # og-image
 
-# local development
+## local development
 
 - npx playwright install
 
