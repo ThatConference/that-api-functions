@@ -20,7 +20,7 @@ export default function createOrderAndAllocations({
       ...li,
       product: li.productId,
       productType: product.type,
-      uiReference: product.uiReference,
+      uiReference: product.uiReference || null,
       unitPrice: 0,
       totalAmount: 0,
     };
