@@ -31,7 +31,7 @@ export default function createOrderFromCheckout({ checkoutSession, products }) {
       stripeProductId: stripeLi.price.product,
       isBulkPurchase: coLineItem.isBulkPurchase,
       productType: product.type,
-      uiReference: product.uiReference,
+      uiReference: product.uiReference || null,
     };
   });
 
