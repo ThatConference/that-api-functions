@@ -23,7 +23,7 @@ export default function generateAllocationsFromOrder({
         purchasedBy: order.member,
         product: lineItem.product,
         productType: lineItem.productType,
-        uiReference: lineItem.uiReference,
+        uiReference: lineItem.uiReference || null,
         isAllocated: !isBulkPurchase,
         allocatedTo: isBulkPurchase ? null : order.member,
         hasCheckedIn: false,
