@@ -33,6 +33,9 @@ export async function createScreenshot(url) {
 	await page.goto(url, { waitUntil: 'networkidle2' });
 
 	const ogElement = await page.$('#og-image');
+	if (!ogElement) {
+		throw new Error(`No #og-image id found in url page, ${url}`);
+	}
 	const buffer = await ogElement.screenshot();
 
 	await browser.close();
