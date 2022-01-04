@@ -17,6 +17,7 @@ async function get({ _parsedUrl, params, query }, res) {
 
 	try {
 		const url = `${thatDotUs}/templates/${name}/${rawQueryString}`;
+		Sentry.setTag('og-url', url);
 
 		const file = await createScreenshot(url);
 		const filename = `${id}.png`;
