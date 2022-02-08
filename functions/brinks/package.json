@@ -1,6 +1,6 @@
 {
   "name": "brinks",
-  "version": "1.12.3",
+  "version": "1.13.0",
   "description": "Our order taker",
   "main": "index.js",
   "scripts": {
@@ -50,7 +50,7 @@
     "eslint-plugin-jest": "^26.1.0",
     "eslint-plugin-prettier": "^4.0.0",
     "husky": "^4.3.8",
-    "jest-cli": "^27.3.1",
+    "jest-cli": "^27.5.0",
     "nodemon": "^2.0.15",
     "prettier-eslint": "^13.0.0",
     "prettier-eslint-cli": "^5.0.1"
@@ -58,7 +58,7 @@
   "dependencies": {
     "@google-cloud/firestore": "^5.0.2",
     "@sentry/node": "^6.17.4",
-    "@thatconference/api": "^2.8.0",
+    "@thatconference/api": "^2.8.2",
     "debug": "^4.3.3",
     "dotenv": "^16.0.0",
     "express": "^4.17.2",

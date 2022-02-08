@@ -9,6 +9,7 @@ export default function sendTransactional({
   mailTo,
   templateAlias,
   templateModel,
+  tag = '',
 }) {
   dlog('postmark sendTransactional called');
   if (!mailTo || !templateAlias) {
@@ -26,5 +27,6 @@ export default function sendTransactional({
     From: envConfig.postmark.emailFrom,
     To: mailTo,
     TemplateModel,
+    Tag: tag,
   });
 }
