@@ -73,7 +73,7 @@ export default function orderEvents() {
           scope.setContext('order', { order });
           scope.setLevel(Sentry.Severity.Warning);
           Sentry.captureMessage(
-            `Event accepted speaker not found writing orderId back to acceptedSpeakers collection`,
+            `Event accepted speaker not found while writing orderId back to acceptedSpeakers collection`,
           );
         });
         return false;
@@ -326,13 +326,13 @@ export default function orderEvents() {
       });
   }
 
-  async function sendOrbitLoveIsSpeakerActivity({
+  async function sendOrbitLoveSpeakerActivity({
     order,
     orderAllocations,
     member,
     firestore,
   }) {
-    dlog('sendOrbitLoveIsSpeakerActivity for %s', member.id);
+    dlog('sendOrbitLoveSpeakerActivity for %s', member.id);
     const checkResult = await validateIsSpeakerOrder({ order, firestore });
     if (checkResult === false) return undefined;
 
@@ -388,7 +388,7 @@ export default function orderEvents() {
   orderEventEmitter.on('orderCreated', sendMembershipThankYou);
   orderEventEmitter.on('orderCreated', sendOrbitLoveMembershipActivity);
   orderEventEmitter.on('orderCreated', setOrderOnAcceptedSpeaker);
-  orderEventEmitter.on('orderCreated', sendOrbitLoveIsSpeakerActivity);
+  orderEventEmitter.on('orderCreated', sendOrbitLoveSpeakerActivity);
   orderEventEmitter.on('subscriptionChange', sendSubChangedSlack);
   orderEventEmitter.on('subscriptionRenew', sendSubRenewalSlack);
   // Called after validateOrderForThankYou is 👍
