@@ -5,6 +5,8 @@ const constants = {
   POSTMARK: {
     TEMPLATES: {
       PURCHASE_MEMBERSHIP: 'membership-purchase-thank-you',
+      RENEW_MEMBERSHIP: 'membership-renew-thank-you',
+      CANCEL_MEMBERSHIP: 'membership-cancelled',
       ONLINE_IN_X_DAYS: '',
     },
   },
@@ -23,7 +25,7 @@ constants.THAT.DISCOUNT_CODE = {
 constants.THAT.PROMO_CODE = {
   MEMBERSHIP_STORE_DISCOUNT: {
     TITLE: 'Membership THAT Store Discount 10%',
-    CODE: 'THATMembership2021',
+    CODE: 'THATMembershipThankYou',
     EXPIRE_IN_DAYS: 1825,
   },
 };

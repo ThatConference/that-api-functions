@@ -2,6 +2,7 @@ import { EventEmitter } from 'events';
 import debug from 'debug';
 import * as Sentry from '@sentry/node';
 import { dataSources, orbitLove } from '@thatconference/api';
+import dateformat from 'dateformat';
 import slackNotification from '../notifications/slack';
 import setFollowPurchasedEvents from '../setFollowPurchasedEvents';
 import { SetFollowError, SendEmailError } from '../errors';
@@ -259,7 +260,10 @@ export default function orderEvents() {
       member: {
         firstName: member.firstName,
         lastName: member.lastName,
-        membershipExpirationDate: member.membershipExpirationDate,
+        membershipExpirationDate: dateformat(
+          member.membershipExpirationDate,
+          'mmmm d, yyyy',
+        ),
       },
     };
 
@@ -269,7 +273,67 @@ export default function orderEvents() {
       templateModel,
       tag: 'membership-purchase',
     })
-      .then(r => dlog('sendjMembershipThankYou result: %o', r))
+      .then(r => dlog('sendMembershipThankYou result: %o', r))
+      .catch(err =>
+        process.nextTick(() => orderEventEmitter.emit('sendEmailError', err)),
+      );
+  }
+
+  function sendMembershipRenewalThankyou({ member }) {
+    dlog('sendMembershipRenewalThankYou called');
+
+    const templateModel = {
+      member: {
+        firstName: member.firstName,
+        lastName: member.lastName,
+        membershipExpirationDate: dateformat(
+          member.membershipExpirationDate,
+          'mmmm d, yyyy',
+        ),
+      },
+    };
+
+    return sendTransactionEmail({
+      mailTo: member.email,
+      templateAlias: constants.POSTMARK.TEMPLATES.RENEW_MEMBERSHIP,
+      templateModel,
+      tag: 'membership-renewal',
+    })
+      .then(r => dlog('sendMembershipRenewalThankYou result: %o', r))
+      .catch(err =>
+        process.nextTick(() => orderEventEmitter.emit('sendEmailError', err)),
+      );
+  }
+
+  function sendMembershipCancelEmail({ member, cancelAtPeriodEnd }) {
+    dlog('sendMembershipCancelEmail called');
+
+    // We only on
+    if (cancelAtPeriodEnd === false) {
+      dlog(
+        `Subscriptiong doesn't end at period end, not sending cancellation email`,
+      );
+      return undefined;
+    }
+
+    const templateModel = {
+      member: {
+        firstName: member.firstName,
+        lastName: member.lastName,
+        membershipExpirationDate: dateformat(
+          member.membershipExpirationDate,
+          'mmmm d, yyyy',
+        ),
+      },
+    };
+
+    return sendTransactionEmail({
+      mailTo: member.email,
+      templateAlias: constants.POSTMARK.TEMPLATES.CANCEL_MEMBERSHIP,
+      templateModel,
+      tag: 'membership-renewal',
+    })
+      .then(r => dlog('sendMembershipCencelEmail result: %o', r))
       .catch(err =>
         process.nextTick(() => orderEventEmitter.emit('sendEmailError', err)),
       );
@@ -390,7 +454,9 @@ export default function orderEvents() {
   orderEventEmitter.on('orderCreated', setOrderOnAcceptedSpeaker);
   orderEventEmitter.on('orderCreated', sendOrbitLoveSpeakerActivity);
   orderEventEmitter.on('subscriptionChange', sendSubChangedSlack);
+  orderEventEmitter.on('subscriptionChange', sendMembershipCancelEmail);
   orderEventEmitter.on('subscriptionRenew', sendSubRenewalSlack);
+  orderEventEmitter.on('subscriptionRenew', sendMembershipRenewalThankyou);
   // Called after validateOrderForThankYou is 👍
   orderEventEmitter.on(
     'orderValidatedForThankyou',

@@ -42,10 +42,10 @@ export default function stripeEventCustSubUpdated(req, res, next) {
   const cancelAtPeriodEnd = subData.cancel_at_period_end;
   const currentPeriodEnd = subData.current_period_end;
   if (
-    !stripeCustId === undefined ||
-    !subscriptionId === undefined ||
-    !cancelAtPeriodEnd === undefined ||
-    !currentPeriodEnd === undefined
+    stripeCustId === undefined ||
+    subscriptionId === undefined ||
+    cancelAtPeriodEnd === undefined ||
+    currentPeriodEnd === undefined
   ) {
     // should never happen fields validated in bouncer
     thatBrinks.errorMsg = `missing data from customer.subscription.updated stripe event object`;
@@ -69,7 +69,7 @@ export default function stripeEventCustSubUpdated(req, res, next) {
     firestore,
   })
     .then(result => {
-      if (!result?.result) {
+      if (result?.result !== true) {
         thatBrinks.errorMsg =
           result.reason ||
           'Stripe Customer id not found or subscription id mismatch';

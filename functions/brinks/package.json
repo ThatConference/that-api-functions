@@ -1,6 +1,6 @@
 {
   "name": "brinks",
-  "version": "1.13.0",
+  "version": "1.14.0",
   "description": "Our order taker",
   "main": "index.js",
   "scripts": {
@@ -59,6 +59,7 @@
     "@google-cloud/firestore": "^5.0.2",
     "@sentry/node": "^6.17.4",
     "@thatconference/api": "^2.8.2",
+    "dateformat": "^4.6.3",
     "debug": "^4.3.3",
     "dotenv": "^16.0.0",
     "express": "^4.17.2",
