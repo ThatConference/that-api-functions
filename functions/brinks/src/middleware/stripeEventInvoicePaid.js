@@ -2,6 +2,7 @@ import debug from 'debug';
 import * as Sentry from '@sentry/node';
 import constants from '../constants';
 import updateSubFromStripeEvent from '../lib/that/updateSubFromStripeEvent';
+import createStripeDiscountAndSave from '../lib/createSaveStripeMembershipDiscount';
 
 const dlog = debug('that:api:brinks:stripeEventInoicePaidMw');
 
@@ -54,10 +55,10 @@ export default function stripeEventInvoicePaid(req, res, next) {
   const cancelAtPeriodEnd = invoiceData.subscription.cancel_at_period_end;
   const currentPeriodEnd = invoiceData.subscription.current_period_end;
   if (
-    !stripeCustId === undefined ||
-    !subscriptionId === undefined ||
-    !cancelAtPeriodEnd === undefined ||
-    !currentPeriodEnd === undefined
+    stripeCustId === undefined ||
+    subscriptionId === undefined ||
+    cancelAtPeriodEnd === undefined ||
+    currentPeriodEnd === undefined
   ) {
     // should never happen fields validated in bouncer
     thatBrinks.errorMsg = `missing data from customer.subscription.updated stripe event object`;
@@ -82,7 +83,7 @@ export default function stripeEventInvoicePaid(req, res, next) {
     firestore,
   })
     .then(result => {
-      if (!result?.result) {
+      if (result?.result !== true) {
         thatBrinks.errorMsg =
           result.reason ||
           'Stripe Customer id not found or subscription id mismatch';
@@ -97,11 +98,19 @@ export default function stripeEventInvoicePaid(req, res, next) {
         res.status(200);
         return next(thatBrinks.errorMsg);
       }
+      dlog('subscription updated from invoice.paid');
 
-      dlog('update subscription from invoice.paid complete');
+      // create reaturns an `WriteResult` which we don't need
+      // if create doesn't throw, we move on.
+      return createStripeDiscountAndSave({
+        member: result.member,
+        firestore,
+      }).then(() => result.member);
+    })
+    .then(member => {
       thatBrinks.isProcessed = true;
       orderEvents.emit('subscriptionRenew', {
-        member: result.member,
+        member,
         subscriptionId,
       });
 
