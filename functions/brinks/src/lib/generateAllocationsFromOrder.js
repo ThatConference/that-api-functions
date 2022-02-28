@@ -32,6 +32,7 @@ export default function generateAllocationsFromOrder({
         hoodieSize: null,
         dietaryRequirement: null,
         dietaryOther: null,
+        enrollmentStatus: 'NOT_STARTED',
         createdAt: orderCreatedAt,
         lastUpdatedAt: orderCreatedAt,
         lastUpdatedBy: order.createdBy,
