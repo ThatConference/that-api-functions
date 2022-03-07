@@ -35,6 +35,11 @@ export default function parseOaNotifications({ events }) {
       if (alloc.order.orderType === 'SPEAKER') {
         // pass-over speaker orders
         _counts.SPEAKER = _counts.SPEAKER ? (_counts.SPEAKER += 1) : 1;
+      } else if (['REFUNDED', 'CANCELLED'].includes(alloc.purchaseStatus)) {
+        // Ticket Refunded or cancelled
+        _counts[alloc.purchaseStatus] = _counts[alloc.purchaseStatus]
+          ? (_counts[alloc.purchaseStatus] += 1)
+          : 1;
       } else if (eventSendFreq > daysLastSent) {
         // Skip sending too soon.
         _counts.FREQ_SKIP = _counts.FREQ_SKIP ? (_counts.FREQ_SKIP += 1) : 1;
