@@ -19,6 +19,7 @@ export default function sendOaNotifications({ eventNotifications }) {
   const holderTemplate =
     constants.POSTMARK.TEMPLATES.TICKET_HOLDER_NOT_COMPLETE;
   const messages = [];
+  const validateMessages = [];
 
   eventNotifications.forEach(en => {
     const event = {
@@ -54,11 +55,18 @@ export default function sendOaNotifications({ eventNotifications }) {
           orderId,
           unallocatedTicketCnt: orderInfo.unallocatedTicketCount,
         },
+      };
+      const ckMessages = {
+        from: emailFrom,
+        to: orderInfo.ownerEmail,
+        tag: 'TicketOrder_Unassigned_Tickets',
+        templateAlias: ownerTemplate,
         that: {
           orderAllocationIds: orderInfo.orderAllocationIds,
         },
       };
       messages.push(pmMessage);
+      validateMessages.push(ckMessages);
     });
 
     // next are the ticket holders incomplete tickets
@@ -93,14 +101,26 @@ export default function sendOaNotifications({ eventNotifications }) {
         metadata: {
           allocationIdCount: tickets.length,
         },
+      };
+      const ckMessages = {
+        from: emailFrom,
+        to: holderEmail,
+        tag: 'TicketHolder_Not_Complete',
+        templateAlias: holderTemplate,
         that: {
           orderAllocationIds: tickets.map(t => t.id),
         },
       };
       messages.push(pmMessage);
+      validateMessages.push(ckMessages);
     });
   });
   // dlog('our messages:\n%O', messages);
+  if (messages.length !== validateMessages.length)
+    throw new Error('messages and validationMessages length mismatch');
 
-  return { postmarkMessages: messages };
+  return {
+    postmarkMessages: messages,
+    validationMessages: validateMessages,
+  };
 }

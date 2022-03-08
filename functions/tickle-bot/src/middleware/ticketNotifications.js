@@ -36,7 +36,9 @@ export default async function ticketNotifications(req, res, next) {
 
   const { eventNotifications, counts } = parseOaNotifications({ events });
 
-  const { postmarkMessages } = formatOaNotifications({ eventNotifications });
+  const { postmarkMessages, validationMessages } = formatOaNotifications({
+    eventNotifications,
+  });
   // dlog('postmarkMessages:%O', postmarkMessages);
 
   let sentOrderAllocationIds;
@@ -45,6 +47,7 @@ export default async function ticketNotifications(req, res, next) {
   try {
     ({ sentOrderAllocationIds, messagesInError } = await sendPostmarkMessages({
       postmarkMessages,
+      validationMessages,
     }));
   } catch (error) {
     return next(error);

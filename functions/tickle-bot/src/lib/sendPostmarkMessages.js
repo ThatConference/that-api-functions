@@ -8,8 +8,23 @@ import constants from '../constants';
 
 const dlog = debug('that:api:ticklebot:sendPostmarkMessages');
 
-export default async function sendPostmarkMessages({ postmarkMessages }) {
-  if (!Array.isArray(postmarkMessages)) return [];
+export default async function sendPostmarkMessages({
+  postmarkMessages,
+  validationMessages,
+}) {
+  if (!Array.isArray(postmarkMessages) || !Array.isArray(validationMessages))
+    return [];
+  if (postmarkMessages.length !== validationMessages.length) {
+    Sentry.withScope(scope => {
+      scope.setContext('Message collection lengths', {
+        postmarkMessages: postmarkMessages?.length,
+        validationMessages: validationMessages?.length,
+      });
+    });
+    throw new Error(
+      'postmarkMessages and validationMessages collection sizes must match',
+    );
+  }
   dlog('sendPostmarkMessages called for %d messges', postmarkMessages?.length);
   const { postmark: postmarkConfig } = envConfig;
   const maxPerBatch = constants.POSTMARK.MAX_PER_BATCH;
@@ -31,11 +46,11 @@ export default async function sendPostmarkMessages({ postmarkMessages }) {
   }, []);
 
   dlog('postmark all return %d message results', sendResults.length);
-  if (sendResults?.length !== postmarkMessages?.length) {
+  if (sendResults?.length !== validationMessages?.length) {
     Sentry.withScope(scope => {
       scope.setTag('function', 'sendPostmarkMessages');
       scope.setContext('counts', {
-        postmarkMessages: postmarkMessages?.length,
+        validationMessages: validationMessages?.length,
         postmarkResults: sendResults?.length,
       });
     });
@@ -46,6 +61,7 @@ export default async function sendPostmarkMessages({ postmarkMessages }) {
   for (let j = 0; j < sendResults.length; j += 1) {
     const sendResult = sendResults[j];
     const postmarkMessage = postmarkMessages[j];
+    const postmarkValidation = validationMessages[j];
     // dlog('compare:\n%O\n<----->\n%O', postmarkMessage, sendResult);
     if (sendResult.ErrorCode > 0) {
       dlog('Error sending email:\n%O\n%O', sendResult, postmarkMessage);
@@ -54,9 +70,14 @@ export default async function sendPostmarkMessages({ postmarkMessages }) {
         postmarkMessage,
       });
     } else {
-      const ids = postmarkMessage?.that?.orderAllocationIds ?? [];
+      const ids = postmarkValidation?.that?.orderAllocationIds ?? [];
       if (ids.length === 0)
-        dlog('zero ids::\n%O\n::\n%O', postmarkMessage, sendResult);
+        dlog(
+          'zero ids(idx: %d)::\n%O\n::\n%O',
+          j,
+          postmarkValidation,
+          sendResult,
+        );
       sentOrderAllocationIds.push(...ids);
     }
   }
