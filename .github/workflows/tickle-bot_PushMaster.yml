@@ -51,7 +51,7 @@ jobs:
         if: job.status == 'failure' || job.status == 'cancelled'
 
   deploy-image:
-    name: Deploy Image Upload
+    name: Deploy Ticklebot
     needs: build
     runs-on: ubuntu-latest
     steps:
