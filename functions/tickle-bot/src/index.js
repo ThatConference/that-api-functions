@@ -1,14 +1,19 @@
 import 'dotenv/config';
-import connect from 'connect';
+import express from 'express';
 import debug from 'debug';
 import responseTime from 'response-time';
 import * as Sentry from '@sentry/node';
+import { Firestore } from '@google-cloud/firestore';
 import queries from './queries';
 import sendGraphReq from './sendGraphReq';
+import { ticketNotifications } from './middleware';
+import constants from './constants';
 
-const dlog = debug('that:api:functions:ticklebot');
-const api = connect();
+const dlog = debug('that:api:ticklebot');
+const api = express();
+const firestore = new Firestore();
 
+api.set(constants.TICKLEBOT.FIRESTORE, firestore);
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
   environment: process.env.THAT_ENVIRONMENT,
@@ -21,7 +26,7 @@ Sentry.configureScope(scope => {
 });
 
 function failure(err, req, res, next) {
-  dlog('middleware catcall error %O', err);
+  dlog('middleware catch-all error %O', err);
   Sentry.captureException(err);
   res.set('Content-type', 'application/json').status(500).json(err);
 }
@@ -41,7 +46,7 @@ function slackDigest(hours) {
       start: hours === 1 ? 'NEXT_HOUR' : 'CURRENT_HOUR',
     };
 
-    sendGraphReq({ query, variables }).then(result => {
+    return sendGraphReq({ query, variables }).then(result => {
       dlog('result of graph req %o', result);
       res
         .set('content-type', 'application/json')
@@ -90,5 +95,6 @@ export const handler = api
   .use('/hourlydigest', slackDigest(1))
   .use('/thatstats', thatStats)
   .use('/queueUpSocials', queueUpSocials)
+  .use('/ticketNotification', ticketNotifications)
 
   .use(failure);

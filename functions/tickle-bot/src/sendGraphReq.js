@@ -8,7 +8,7 @@ const dlog = debug('that:api:ticklebot:sendGraphReq');
 
 export default async function sendGraphReq(payload) {
   dlog('sendGraphReq called');
-  const gateway = envConfig.apiGateway;
+  const gateway = envConfig.that.apiGateway;
   const token = await reqAuthToken();
   dlog('token: %s', token);
   const headers = {
@@ -23,7 +23,6 @@ export default async function sendGraphReq(payload) {
     headers,
   })
     .then(res => res.json())
-    .then(res => res)
     .catch(err => {
       dlog('error in request: %O', err);
       Sentry.captureException(err);

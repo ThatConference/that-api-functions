@@ -33,6 +33,7 @@ export default function generateAllocationsFromOrder({
         dietaryRequirement: null,
         dietaryOther: null,
         enrollmentStatus: 'NOT_STARTED',
+        purchaseStatus: 'COMPLETE',
         createdAt: orderCreatedAt,
         lastUpdatedAt: orderCreatedAt,
         lastUpdatedBy: order.createdBy,
