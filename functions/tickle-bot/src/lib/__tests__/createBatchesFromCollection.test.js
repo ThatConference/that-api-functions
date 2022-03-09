@@ -169,7 +169,7 @@ describe(`validate createBatchesFromCollection() operation`, () => {
         acc.push(...cur);
         return acc;
       }, []);
-      ids.forEach((id, idx) => expect(id === ids[idx]));
+      ids.forEach((id, idx) => expect(id === all[idx]));
     });
   });
 });
