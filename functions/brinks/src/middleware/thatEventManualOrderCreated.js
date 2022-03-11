@@ -1,10 +1,12 @@
 import debug from 'debug';
 import * as Sentry from '@sentry/node';
+import { dataSources } from '@thatconference/api';
 import validateManualOrder from '../lib/that/validateManualOrder';
 import thatCreateOrderAndAllocations from '../lib/that/createOrderAndAllocations';
 import constants from '../constants';
 
 const dlog = debug('that:api:brinks:thatEventManualOrderCreatedMw');
+const memberStoreFunc = dataSources.cloudFirestore.member;
 
 export default async function thatEventManualOrderCreated(req, res, next) {
   dlog('thatEventManualOrderCreated middleware called');
@@ -29,6 +31,11 @@ export default async function thatEventManualOrderCreated(req, res, next) {
     createdBy: orderData.createdBy,
   });
 
+  const memberStore = memberStoreFunc(firestore);
+  const member = memberStore.get(orderData.member);
+  if (!member) {
+    return next(new Error(`No member found for id ${orderData.member}`));
+  }
   const { products } = await validateManualOrder({ orderData, firestore });
 
   return thatCreateOrderAndAllocations({
@@ -57,6 +64,7 @@ export default async function thatEventManualOrderCreated(req, res, next) {
         products,
         order,
         orderAllocations: orderAllocations || [],
+        member,
       });
 
       return next();
