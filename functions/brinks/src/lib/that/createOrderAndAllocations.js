@@ -27,6 +27,10 @@ export default function createOrderAndAllocations({
     delete newLi.productId;
     return newLi;
   });
+  const { discount } = orderData;
+  if (discount?.name) {
+    discount.promotionCode = `promo_manual-order-reference`;
+  }
   const now = new Date();
   const newOrder = {
     ...orderData,
@@ -41,6 +45,7 @@ export default function createOrderAndAllocations({
     lineItems: newLineItems,
     status: orderData.status ?? 'COMPLETE',
     orderType: orderData.orderType ?? 'REGULAR',
+    discounts: discount ? [discount] : [],
   };
 
   const orderAllocations = generateAllocationsFromOrder({
