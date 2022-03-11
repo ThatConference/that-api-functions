@@ -47,6 +47,7 @@ export default function createOrderAndAllocations({
     orderType: orderData.orderType ?? 'REGULAR',
     discounts: discount ? [discount] : [],
   };
+  delete newOrder.discount;
 
   const orderAllocations = generateAllocationsFromOrder({
     order: newOrder,
