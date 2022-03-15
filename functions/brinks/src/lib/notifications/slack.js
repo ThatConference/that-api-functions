@@ -47,6 +47,12 @@ function newOrder({ order, products, member }) {
   let memberName = '<manual order>';
   if (member && member.firstName)
     memberName = `${member.firstName} ${member.lastName}`;
+  let eventName = order.event;
+  if (order.event === `w1ZQFzsSZzRuItVCNVmC`) {
+    eventName = `Wisconsin 2022`;
+  } else if (order.event === `OlyDhUyrp2DI9babqZO9`) {
+    eventName = `Texas 2022`;
+  }
 
   let productText = '';
   const { lineItems } = order;
@@ -59,14 +65,14 @@ function newOrder({ order, products, member }) {
 
   const slackBody = {
     channel: envConfig.that.slackChannelOrder,
-    username: 'THAT Bot < 🌲> ',
+    username: 'THAT Bot <🌲> ',
     icon_emoji: ':coin:',
     blocks: [
       {
         type: 'header',
         text: {
           type: 'plain_text',
-          text: `${memberName} placed an order :money_with_wings:`,
+          text: `${memberName} placed an order for ${eventName} :money_with_wings:`,
           emoji: true,
         },
       },
