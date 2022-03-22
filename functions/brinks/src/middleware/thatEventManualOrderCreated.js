@@ -32,8 +32,8 @@ export default async function thatEventManualOrderCreated(req, res, next) {
   });
 
   const memberStore = memberStoreFunc(firestore);
-  const member = memberStore.get(orderData.member);
-  if (!member) {
+  const member = await memberStore.get(orderData.member);
+  if (!member?.email) {
     return next(new Error(`No member found for id ${orderData.member}`));
   }
   const { products } = await validateManualOrder({ orderData, firestore });
