@@ -195,6 +195,10 @@ export default function orderEvents() {
       dlog('Skipped, no member object'); // manual order, don't send thank you email
       return undefined;
     }
+    if (order.orderType === 'SPEAKER') {
+      dlog('Skip, not sending purchase email on speaker order');
+      return undefined;
+    }
     const ticket = orderAllocations.find(
       oa =>
         oa.allocatedTo && oa.productType === constants.THAT.PRODUCT_TYPE.TICKET,
