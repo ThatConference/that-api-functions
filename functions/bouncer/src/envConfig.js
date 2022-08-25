@@ -4,6 +4,7 @@ function configMissing(configKey) {
 
 const requiredConfig = () => ({
   stripe: {
+    apiVersion: '2020-08-27',
     apiKey: process.env.STRIPE_API_KEY || configMissing('STRIPE_API_KEY'),
     apiSecretKey:
       process.env.STRIPE_PRIVATE_KEY || configMissing('STRIPE_PRIVATE_KEY'),
@@ -23,6 +24,9 @@ const requiredConfig = () => ({
     jwksCache: process.env.JWKS_CACHE,
     jwksRateLimit: process.env.JWKS_RATE_LIMIT,
     jwksRpm: process.env.JWKS_RPM,
+    thatRequestSigningKey:
+      process.env.THAT_REQUEST_SIGNING_KEY ||
+      configMissing('THAT_REQUEST_SIGNING_KEY'),
   },
 });
 

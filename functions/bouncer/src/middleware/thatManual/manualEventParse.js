@@ -36,7 +36,7 @@ export default function manualEventParse(req, res, next) {
     whRes.errorMsg = 'TEST mode manual THAT event sent to PRODUCTION Bouncer';
     Sentry.setTag('stripe', 'livemode failure');
     Sentry.setContext('that event', JSON.stringify(req.body));
-    Sentry.level(Sentry.Severity.Error);
+    Sentry.level('error');
     Sentry.captureMessage(whRes.errorMsg); // force capture as 'error'
     console.error(whRes.errorMsg);
     return next({

@@ -3,6 +3,7 @@ import manualOrderEventCreated from './manualOrderEventCreated';
 import manualEventQueue from './manualEventQueue';
 import manualEventEnd from './manualEventEnd';
 import manualOrderCheckSpeaker from './manualOrderCheckSpeaker';
+import manualOrderCheckClaim from './manualOrderCheckClaim';
 
 export {
   manualEventParse,
@@ -10,4 +11,5 @@ export {
   manualEventQueue,
   manualEventEnd,
   manualOrderCheckSpeaker,
+  manualOrderCheckClaim,
 };

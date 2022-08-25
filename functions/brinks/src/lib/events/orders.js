@@ -161,11 +161,15 @@ export default function orderEvents() {
     const olActivityType = orbitLove.activityTypes;
     let activityType;
     if (
-      orderAllocations.filter(p => p.uiReference.includes('VIRTUAL')).length > 0
+      orderAllocations.filter(
+        p => p.uiReference && p.uiReference.includes('VIRTUAL'),
+      ).length > 0
     ) {
       activityType = olActivityType.purchase.onThat();
     } else if (
-      orderAllocations.filter(p => p.uiReference.includes('CAMPER')).length > 0
+      orderAllocations.filter(
+        p => p.uiReference && p.uiReference.includes('CAMPER'),
+      ).length > 0
     ) {
       activityType = olActivityType.purchase.atThat();
     } else {
