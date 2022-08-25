@@ -20,4 +20,21 @@ describe('Test manual order event object validation', () => {
       'order.lineItems[0].quantity must be less than or equal to 1',
     );
   });
+  it('throws when order.event is too short', () => {
+    manualOrderJson.order.lineItems[0].quantity = 1;
+    manualOrderJson.order.event = 'short_id';
+    return expect(manualOrderEventValidate(manualOrderJson)).rejects.toThrow(
+      'order.event must be at least 12 characters',
+    );
+  });
+  it('throws when eventId is too short', () => {
+    manualOrderJson.order.lineItems[0].quantity = 1;
+    manualOrderJson.order.event = 'eventId_@_12';
+    manualOrderJson.eventId = 'short_id';
+    return expect(manualOrderEventValidate(manualOrderJson)).rejects.toThrow(
+      'eventId must be at least 12 characters',
+    );
+  });
 });
+
+// these tests are a bit fragile

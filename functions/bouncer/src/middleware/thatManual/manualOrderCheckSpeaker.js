@@ -13,12 +13,17 @@ export default function manualOrderCheckSpeaker(req, res, next) {
   whRes.stages.push('manualOrderCheckSpeaker');
 
   if (req.user.permissions.includes('admin')) {
-    dlog('next(), user is admin not speaker check needed');
+    dlog('next(), user is admin speaker check not needed');
     return next();
   }
 
   if (manualEvent.type !== 'that.order.manual.created') {
     dlog('next(), not type that.order.manual.created');
+    return next();
+  }
+
+  if (manualEvent?.order?.orderType !== 'SPEAKER') {
+    dlog('next(), not orderType: SPEAKER');
     return next();
   }
 
@@ -46,7 +51,6 @@ export default function manualOrderCheckSpeaker(req, res, next) {
       }
       dlog('speaker check passed');
 
-      // Else pass spearker check, continue
       return next();
     });
 }

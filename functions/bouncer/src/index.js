@@ -3,9 +3,10 @@ import debug from 'debug';
 import express from 'express';
 import * as Sentry from '@sentry/node';
 import responseTime from 'response-time';
-import jwt from 'express-jwt';
+import { expressjwt as jwt } from 'express-jwt';
 import jwks from 'jwks-rsa';
 import { Firestore } from '@google-cloud/firestore';
+import { security } from '@thatconference/api';
 import envConfig from './envConfig';
 import {
   stripeEventParse,
@@ -48,6 +49,39 @@ Sentry.configureScope(scope => {
   scope.setTag('subSystem', 'checkout');
 });
 
+const thatSigningCheck = (req, res, next) => {
+  const thatSig = req.headers['that-request-signature'] ?? '';
+  dlog('thatSig: %s', thatSig);
+  Sentry.setTag('thatSig', thatSig);
+  const signingKey = envConfig.security.thatRequestSigningKey;
+  const thatSigning = security.requestSigning;
+  const payload = req.body;
+  let checkResult = {};
+  try {
+    const requestSigning = thatSigning({ signingKey });
+    checkResult = requestSigning.verifyRequest({
+      thatSig,
+      payload,
+    });
+  } catch (err) {
+    dlog('signing error message: %s', err.message);
+    Sentry.captureException(err);
+    res.status(400).send('Invalid Request');
+  }
+
+  if (checkResult?.isValid !== true) {
+    dlog('THAT signing check faied: %s', checkResult.message);
+    Sentry.captureMessage(
+      `THAT Signature check failed: ${checkResult?.message}`,
+      'info',
+    );
+    res.status(400).send('Invalid Request');
+  }
+
+  dlog('THAT signing check passed');
+  return next();
+};
+
 const jwtCheck = jwt({
   secret: jwks.expressJwtSecret({
     cache: JSON.parse(envConfig.security.jwksCache || true),
@@ -62,6 +96,10 @@ const jwtCheck = jwt({
 
 function authz(role) {
   return (req, res, next) => {
+    dlog('authz');
+    // express-jwt v7 changed from user to auth
+    req.user = req.auth;
+    dlog('user.sub: %o', req.user.sub);
     Sentry.setTag('userId', req.user.sub);
     const allowRole = role.map(r => req.user.permissions.includes(r));
     dlog('user perms: %o', req.user.permissions);
@@ -88,10 +126,12 @@ export const handler = api
   .post('/stripe', stripeEventInvoiceSubscription)
   .post('/stripe', stripeEventQueue)
   .post('/stripe', stripeEventEnd)
+  .post('/thatmanualorder', thatSigningCheck)
   .post('/thatmanualorder', jwtCheck)
   .post('/thatmanualorder', authz(['admin', 'members']))
   .post('/thatmanualorder', manualMw.manualEventParse)
   .post('/thatmanualorder', manualMw.manualOrderCheckSpeaker)
+  .post('/thatmanualorder', manualMw.manualOrderCheckClaim)
   .post('/thatmanualorder', manualMw.manualOrderEventCreated)
   .post('/thatmanualorder', manualMw.manualEventQueue)
   .post('/thatmanualorder', manualMw.manualEventEnd)

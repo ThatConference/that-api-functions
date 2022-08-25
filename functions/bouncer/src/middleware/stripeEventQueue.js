@@ -42,6 +42,7 @@ export default function stripeEventQueue(req, res, next) {
       historyStore(firestore)
         .stripeEventSet(stripeEvent)
         .then(() => {
+          dlog('write history record done');
           whRes.isInHistory = true;
           whRes.pubsubId = r;
           return next();

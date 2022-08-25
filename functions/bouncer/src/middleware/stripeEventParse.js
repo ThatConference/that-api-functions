@@ -5,7 +5,9 @@ import * as Sentry from '@sentry/node';
 import envConfig from '../envConfig';
 
 const dlog = debug('that:api:bouncer:stripeParseMw');
-const stripe = stripelib(envConfig.stripe.apiKey);
+const stripe = stripelib(envConfig.stripe.apiKey, {
+  apiVersion: envConfig.stripe.apiVersion,
+});
 
 export default function stripeEventParse(req, res, next) {
   dlog('stripe event parser called');
@@ -58,7 +60,7 @@ export default function stripeEventParse(req, res, next) {
     whRes.errorMsg = 'TEST mode stripe event sent to PRODUCTION Bouncer';
     Sentry.setTag('stripe', 'livemode failure');
     Sentry.setContext('stripe event', JSON.stringify(event));
-    Sentry.level(Sentry.Severity.Error);
+    Sentry.level('error');
     Sentry.captureMessage(whRes.errorMsg); // force capture as 'error'
     console.error(whRes.errorMsg);
     return next({
