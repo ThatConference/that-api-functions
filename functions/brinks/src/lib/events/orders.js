@@ -44,7 +44,7 @@ export default function orderEvents() {
     if (membership.allocatedTo !== member.id) {
       Sentry.configureScope(scope => {
         scope.setTag('membershipThankYouEmail', 'failed');
-        scope.setLevel(Sentry.Severity.Info);
+        scope.setLevel('info');
         scope.setContext('orderAllocation', { membership });
         scope.setContext('member', { member });
         Sentry.captureMessage('Skipped, allocatedTo and memberId mismatch');
@@ -572,7 +572,7 @@ export default function orderEvents() {
       });
       Sentry.setContext('order', { orderRaw: order });
       scope.setTag('orderId', order.id);
-      scope.setLevel(Sentry.Severity.Info);
+      scope.setLevel('info');
       Sentry.captureMessage(`Speaker Order created information.`);
     });
 
