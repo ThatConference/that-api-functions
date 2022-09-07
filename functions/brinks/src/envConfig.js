@@ -4,6 +4,7 @@ function configMissing(configKey) {
 
 const requiredConfig = () => ({
   stripe: {
+    apiVersion: '2020-08-27',
     apiKey: process.env.STRIPE_API_KEY || configMissing('STRIPE_API_KEY'),
     apiSecretKey:
       process.env.STRIPE_PRIVATE_KEY || configMissing('STRIPE_PRIVATE_KEY'),

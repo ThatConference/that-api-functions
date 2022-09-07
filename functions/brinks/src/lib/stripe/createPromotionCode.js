@@ -3,7 +3,9 @@ import stripelib from 'stripe';
 import envConfig from '../../envConfig';
 
 const dlog = debug('that:api:brinks:createPromotionCode');
-const stripe = stripelib(envConfig.stripe.apiSecretKey);
+const stripe = stripelib(envConfig.stripe.apiSecretKey, {
+  apiVersion: envConfig.stripe.apiVersion,
+});
 const msYear = 31536000000;
 
 export default function createPromotionCode({
