@@ -109,7 +109,7 @@ export default function stripeEventInvoicePaid(req, res, next) {
     })
     .then(member => {
       thatBrinks.isProcessed = true;
-      orderEvents.emit('subscriptionRenew', {
+      orderEvents.emit(constants.ORDER_EVENT_EMITTER.SUBSCRIPTION_RENEW, {
         member,
         subscriptionId,
       });

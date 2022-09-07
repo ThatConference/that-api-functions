@@ -63,7 +63,7 @@ export default async function stripeEventCsCompleted(req, res, next) {
         );
       }
 
-      orderEvents.emit('orderCreated', {
+      orderEvents.emit(constants.ORDER_EVENT_EMITTER.ORDER_CREATED, {
         firestore,
         member,
         products,

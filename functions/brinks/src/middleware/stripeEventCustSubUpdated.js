@@ -87,7 +87,7 @@ export default function stripeEventCustSubUpdated(req, res, next) {
 
       dlog('update subscription from subscription change complete');
       thatBrinks.isProcessed = true;
-      orderEvents.emit('subscriptionChange', {
+      orderEvents.emit(constants.ORDER_EVENT_EMITTER.SUBSCRIPTION_CHANGE, {
         member: result.member,
         subscriptionId,
         cancelAtPeriodEnd,

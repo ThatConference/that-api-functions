@@ -32,6 +32,7 @@ export default function createOrderFromCheckout({ checkoutSession, products }) {
       isBulkPurchase: coLineItem.isBulkPurchase,
       productType: product.type,
       uiReference: product.uiReference || null,
+      eventActivities: product.eventActivities ?? [],
     };
   });
 

@@ -59,7 +59,7 @@ export default async function thatEventManualOrderCreated(req, res, next) {
         );
       }
 
-      orderEvents.emit('orderCreated', {
+      orderEvents.emit(constants.ORDER_EVENT_EMITTER.ORDER_CREATED, {
         firestore,
         products,
         order,
