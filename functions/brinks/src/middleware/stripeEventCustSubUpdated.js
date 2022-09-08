@@ -73,7 +73,7 @@ export default function stripeEventCustSubUpdated(req, res, next) {
         thatBrinks.errorMsg =
           result.reason ||
           'Stripe Customer id not found or subscription id mismatch';
-        thatBrinks.sentryLevel = Sentry.Severity.Warning;
+        thatBrinks.sentryLevel = 'warning';
         Sentry.setContext('Subscription Info', {
           stripeCustId,
           subscriptionId,
@@ -87,7 +87,7 @@ export default function stripeEventCustSubUpdated(req, res, next) {
 
       dlog('update subscription from subscription change complete');
       thatBrinks.isProcessed = true;
-      orderEvents.emit('subscriptionChange', {
+      orderEvents.emit(constants.ORDER_EVENT_EMITTER.SUBSCRIPTION_CHANGE, {
         member: result.member,
         subscriptionId,
         cancelAtPeriodEnd,

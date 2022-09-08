@@ -31,7 +31,7 @@ export default function stripeEventInvoicePaid(req, res, next) {
     });
     Sentry.captureMessage(
       `Stripe event 'invoice.paid' not a subscription invoice`,
-      scope => scope.setLevel(Sentry.Severity.Warning),
+      scope => scope.setLevel('warning'),
     );
     return next();
   }
@@ -87,7 +87,7 @@ export default function stripeEventInvoicePaid(req, res, next) {
         thatBrinks.errorMsg =
           result.reason ||
           'Stripe Customer id not found or subscription id mismatch';
-        thatBrinks.sentryLevel = Sentry.Severity.Warning;
+        thatBrinks.sentryLevel = 'warning';
         Sentry.setContext('Subscription Info', {
           stripeCustId,
           subscriptionId,
@@ -109,7 +109,7 @@ export default function stripeEventInvoicePaid(req, res, next) {
     })
     .then(member => {
       thatBrinks.isProcessed = true;
-      orderEvents.emit('subscriptionRenew', {
+      orderEvents.emit(constants.ORDER_EVENT_EMITTER.SUBSCRIPTION_RENEW, {
         member,
         subscriptionId,
       });

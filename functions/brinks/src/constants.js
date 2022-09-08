@@ -14,6 +14,16 @@ const constants = {
     ORDER_EVENTS: 'orderEvents',
     FIRESTORE: 'firestore',
   },
+  ORDER_EVENT_EMITTER: {
+    ORDER_CREATED: 'orderCreated',
+    SUBSCRIPTION_CHANGE: 'subscriptionChange',
+    SUBSCRIPTION_RENEW: 'subscriptionRenew',
+    VALIDATED_FOR_THANKYOU: 'orderValidatedForThankyou',
+    VALIDATED_FOR_FAMILY: 'orderValidatedForFamily',
+    VALIDATED_FOR_PARTNER: 'orderValidatedForPartner',
+    ERROR_SET_FOLLOW: 'setFollowError',
+    ERROR_SEND_EMAIL: 'sendEmailError',
+  },
 };
 constants.THAT.DISCOUNT_CODE = {
   TYPE: {

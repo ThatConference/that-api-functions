@@ -32,18 +32,20 @@ export default function createOrderFromCheckout({ checkoutSession, products }) {
       isBulkPurchase: coLineItem.isBulkPurchase,
       productType: product.type,
       uiReference: product.uiReference || null,
+      eventActivities: product.eventActivities ?? [],
     };
   });
 
   // save discount code information
   const { breakdown } = checkoutSession.total_details;
-  const discounts = breakdown
+  const discounts = Array.isArray(breakdown?.discounts)
     ? breakdown.discounts.map(d => ({
         amount: d.amount,
         promotionCode: d.discount.promotion_code,
         name: d.discount.coupon.name,
         amountOff: d.discount.coupon.amount_off,
         percentOff: d.discount.coupon.percent_off,
+        couponId: d.discount.coupon.id,
       }))
     : [];
 
