@@ -68,6 +68,7 @@ export default function createOrderFromCheckout({ checkoutSession, products }) {
     lastUpdatedBy: memberId,
     status: 'COMPLETE',
     orderType: 'REGULAR',
+    affiliateCode: checkoutSession?.metadata?.affiliateCode ?? null,
   };
 
   return newOrder;
