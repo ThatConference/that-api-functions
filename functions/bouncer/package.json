@@ -1,6 +1,6 @@
 {
   "name": "bouncer",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Our front door to manage incoming hooks",
   "main": "index.js",
   "scripts": {
