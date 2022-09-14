@@ -52,7 +52,11 @@ export default function manualOrderCheckClaim(req, res, next) {
   return memberStore(firestore)
     .get(memberId)
     .then(_member => {
-      if (!_member.slug || !_member.email || _member.isDeactivated === true) {
+      if (
+        !_member.profileSlug ||
+        !_member.email ||
+        _member.isDeactivated === true
+      ) {
         whRes.errorMsg = 'Member invalid, cannot claim order';
         dlog(whRes.errorMsg);
         Sentry.setContext('invalid member claming product', { _member });
