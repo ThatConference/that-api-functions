@@ -58,6 +58,7 @@ export default function createOrderFromCheckout({ checkoutSession, products }) {
     stripeMode: checkoutSession.mode,
     stripeSubscriptionId: checkoutSession.subscription,
     stripeLivemode: checkoutSession.livemode,
+    subTotal: checkoutSession.amount_subtotal / 100,
     total: checkoutSession.amount_total / 100,
     amountDiscounted: checkoutSession.total_details.amount_discount / 100,
     discounts,
