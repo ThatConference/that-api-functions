@@ -34,9 +34,9 @@
   },
   "homepage": "https://github.com/ThatConference/that-api-functions#readme",
   "dependencies": {
-    "@google-cloud/firestore": "^6.2.0",
+    "@google-cloud/firestore": "^6.3.0",
     "@sentry/node": "^7.13.0",
-    "@thatconference/api": "^3.0.2",
+    "@thatconference/api": "^3.1.0",
     "dateformat": "^4.6.3",
     "debug": "^4.3.4",
     "dotenv": "^16.0.2",
@@ -45,7 +45,7 @@
     "node-fetch": "^2.6.7",
     "postmark": "^3.0.14",
     "response-time": "^2.3.2",
-    "stripe": "^10.10.0"
+    "stripe": "^10.11.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.18.10",
