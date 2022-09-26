@@ -46,6 +46,15 @@ export default function createOrderAndAllocations({
     status: orderData.status ?? 'COMPLETE',
     orderType: orderData.orderType ?? 'REGULAR',
     discounts: discount ? [discount] : [],
+    includesPromotionCodes: discount.promotionCode
+      ? [discount.promotionCode]
+      : [],
+    includesProducts: [...new Set(newLineItems.map(li => li.product))],
+    includesProductTypes: [...new Set(newLineItems.map(li => li.productType))],
+    includesStripeProducts: [],
+    includesUiReferences: [...new Set(newLineItems.map(li => li.uiReference))],
+    includesBulkPurchase:
+      newLineItems.filter(li => li.isBulkPurchase === true) > 0,
   };
   delete newOrder.discount;
 
