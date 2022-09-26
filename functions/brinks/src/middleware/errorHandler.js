@@ -13,6 +13,8 @@ export default function errorHandler(err, req, res, next) {
   }
 
   if (res.status === 200 && thatBrinks.isProcessed) {
+    if (thatBrinks?.errorMsg)
+      console.log(`Clean 200 result, message: ${thatBrinks?.errorMsg}`);
     return next();
   }
   // known(ish) errors

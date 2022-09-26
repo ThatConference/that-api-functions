@@ -58,6 +58,7 @@ export default function createOrderFromCheckout({ checkoutSession, products }) {
     stripeMode: checkoutSession.mode,
     stripeSubscriptionId: checkoutSession.subscription,
     stripeLivemode: checkoutSession.livemode,
+    subTotal: checkoutSession.amount_subtotal / 100,
     total: checkoutSession.amount_total / 100,
     amountDiscounted: checkoutSession.total_details.amount_discount / 100,
     discounts,
@@ -69,6 +70,15 @@ export default function createOrderFromCheckout({ checkoutSession, products }) {
     status: 'COMPLETE',
     orderType: 'REGULAR',
     affiliateCode: checkoutSession?.metadata?.affiliateCode ?? null,
+    usedPromotionCodes: discounts.map(d => d.promotionCode),
+    includesProducts: [...new Set(lineItems.map(li => li.product))],
+    includesProductTypes: [...new Set(lineItems.map(li => li.productType))],
+    includesStripeProducts: [
+      ...new Set(lineItems.map(li => li.stripeProductId)),
+    ],
+    includesUiReferences: [...new Set(lineItems.map(li => li.uiReference))],
+    includesBulkPurchase:
+      lineItems.filter(li => li.isBulkPurchase === true) > 0,
   };
 
   return newOrder;
