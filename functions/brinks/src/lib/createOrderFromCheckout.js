@@ -70,7 +70,7 @@ export default function createOrderFromCheckout({ checkoutSession, products }) {
     status: 'COMPLETE',
     orderType: 'REGULAR',
     affiliateCode: checkoutSession?.metadata?.affiliateCode ?? null,
-    usedPromotionCodes: discounts.map(d => d.promotionCode),
+    includesPromotionCodes: discounts.map(d => d.promotionCode),
     includesProducts: [...new Set(lineItems.map(li => li.product))],
     includesProductTypes: [...new Set(lineItems.map(li => li.productType))],
     includesStripeProducts: [

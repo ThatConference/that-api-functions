@@ -32,11 +32,22 @@ export default async function thatEventManualOrderCreated(req, res, next) {
   });
 
   const memberStore = memberStoreFunc(firestore);
-  const member = await memberStore.get(orderData.member);
+  let member;
+  try {
+    member = await memberStore.get(orderData.member);
+  } catch (err) {
+    return next(err);
+  }
   if (!member?.email) {
     return next(new Error(`No member found for id ${orderData.member}`));
   }
-  const { products } = await validateManualOrder({ orderData, firestore });
+
+  let products;
+  try {
+    ({ products } = await validateManualOrder({ orderData, firestore }));
+  } catch (err) {
+    return next(err);
+  }
 
   return thatCreateOrderAndAllocations({
     orderData,
