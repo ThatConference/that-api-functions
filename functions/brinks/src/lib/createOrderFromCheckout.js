@@ -70,6 +70,12 @@ export default function createOrderFromCheckout({ checkoutSession, products }) {
     status: 'COMPLETE',
     orderType: 'REGULAR',
     affiliateCode: checkoutSession?.metadata?.affiliateCode ?? null,
+    usedPromotionCodes: discounts.map(d => d.promotionCode),
+    hasProducts: [...new Set(lineItems.map(li => li.product))],
+    hasProductTypes: [...new Set(lineItems.map(li => li.productType))],
+    hasStripeProducts: [...new Set(lineItems.map(li => li.stripeProductId))],
+    hasUiReferences: [...new Set(lineItems.map(li => li.uiReference))],
+    hasBulkPurchase: lineItems.filter(li => li.isBulkPurchase === true) > 0,
   };
 
   return newOrder;
