@@ -1,6 +1,6 @@
 {
   "name": "that-api-webhooks",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "THAT api automation webhooks",
   "main": "index.js",
   "scripts": {
@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/THATconference/that-api-webhook#readme",
   "engines": {
-    "node": "12.x"
+    "node": "16"
   },
   "dependencies": {
     "@sentry/node": "^6.13.2",
@@ -37,14 +37,14 @@
     "xml2js": "^0.4.23"
   },
   "devDependencies": {
-    "@google-cloud/functions-framework": "^1.9.0",
-    "chai": "^4.3.4",
-    "concurrently": "^6.2.1",
+    "@google-cloud/functions-framework": "^3.1.2",
+    "chai": "^4.3.6",
+    "concurrently": "^7.4.0",
     "eslint": "^7.32.0",
-    "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-import": "^2.24.2",
-    "mocha": "^8.4.0",
-    "nodemon": "^2.0.12"
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0",
+    "mocha": "^10.0.0",
+    "nodemon": "^2.0.20"
   }
 }
