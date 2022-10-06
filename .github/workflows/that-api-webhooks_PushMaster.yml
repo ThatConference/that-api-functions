@@ -15,11 +15,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@master
-      - name: Use node.js 12.x
-        uses: actions/setup-node@master
+        uses: actions/checkout@v2
         with:
-          node-version: 12.x
+          fetch-depth: 0
+      - name: Use node.js 16
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
       - name: npm ci, lint, test
         run: |
           cd functions/that-api-webhooks
@@ -44,11 +46,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@master
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Setup gcloud Actions
         uses: google-github-actions/setup-gcloud@v0
         with:
-          version: '360.0.0'
+          version: '397.0.0'
           service_account_key: ${{ secrets.GCLOUD_AUTH }}
           project_id: ${{ secrets.GCP_PROJECT_ID }}
       - name: write .env file
@@ -60,7 +64,7 @@ jobs:
       - name: Run GCP Deploy Function - webhooks
         run: |
           cd functions/that-api-webhooks
-          gcloud functions deploy webhooks --runtime nodejs12 --trigger-http --entry-point hooks --allow-unauthenticated
+          gcloud functions deploy webhooks --runtime nodejs16 --trigger-http --entry-point hooks --allow-unauthenticated
         env:
           CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
       - name: Slack Notification
