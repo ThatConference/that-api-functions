@@ -1,5 +1,5 @@
 const Sentry = require('@sentry/node');
-const axios = require('axios').default;
+const axios = require('axios');
 const debug = require('debug');
 const envConfig = require('../../envConfig');
 
