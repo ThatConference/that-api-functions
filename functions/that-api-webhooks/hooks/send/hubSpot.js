@@ -183,7 +183,7 @@ function subscribeContact({ email, subscriptionId }) {
         Sentry.captureMessage(
           `Error subscribing ${email} to ${subscriptionId}`,
         );
-        console.log('error subscribing contact', data);
+        console.log('error subscribing contact', JSON.stringify(data));
       });
     } else if (status < 200 || status > 299) {
       throw new Error(
