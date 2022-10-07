@@ -63,7 +63,12 @@ function findContactByEmail(email) {
   });
 }
 
-function createOrUpdateContact({ email, firstName, lastName, memberId }) {
+function createOrUpdateContact({
+  email,
+  firstName = '',
+  lastName = '',
+  memberId = '',
+}) {
   dlog('createOrUpdateContact called %s', email);
   const url = `${hsBaseUrl}/contacts/v1/contact/createOrUpdate/email/${email}`;
   dlog('url: %s', url);
