@@ -63,7 +63,12 @@ function findContactByEmail(email) {
   });
 }
 
-function createOrUpdateContact({ email, firstName, lastName, memberId }) {
+function createOrUpdateContact({
+  email,
+  firstName = '',
+  lastName = '',
+  memberId = '',
+}) {
   dlog('createOrUpdateContact called %s', email);
   const url = `${hsBaseUrl}/contacts/v1/contact/createOrUpdate/email/${email}`;
   dlog('url: %s', url);
@@ -183,7 +188,7 @@ function subscribeContact({ email, subscriptionId }) {
         Sentry.captureMessage(
           `Error subscribing ${email} to ${subscriptionId}`,
         );
-        console.log('error subscribing contact', data);
+        console.log('error subscribing contact', JSON.stringify(data));
       });
     } else if (status < 200 || status > 299) {
       throw new Error(

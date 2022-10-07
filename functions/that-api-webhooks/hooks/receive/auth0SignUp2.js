@@ -49,10 +49,11 @@ module.exports = async (req, res, next) => {
   } catch (err) {
     return next(err);
   }
-  console.log('add subscription result', subscribeResult);
+  console.log('add subscription result', JSON.stringify(subscribeResult));
 
   return res.json({
     vid: contactResult.vid,
+    isNew: contactResult.isNew,
     email: payload.email,
     subscription: subscribeResult,
   });
