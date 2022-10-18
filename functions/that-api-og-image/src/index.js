@@ -28,7 +28,7 @@ const useSentry = async (req, res, next) => {
 	Sentry.addBreadcrumb({
 		category: 'that-api-og-image',
 		message: 'og-image init',
-		level: Sentry.Severity.Info,
+		level: 'info',
 	});
 
 	next();
