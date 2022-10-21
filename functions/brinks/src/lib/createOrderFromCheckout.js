@@ -40,12 +40,12 @@ export default function createOrderFromCheckout({ checkoutSession, products }) {
   const { breakdown } = checkoutSession.total_details;
   const discounts = Array.isArray(breakdown?.discounts)
     ? breakdown.discounts.map(d => ({
-        amount: d.amount,
-        promotionCode: d.discount.promotion_code,
-        name: d.discount.coupon.name,
-        amountOff: d.discount.coupon.amount_off,
-        percentOff: d.discount.coupon.percent_off,
-        couponId: d.discount.coupon.id,
+        amount: d?.amount,
+        promotionCode: d?.discount?.promotion_code,
+        name: d?.discount?.coupon.name,
+        amountOff: d?.discount?.coupon.amount_off,
+        percentOff: d?.discount?.coupon?.percent_off,
+        couponId: d?.discount?.coupon?.id,
       }))
     : [];
 
@@ -70,7 +70,7 @@ export default function createOrderFromCheckout({ checkoutSession, products }) {
     status: 'COMPLETE',
     orderType: 'REGULAR',
     affiliateCode: checkoutSession?.metadata?.affiliateCode ?? null,
-    includesPromotionCodes: discounts.map(d => d.promotionCode),
+    includesPromotionCodes: discounts.map(d => d?.promotionCode),
     includesProducts: [...new Set(lineItems.map(li => li.product))],
     includesProductTypes: [...new Set(lineItems.map(li => li.productType))],
     includesStripeProducts: [

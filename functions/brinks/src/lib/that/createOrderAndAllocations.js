@@ -46,8 +46,8 @@ export default function createOrderAndAllocations({
     status: orderData.status ?? 'COMPLETE',
     orderType: orderData.orderType ?? 'REGULAR',
     discounts: discount ? [discount] : [],
-    includesPromotionCodes: discount.promotionCode
-      ? [discount.promotionCode]
+    includesPromotionCodes: discount?.promotionCode
+      ? [discount?.promotionCode]
       : [],
     includesProducts: [...new Set(newLineItems.map(li => li.product))],
     includesProductTypes: [...new Set(newLineItems.map(li => li.productType))],
