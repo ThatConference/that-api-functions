@@ -7,9 +7,9 @@ import debug from 'debug';
 const dlog = debug('that:api:gateway:middleware');
 
 // eslint-disable-next-line func-names
-export default function(req, res, next) {
+export default function (req, res, next) {
   // See https://cloud.google.com/functions/docs/writing/http#multipart_data
-  const busboy = new Busboy({
+  const busboy = Busboy({
     headers: req.headers,
     limits: {
       // Cloud functions impose this restriction anyway
@@ -31,7 +31,8 @@ export default function(req, res, next) {
   });
 
   busboy.on('file', (fieldname, file, filename, encoding, mimetype) => {
-    const filepath = path.join(tmpdir, filename);
+    dlog('tmpdir: %o, filename: %o', tmpdir, filename);
+    const filepath = path.join(tmpdir, filename?.filename);
     dlog(`Handling file upload field ${fieldname}: ${filename} (${filepath})`);
     const writeStream = fs.createWriteStream(filepath);
     file.pipe(writeStream);

@@ -3,7 +3,7 @@ import 'dotenv/config';
 import connect from 'connect';
 import cors from 'cors';
 import debug from 'debug';
-import jwt from 'express-jwt';
+import { expressjwt as jwt } from 'express-jwt';
 import jwks from 'jwks-rsa';
 import responseTime from 'response-time';
 import { Storage } from '@google-cloud/storage';
@@ -56,6 +56,7 @@ const jwtCheck = jwt({
 
 function authz(role) {
   return (req, res, next) => {
+    req.user = req.auth;
     if (req.user.permissions.includes(role)) {
       dlog('passed permissions check');
       next();
@@ -71,38 +72,41 @@ async function uploadFile(req, res) {
 
   const [profileImage] = req.files;
 
-  const type = mime.lookup(profileImage.originalname);
+  if (!profileImage?.originalname) {
+    dlog('No file sent with request. exit');
+    res.status(400).send('Bad request. Invalid payload');
+  } else {
+    const type = mime.lookup(profileImage?.originalname?.filename);
 
-  const storage = new Storage();
-  // const bucket = storage.bucket(`${envConfig.google.bucket}/members`);
-  const bucket = storage.bucket('that-images');
-  const imageName = `${uuidv4()}.${mime.extensions[type][0]}`;
-  const blob = bucket.file(`members/${imageName}`);
+    const storage = new Storage();
+    // const bucket = storage.bucket(`${envConfig.google.bucket}/members`);
+    const bucket = storage.bucket('that-images');
+    const imageName = `${uuidv4()}.${mime.extensions[type][0]}`;
+    dlog('new imageName: %s', imageName);
+    const blob = bucket.file(`members/${imageName}`);
 
-  const stream = blob.createWriteStream({
-    contentType: type,
-    cacheControl: 'no-cache',
-    gzip: true,
-  });
-
-  stream.on('error', err => {
-    dlog('error %o', err);
-    res
-      .set('Content-Type', 'application/json')
-      .status(500)
-      .json(err);
-  });
-
-  stream.on('finish', () => {
-    dlog('finished writing');
-    res.status(200).json({
-      data: {
-        url: `https://that.imgix.net/members/${imageName}`,
-      },
+    const stream = blob.createWriteStream({
+      contentType: type,
+      cacheControl: 'no-cache',
+      gzip: true,
     });
-  });
 
-  stream.end(profileImage.buffer);
+    stream.on('error', err => {
+      dlog('error %o', err);
+      res.set('Content-Type', 'application/json').status(500).json(err);
+    });
+
+    stream.on('finish', () => {
+      dlog('finished writing');
+      res.status(200).json({
+        data: {
+          url: `https://that.imgix.net/members/${imageName}`,
+        },
+      });
+    });
+
+    stream.end(profileImage.buffer);
+  }
 }
 
 const checkAuth = (req, res) => {
@@ -110,20 +114,14 @@ const checkAuth = (req, res) => {
     dlog('checkAuth bad method: %o', req.method);
     res.status(400).send();
   }
-  res
-    .set('Content-Type', 'application/json')
-    .status(200)
-    .json({});
+  res.set('Content-Type', 'application/json').status(200).json({});
 };
 
 function failure(err, req, res, next) {
   dlog('middleware catchall error %o', err);
   Sentry.captureException(err);
 
-  res
-    .set('Content-Type', 'application/json')
-    .status(500)
-    .json(err);
+  res.set('Content-Type', 'application/json').status(500).json(err);
 }
 
 export const handler = api
