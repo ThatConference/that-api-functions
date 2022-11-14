@@ -9,17 +9,17 @@ on:
 
 jobs:
   build:
-    name: Build
+    name: Build File Upload
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Use Node.js 12.x
+      - name: Use Node.js 16
         uses: actions/setup-node@v1
         with:
-          node-version: 12.x
+          node-version: 16
       - name: npm ci, run validate
         run: |
           cd functions/fileUpload
@@ -62,7 +62,7 @@ jobs:
       - name: Setup gcloud Actions
         uses: google-github-actions/setup-gcloud@v0
         with:
-          version: '360.0.0'
+          version: '397.0.0'
           service_account_key: ${{ secrets.GCLOUD_AUTH }}
           project_id: ${{ secrets.GCP_PROJECT_ID }}
       - name: write .env file
@@ -87,7 +87,7 @@ jobs:
           echo $PWD
           ls -lasiR
       - name: Run GCP Deploy Function - imageUpload
-        run: gcloud functions deploy fileUploadGateway --allow-unauthenticated --runtime nodejs12 --trigger-http --source $PWD/tc-api --entry-point handler --memory 512MB
+        run: gcloud functions deploy fileUploadGateway --allow-unauthenticated --runtime nodejs16 --trigger-http --source $PWD/tc-api --entry-point handler --memory 512MB
         env:
           CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
       - name: Slack Notification
