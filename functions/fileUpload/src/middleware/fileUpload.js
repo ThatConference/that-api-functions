@@ -7,7 +7,7 @@ import debug from 'debug';
 const dlog = debug('that:api:gateway:middleware');
 
 // eslint-disable-next-line func-names
-export default function(req, res, next) {
+export default function (req, res, next) {
   // See https://cloud.google.com/functions/docs/writing/http#multipart_data
   const busboy = Busboy({
     headers: req.headers,

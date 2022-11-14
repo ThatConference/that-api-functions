@@ -93,10 +93,7 @@ async function uploadFile(req, res) {
 
     stream.on('error', err => {
       dlog('error %o', err);
-      res
-        .set('Content-Type', 'application/json')
-        .status(500)
-        .json(err);
+      res.set('Content-Type', 'application/json').status(500).json(err);
     });
 
     stream.on('finish', () => {
@@ -117,20 +114,14 @@ const checkAuth = (req, res) => {
     dlog('checkAuth bad method: %o', req.method);
     res.status(400).send();
   }
-  res
-    .set('Content-Type', 'application/json')
-    .status(200)
-    .json({});
+  res.set('Content-Type', 'application/json').status(200).json({});
 };
 
 function failure(err, req, res, next) {
   dlog('middleware catchall error %o', err);
   Sentry.captureException(err);
 
-  res
-    .set('Content-Type', 'application/json')
-    .status(500)
-    .json(err);
+  res.set('Content-Type', 'application/json').status(500).json(err);
 }
 
 export const handler = api
