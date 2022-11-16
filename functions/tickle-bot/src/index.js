@@ -19,6 +19,7 @@ Sentry.init({
   environment: process.env.THAT_ENVIRONMENT,
   release: process.env.SENTRY_VERSION || 'that-tickle-bot@local',
   debug: process.env.NODE_ENV === 'development',
+  normalizeDepth: 6,
 });
 
 Sentry.configureScope(scope => {
@@ -27,13 +28,16 @@ Sentry.configureScope(scope => {
 
 function failure(err, req, res, next) {
   dlog('middleware catch-all error %O', err);
-  Sentry.captureException(err);
-  res.set('Content-type', 'application/json').status(500).json(err);
+  // Sentry.captureException(err);
+  res.set('Content-type', 'application/json').status(500).json({
+    err: err.message,
+    sentryId: res.sentry,
+  });
 }
 
 function slackDigest(hours) {
   dlog('call slackDigest with %d', hours);
-  return (req, res) => {
+  return (req, res, next) => {
     // We only want to include socials on hourly request, not morning daily (24)
     let query = queries.slackDigestQueueUpSocials.graphQl;
     if (hours !== 1) query = queries.slackDigest.graphQl;
@@ -48,16 +52,20 @@ function slackDigest(hours) {
 
     return sendGraphReq({ query, variables }).then(result => {
       dlog('result of graph req %o', result);
-      res
-        .set('content-type', 'application/json')
-        .status(200)
-        .json(result.data)
-        .end();
+      if (!result) {
+        next(new Error('No result returned from THAT API'));
+      } else {
+        res
+          .set('content-type', 'application/json')
+          .status(200)
+          .json(result.data)
+          .end();
+      }
     });
   };
 }
 
-function thatStats(req, res) {
+function thatStats(req, res, next) {
   dlog('call thatStats');
   const query = queries.communityStats.graphQl;
   const variables = {
@@ -66,16 +74,20 @@ function thatStats(req, res) {
     },
   };
   return sendGraphReq({ query, variables }).then(result => {
-    dlog('result of graph req %O', result);
-    res
-      .set('content-type', 'application/json')
-      .status(200)
-      .json(result.data)
-      .end();
+    if (!result) {
+      next(new Error('No result returned from THAT API'));
+    } else {
+      dlog('result of graph req %O', result);
+      res
+        .set('content-type', 'application/json')
+        .status(200)
+        .json(result.data)
+        .end();
+    }
   });
 }
 
-function queueUpSocials(req, res) {
+function queueUpSocials(req, res, next) {
   dlog('call queueSocials');
   const query = queries.queueUpSocials.graphQl;
   const variables = {
@@ -85,11 +97,16 @@ function queueUpSocials(req, res) {
   };
   return sendGraphReq({ query, variables }).then(result => {
     dlog('result of graph req %o', result);
-    res.status(200).json(result.data);
+    if (!result) {
+      next(new Error('No result returned from THAT API'));
+    } else {
+      res.status(200).json(result.data);
+    }
   });
 }
 
 export const handler = api
+  .use(Sentry.Handlers.requestHandler())
   .use(responseTime())
   .use('/dailydigest', slackDigest(24))
   .use('/hourlydigest', slackDigest(1))
@@ -97,4 +114,5 @@ export const handler = api
   .use('/queueUpSocials', queueUpSocials)
   .use('/ticketNotification', ticketNotifications)
 
+  .use(Sentry.Handlers.errorHandler())
   .use(failure);

@@ -1,6 +1,6 @@
 {
   "name": "tickle-bot",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "Provides authenticated requests against our api",
   "main": "index.js",
   "scripts": {
@@ -37,7 +37,7 @@
     "@babel/core": "^7.17.5",
     "@babel/node": "^7.16.8",
     "@babel/preset-env": "^7.16.11",
-    "@google-cloud/functions-framework": "^3.0.0",
+    "@google-cloud/functions-framework": "^3.1.2",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^27.5.1",
     "concurrently": "^7.0.0",
