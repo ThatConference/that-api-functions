@@ -64,7 +64,7 @@ export default async function ticketNotifications(req, res, next) {
         'MessagesInError string',
         JSON.stringify(messagesInError),
       );
-      scope.setLevel(Sentry.Severity.Warning);
+      scope.setLevel('warning');
       Sentry.captureException(
         new Error(
           `ticketNotifications returned with ${messagesInError.length} messages in error`,
@@ -84,7 +84,7 @@ export default async function ticketNotifications(req, res, next) {
   }
   if (!isSuccessful) {
     Sentry.withScope(scope => {
-      scope.setLevel(Sentry.Severity.Critical);
+      scope.setLevel('warning');
     });
     return next(
       new Error(
