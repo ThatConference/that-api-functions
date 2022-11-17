@@ -159,6 +159,7 @@ export default function orderEvents() {
           orderEventEmitter.emit(
             constants.ORDER_EVENT_EMITTER.ERROR_SEND_EMAIL,
             err,
+            templateModel,
           ),
         ),
       );
@@ -196,6 +197,7 @@ export default function orderEvents() {
           orderEventEmitter.emit(
             constants.ORDER_EVENT_EMITTER.ERROR_SEND_EMAIL,
             err,
+            templateModel,
           ),
         ),
       );
@@ -230,6 +232,7 @@ export default function orderEvents() {
           orderEventEmitter.emit(
             constants.ORDER_EVENT_EMITTER.ERROR_SEND_EMAIL,
             err,
+            templateModel,
           ),
         ),
       );
@@ -641,9 +644,12 @@ export default function orderEvents() {
       );
   }
 
-  function sendEventErrorToSentry(error) {
+  function sendEventErrorToSentry(error, templateModel) {
     dlog('orderEventEmitter error:: %o', error);
     console.log('orderEventEmitter error:: %o', error.message);
+    if (templateModel) {
+      Sentry.setContext('Template Model', { templateModel });
+    }
     Sentry.configureScope(scope => {
       scope.setTag('eventEmitter', 'functionError');
       scope.setLevel('error');
@@ -722,8 +728,10 @@ export default function orderEvents() {
   orderEventEmitter.on(constants.ORDER_EVENT_EMITTER.ERROR_SET_FOLLOW, err =>
     sendEventErrorToSentry(new SetFollowError(err.message)),
   );
-  orderEventEmitter.on(constants.ORDER_EVENT_EMITTER.ERROR_SEND_EMAIL, err =>
-    sendEventErrorToSentry(new SendEmailError(err.message)),
+  orderEventEmitter.on(
+    constants.ORDER_EVENT_EMITTER.ERROR_SEND_EMAIL,
+    (err, templateModel) =>
+      sendEventErrorToSentry(new SendEmailError(err.message), templateModel),
   );
   orderEventEmitter.on('error', err => sendEventErrorToSentry(err));
 
