@@ -1,15 +1,10 @@
 import 'dotenv/config';
-import connect from 'connect';
+import express from 'express';
 import debug from 'debug';
 import responseTime from 'response-time';
 
 const dlog = debug('that:api:functions:[CHANGE-ME]');
-const api = connect();
-
-function failure(err, req, res, next) {
-  dlog('middleware catcall error %O', err);
-  res.set('Content-type', 'application/json').status(500).json(err);
-}
+const api = express();
 
 function postSession(req, res) {
   /*
@@ -24,6 +19,11 @@ function postSession(req, res) {
     res.write(`Unsupported request method`);
     res.end();
   }
+}
+
+function failure(err, req, res, next) {
+  dlog('middleware catcall error %O', err);
+  res.set('Content-type', 'application/json').status(500).json(err);
 }
 
 export const handler = api
