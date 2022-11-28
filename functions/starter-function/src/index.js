@@ -23,7 +23,7 @@ function postSession(req, res) {
 
 function failure(err, req, res, next) {
   dlog('middleware catcall error %O', err);
-  res.set('Content-type', 'application/json').status(500).json(err);
+  res.status(500).send(err);
 }
 
 export const handler = api
