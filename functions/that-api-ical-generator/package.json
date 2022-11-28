@@ -1,6 +1,6 @@
 {
   "name": "that-api-ical-generator",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Generates a ical file of member's favorited sessions",
   "main": "index.js",
   "scripts": {

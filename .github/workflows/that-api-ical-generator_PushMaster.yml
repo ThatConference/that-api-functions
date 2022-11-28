@@ -74,6 +74,10 @@ jobs:
           version: '397.0.0'
           service_account_key: ${{ secrets.GCLOUD_AUTH }}
           project_id: ${{ secrets.GCP_PROJECT_ID }}
+      - name: gcloud docker cred helper
+        run: gcloud auth configure-docker
+        env:
+          CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
       - name: Build Docker image
         run: |
           cp __build__/Dockerfile ./ && rm __build__/Dockerfile
