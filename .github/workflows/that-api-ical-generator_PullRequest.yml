@@ -1,0 +1,48 @@
+name: that-api-ical-generator Pull Request
+
+on:
+  pull_request:
+    paths:
+      - "functions/that-api-ical-generator/**"
+
+jobs:
+  build:
+    name: Build that-api-ical-generator
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout PR
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Use Node.js 16
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: npm ci, run validate
+        run: |
+          cd functions/that-api-ical-generator
+          pwd
+          cp ./.env.sample .env
+          npm ci
+          npm run validate
+        env:
+          CI: true
+          HUSKY: 0
+      - name: Post-build Copies
+        run: |
+          cd functions/that-api-ical-generator
+          pwd
+          cp ./package.json __build__/
+          cp ./package-lock.json __build__/
+          cp ./Dockerfile __build__/
+      - name: Slack Notification
+        uses: 8398a7/action-slack@v3
+        with:
+          fields: repo,message,commit,author,eventName,ref,workflow,job,took
+          status: ${{ job.status }}
+          author_name: PullReq CI
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_DEV_NOTIFICATIONS }}
+        if: always()

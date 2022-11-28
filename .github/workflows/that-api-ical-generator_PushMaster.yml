@@ -1,0 +1,117 @@
+name: that-api-ical-generator Push Master
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "functions/that-api-ical-generator/**"
+
+jobs:
+  build:
+    name: Build that-api-ical-generator
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout master
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Use Node.js 16
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: npm ci, run validate
+        run: |
+          cd functions/that-api-ical-generator
+          pwd
+          cp .env.sample .env
+          npm ci
+          npm run validate
+          rm .env
+        env:
+          CI: true
+          HUSKY: 0
+      - name: Post-Build Copies
+        run: |
+          cd functions/that-api-og-image
+          pwd
+          cp ./package.json __build__/
+          cp ./package-lock.json __build__/
+          cp ./Dockerfile __build__/
+          git rev-list --count ${{ github.ref_name }} > __build__/ccnt.txt
+      - name: Archive Build Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: tc-api
+          path: functions/that-api-ical-generator/__build__
+      - name: Slack Notification
+        uses: 8398a7/action-slack@v3
+        with:
+          fields: repo,message,commit,author,eventName,ref,workflow,job,took
+          status: ${{ job.status }}
+          author_name: Push Master CI
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_DEV_NOTIFICATIONS }}
+        if: job.status == 'failure' || job.status == 'cancelled'
+
+  deploy-image:
+    name: Deploy that-api-ical-generator
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      apiName: ical-generator
+    steps:
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: tc-api
+      - name: Setup gcloud Actions
+        uses: google-github-actions/setup-gcloud@v0
+        with:
+          version: '397.0.0'
+          service_account_key: ${{ secrets.GCLOUD_AUTH }}
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+      - name: Build Docker image
+        run: |
+          cp __build__/Dockerfile ./ && rm __build__/Dockerfile
+          docker build . --tag us.gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ env.apiName }}
+      - name: Publish image to gcp
+        run: docker push us.gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ env.apiName }}
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud secrets versions access latest --secret any-secrets2array-util_file > secrets2array.sh && chmod +x secrets2array.sh
+          GCR_ENV_VARS=$(gcloud secrets versions access latest --secret prod-api-ical-generator-env | ./secrets2array.sh)
+          C_CNT=$(cat __build__/ccnt.txt)
+          SENTRYREL=SENTRY_VERSION=that-api-${{ env.apiName }}@$(cat __build__/package.json | jq '.version' | tr -d '"')-$C_CNT.$(echo $GITHUB_SHA | cut -c1-7)
+          GCR_ENV_VARS="${GCR_ENV_VARS}, ${SENTRYREL}"
+          gcloud run deploy ${{ env.apiName }} --image us.gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ env.apiName }} --region=us-central1 --platform=managed --allow-unauthenticated --set-env-vars="$GCR_ENV_VARS" --timeout=30 --memory=256Mi --cpu=1 --min-instances=0
+        env:
+          CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
+      # - name: write .env file
+      #   run: |
+
+      #     gcloud secrets versions access latest --secret prod-api-og-image-env > tc-api/.env
+      #     C_CNT=$(cat tc-api/ccnt.txt)
+      #     rm -f tc-api/ccnt.txt
+      #     SENTRYREL=SENTRY_VERSION=that-api-og-image@$(cat tc-api/package.json | jq '.version' | tr -d '"')-$C_CNT.$(echo $GITHUB_SHA | cut -c1-7)
+      #     echo "" >> tc-api/.env
+      #     echo $SENTRYREL >> tc-api/.env
+      #     echo "SENTRYREL=$SENTRYREL" >> $GITHUB_ENV
+      #   env:
+      #     CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
+      # - name: Run GCP Deploy Function - og-image
+      #   run: gcloud functions deploy og-image --runtime nodejs14 --trigger-http --allow-unauthenticated --source $PWD/tc-api --entry-point handler --memory 2GB --timeout 300
+      #   env:
+      #     CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
+      - name: Slack Notification
+        uses: 8398a7/action-slack@v3
+        with:
+          fields: repo,message,commit,author,eventName,ref,workflow,job,took
+          status: ${{ job.status }}
+          author_name: Push Master CI
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_DEV_NOTIFICATIONS }}
+        if: always()
