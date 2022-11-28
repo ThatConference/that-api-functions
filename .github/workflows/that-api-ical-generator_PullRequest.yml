@@ -36,7 +36,6 @@ jobs:
           cp ./package.json __build__/
           cp ./package-lock.json __build__/
           cp ./Dockerfile __build__/
-          git rev-list --count ${{ github.ref_name }} > __build__/ccnt.txt
       - name: Slack Notification
         uses: 8398a7/action-slack@v3
         with:
