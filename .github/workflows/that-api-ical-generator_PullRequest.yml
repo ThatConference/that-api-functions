@@ -31,6 +31,8 @@ jobs:
           HUSKY: 0
       - name: Post-build Copies
         run: |
+          cd functions/that-api-ical-generator
+          pwd
           cp ./package.json __build__/
           cp ./package-lock.json __build__/
           cp ./Dockerfile __build__/
