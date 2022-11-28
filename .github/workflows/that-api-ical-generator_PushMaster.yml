@@ -34,7 +34,7 @@ jobs:
           HUSKY: 0
       - name: Post-Build Copies
         run: |
-          cd functions/that-api-og-image
+          cd functions/that-api-ical-generator
           pwd
           cp ./package.json __build__/
           cp ./package-lock.json __build__/
@@ -89,22 +89,6 @@ jobs:
           gcloud run deploy ${{ env.apiName }} --image us.gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ env.apiName }} --region=us-central1 --platform=managed --allow-unauthenticated --set-env-vars="$GCR_ENV_VARS" --timeout=30 --memory=256Mi --cpu=1 --min-instances=0
         env:
           CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
-      # - name: write .env file
-      #   run: |
-
-      #     gcloud secrets versions access latest --secret prod-api-og-image-env > tc-api/.env
-      #     C_CNT=$(cat tc-api/ccnt.txt)
-      #     rm -f tc-api/ccnt.txt
-      #     SENTRYREL=SENTRY_VERSION=that-api-og-image@$(cat tc-api/package.json | jq '.version' | tr -d '"')-$C_CNT.$(echo $GITHUB_SHA | cut -c1-7)
-      #     echo "" >> tc-api/.env
-      #     echo $SENTRYREL >> tc-api/.env
-      #     echo "SENTRYREL=$SENTRYREL" >> $GITHUB_ENV
-      #   env:
-      #     CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
-      # - name: Run GCP Deploy Function - og-image
-      #   run: gcloud functions deploy og-image --runtime nodejs14 --trigger-http --allow-unauthenticated --source $PWD/tc-api --entry-point handler --memory 2GB --timeout 300
-      #   env:
-      #     CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
       - name: Slack Notification
         uses: 8398a7/action-slack@v3
         with:
