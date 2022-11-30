@@ -18,11 +18,12 @@ export default function createOrderAndAllocations({
     const product = products.find(p => p.id === li.productId);
     const newLi = {
       ...li,
+      unitPrice: 0,
+      totalAmount: 0,
       product: li.productId,
       productType: product.type,
       uiReference: product.uiReference || null,
-      unitPrice: 0,
-      totalAmount: 0,
+      eventActivities: product.eventActivities ?? [],
     };
     delete newLi.productId;
     return newLi;
