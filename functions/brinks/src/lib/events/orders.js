@@ -146,6 +146,13 @@ export default function orderEvents() {
       },
       sections,
     };
+    if (templateModel.sections.hasWorkshop === true) {
+      templateModel.sections.hasWorkshop = {
+        event: {
+          slug: event.slug,
+        },
+      };
+    }
 
     return sendTransactionEmail({
       mailTo: member.email,
