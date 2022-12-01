@@ -329,8 +329,7 @@ export default function orderEvents() {
       oa => oa.productType === constants.THAT.PRODUCT_TYPE.MEMBERSHIP,
     );
     const tickets = orderAllocations.filter(
-      oa =>
-        oa.allocatedTo && oa.productType === constants.THAT.PRODUCT_TYPE.TICKET,
+      oa => oa.productType === constants.THAT.PRODUCT_TYPE.TICKET,
     );
 
     if (tickets?.length < 1) {
