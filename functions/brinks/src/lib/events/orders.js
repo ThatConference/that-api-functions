@@ -210,7 +210,7 @@ export default function orderEvents() {
       );
   }
 
-  function sendPartnerThankYou({ member, event }) {
+  function sendPartnerThankYou({ member, event, sections }) {
     dlog('sendPartnerThankYou called');
     const templateModel = {
       member: {
@@ -224,7 +224,15 @@ export default function orderEvents() {
         slug: event.slug,
         type: event.type,
       },
+      sections,
     };
+    if (templateModel.sections.hasWorkshop === true) {
+      templateModel.sections.hasWorkshop = {
+        event: {
+          slug: event.slug,
+        },
+      };
+    }
 
     return sendTransactionEmail({
       mailTo: member.email,
@@ -394,13 +402,16 @@ export default function orderEvents() {
     // checks done needed for partner type, if so fire and return
     if (order.orderType === 'PARTNER') {
       dlog('firing partner email event emitter');
-      return orderEventEmitter.emit(
+      orderEventEmitter.emit(
         constants.ORDER_EVENT_EMITTER.VALIDATED_FOR_PARTNER,
         {
           member,
           event,
+          sections,
         },
       );
+
+      return true;
     }
 
     if (!event.emailTemplateTicketPurchased) {
