@@ -52,7 +52,8 @@ Sentry.configureScope(scope => {
 const thatSigningCheck = (req, res, next) => {
   const thatSig = req.headers['that-request-signature'] ?? '';
   dlog('thatSig: %s', thatSig);
-  Sentry.setTag('thatSig', thatSig);
+  Sentry.configureScope(scope => scope.setTag('thatSig', thatSig));
+
   const signingKey = envConfig.security.thatRequestSigningKey;
   const thatSigning = security.requestSigning;
   const payload = req.body;
@@ -100,7 +101,7 @@ function authz(role) {
     // express-jwt v7 changed from user to auth
     req.user = req.auth;
     dlog('user.sub: %o', req.user.sub);
-    Sentry.setTag('userId', req.user.sub);
+    Sentry.configureScope(scope => scope.setTag('userId', req.user.sub));
     const allowRole = role.map(r => req.user.permissions.includes(r));
     dlog('user perms: %o', req.user.permissions);
     if (allowRole.includes(true)) {
