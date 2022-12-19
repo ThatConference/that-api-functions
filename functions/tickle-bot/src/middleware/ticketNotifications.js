@@ -59,7 +59,7 @@ export default async function ticketNotifications(req, res, next) {
 
   if (messagesInError.length > 0) {
     Sentry.withScope(scope => {
-      scope.setContext('MessagesInError raw', messagesInError);
+      scope.setContext('MessagesInError obj', messagesInError);
       scope.setContext(
         'MessagesInError string',
         JSON.stringify(messagesInError),
@@ -84,7 +84,7 @@ export default async function ticketNotifications(req, res, next) {
   }
   if (!isSuccessful) {
     Sentry.withScope(scope => {
-      scope.setLevel('warning');
+      scope.setLevel('error');
     });
     return next(
       new Error(
