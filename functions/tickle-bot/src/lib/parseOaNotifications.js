@@ -60,13 +60,18 @@ export default function parseOaNotifications({ events }) {
         else orderInfo.orderAllocationIds = [alloc.id];
 
         working.orderOwners.set(orderId, orderInfo);
-      } else if (alloc.enrollmentStatus !== 'COMPLETE') {
-        // add to ticket holder
-        const ticketHolderEmail = alloc.allocatedTo.email;
-        dlog('adding holder %s', ticketHolderEmail);
-        const holdersList = working.ticketHolders.get(ticketHolderEmail) ?? [];
-        holdersList.push(alloc);
-        working.ticketHolders.set(ticketHolderEmail, holdersList);
+        /*
+         * Disabled as Attendee Enrollment is not complete on website
+         * Not adding ticket holders to working object will simply
+         * be skipped when looked for when formatting emails
+         */
+        // } else if (alloc.enrollmentStatus !== 'COMPLETE') {
+        //   // add to ticket holder
+        //   const ticketHolderEmail = alloc.allocatedTo.email;
+        //   dlog('adding holder %s', ticketHolderEmail);
+        //   const holdersList = working.ticketHolders.get(ticketHolderEmail) ?? [];
+        //   holdersList.push(alloc);
+        //   working.ticketHolders.set(ticketHolderEmail, holdersList);
       }
 
       _counts[alloc.order.orderType] = _counts[alloc.order.orderType]
