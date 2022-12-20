@@ -24,6 +24,7 @@ export default function generateAllocationsFromOrder({
         product: lineItem.product,
         productType: lineItem.productType,
         uiReference: lineItem.uiReference || null,
+        orderType: order.orderType,
         eventActivities: lineItem.eventActivities,
         isAllocated: !isBulkPurchase,
         allocatedTo: isBulkPurchase ? null : order.member,

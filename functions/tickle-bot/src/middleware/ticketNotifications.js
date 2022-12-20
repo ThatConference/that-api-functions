@@ -39,7 +39,9 @@ export default async function ticketNotifications(req, res, next) {
   const { postmarkMessages, validationMessages } = formatOaNotifications({
     eventNotifications,
   });
+
   // dlog('postmarkMessages:%O', postmarkMessages);
+  // return res.json(postmarkMessages);
 
   let sentOrderAllocationIds;
   let messagesInError;

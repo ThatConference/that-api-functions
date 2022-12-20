@@ -20,7 +20,7 @@ export default {
             isCallForSpeakersOpen
             admin {
               eventId
-              orderAllocations {
+              orderAllocations(orderTypes: [REGULAR, PARTNER]) {
                 id
                 product {
                   ...on ProductBase {
@@ -30,6 +30,7 @@ export default {
                   }
                 }
                 notificationSentAt
+                purchaseStatus
                 enrollmentStatus
                 uiReference
                 notificationSentAt
@@ -44,7 +45,7 @@ export default {
                   id
                   orderType
                   createdAt
-                  member{
+                  member {
                     __typename
                     id
                     firstName
@@ -59,5 +60,5 @@ export default {
       }
     }
   }
-      `,
+          `,
 };
