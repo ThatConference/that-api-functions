@@ -126,7 +126,6 @@ function createOrUpdateContact({
         scope.setContext('data', data);
         Sentry.captureException(err);
       });
-      throw err;
     } else {
       result = data ?? null;
     }
