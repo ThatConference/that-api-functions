@@ -38,6 +38,16 @@ module.exports = async (req, res, next) => {
       memberId: payload.user_id,
     });
     console.log('create/update contact result', contactResult);
+    if (!contactResult) {
+      return res.json({
+        error: true,
+        msg: 'Failed to create or update contact unable to add a subscription',
+        email: payload.email,
+        firstName: payload.given_name,
+        lastName: payload.family_name,
+        memberId: payload.user_id,
+      });
+    }
   }
   const subscriptionId = envConfig.hubSpot.profileOnboardingId;
   let subscribeResult;
