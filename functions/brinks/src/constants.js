@@ -21,6 +21,7 @@ const constants = {
     VALIDATED_FOR_THANKYOU: 'orderValidatedForThankyou',
     VALIDATED_FOR_FAMILY: 'orderValidatedForFamily',
     VALIDATED_FOR_PARTNER: 'orderValidatedForPartner',
+    VALIDATED_AS_EXPO_HALL: 'orderValidatedForExpoHall',
     ERROR_SET_FOLLOW: 'setFollowError',
     ERROR_SEND_EMAIL: 'sendEmailError',
   },
