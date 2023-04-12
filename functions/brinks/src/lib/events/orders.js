@@ -87,6 +87,7 @@ export default function orderEvents() {
       return true;
     }
 
+    dlog('not a speaker order, returning');
     return false;
   }
 
@@ -253,6 +254,40 @@ export default function orderEvents() {
       );
   }
 
+  function sendExpoHallThankYou({ member, event }) {
+    dlog('sendExpoHallThankYou called');
+    const templateModel = {
+      member: {
+        firstName: member.firstName,
+        lastName: member.lastName,
+      },
+      event: {
+        name: event.name,
+        startDate: event.startDate,
+        stopDate: event.stopDate,
+        slug: event.slug,
+        type: event.type,
+      },
+    };
+
+    return sendTransactionEmail({
+      mailTo: member.email,
+      templateAlias: 'expo-hall-only-thank-you',
+      templateModel,
+      tag: 'expo-hall-only',
+    })
+      .then(r => dlog('sendExpoHallThankYou result: %o', r))
+      .catch(err =>
+        process.nextTick(() =>
+          orderEventEmitter.emit(
+            constants.ORDER_EVENT_EMITTER.ERROR_SEND_EMAIL,
+            err,
+            templateModel,
+          ),
+        ),
+      );
+  }
+
   function sendOrbitLovePurchaseActivity({
     firestore,
     member,
@@ -366,6 +401,9 @@ export default function orderEvents() {
     const familyTics = orderAllocations.filter(oa =>
       ['GEEKLING', 'CAMPMATE'].includes(oa.uiReference),
     );
+    const expoHallTics = orderAllocations.filter(oa =>
+      oa.eventActivities?.includes('EXPO_HALL'),
+    );
     const sections = {
       isOrderEmail: true,
       hasMultipleTickets: false,
@@ -398,6 +436,18 @@ export default function orderEvents() {
       return undefined;
     }
 
+    // Check for Expo Hall only ticket, if exists fire and return
+    // currently no supporting Expo Hall tickets on an order they are claimed by participant
+    if (expoHallTics?.length > 0) {
+      dlog('firing off expo hall only ticket email');
+      orderEventEmitter.emit(
+        constants.ORDER_EVENT_EMITTER.VALIDATED_FOR_EXPO_HALL,
+        { member, event },
+      );
+
+      return true;
+    }
+
     // checks done needed for partner type, if so fire and return
     if (order.orderType === 'PARTNER') {
       dlog('firing partner email event emitter');
@@ -427,6 +477,7 @@ export default function orderEvents() {
       return undefined;
     }
 
+    dlog('firing validated for thank you');
     orderEventEmitter.emit(
       constants.ORDER_EVENT_EMITTER.VALIDATED_FOR_THANKYOU,
       {
@@ -440,6 +491,7 @@ export default function orderEvents() {
     );
 
     if (familyTics.length > 0) {
+      dlog('firing family');
       orderEventEmitter.emit(
         constants.ORDER_EVENT_EMITTER.VALIDATED_FOR_FAMILY,
         {
@@ -739,6 +791,12 @@ export default function orderEvents() {
   orderEventEmitter.on(
     constants.ORDER_EVENT_EMITTER.VALIDATED_FOR_PARTNER,
     sendPartnerThankYou,
+  );
+
+  // expo hall only orders
+  orderEventEmitter.on(
+    constants.ORDER_EVENT_EMITTER.VALIDATED_FOR_EXPO_HALL,
+    sendExpoHallThankYou,
   );
 
   // Error handlers
