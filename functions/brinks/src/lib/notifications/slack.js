@@ -45,8 +45,12 @@ function newOrder({ order, products, member }) {
   dlog('newOrder notification called');
 
   let memberName = '<manual order>';
-  if (member && member.firstName)
-    memberName = `${member.firstName} ${member.lastName}`;
+  let company = '-not defined-';
+  let memberEmail = 'email';
+  if (member?.firstName) memberName = `${member.firstName} ${member.lastName}`;
+  if (member?.company) company = member.company;
+  if (member?.email) memberEmail = member.email;
+
   let eventName = order.event;
   if (order.event === `w1ZQFzsSZzRuItVCNVmC`) {
     eventName = `Wisconsin 2022`;
@@ -74,6 +78,13 @@ function newOrder({ order, products, member }) {
           type: 'plain_text',
           text: `${memberName} placed an order for ${eventName} :money_with_wings:`,
           emoji: true,
+        },
+      },
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: `Company: ${company}\nEmail: ${memberEmail}`,
         },
       },
       {
