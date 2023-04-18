@@ -8,8 +8,8 @@ const engDateForge = entityDateForge({
 });
 
 // example paths
-// engagements/meetThat/matches
-// engagements/meetThat/log
+// engagements/meetThatCamper/matches
+// engagements/meetThatCamper/log
 const engagementColName = 'engagements';
 const engagementMatchColName = 'matches';
 const engagementLogColName = 'log';
