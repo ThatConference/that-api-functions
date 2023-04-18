@@ -8,4 +8,4 @@ This function is used to make authenticated api calls against the THAT api.
 
 Deployed as a Google Cloud Function
 
-Current runtime nodejs 16.x
+Current runtime nodejs 18.x
