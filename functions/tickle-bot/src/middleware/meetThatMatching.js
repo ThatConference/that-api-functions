@@ -15,7 +15,7 @@ const dlog = debug('that:api:ticklebot:meetThatMatchingMW');
 export default async function meetThatMatching(req, res, next) {
   dlog('meetThatMatching middleware called');
 
-  const engagementName = 'meetThat';
+  const engagementName = 'meetThatCamper';
   const firestore = req.app.get(constants.TICKLEBOT.FIRESTORE);
   const memberStoreFn = dataSources.cloudFirestore.member;
   let memberStore;
