@@ -1,3 +1,4 @@
 import ticketNotifications from './ticketNotifications';
+import meetThatMatching from './meetThatMatching';
 
-export { ticketNotifications };
+export { ticketNotifications, meetThatMatching };

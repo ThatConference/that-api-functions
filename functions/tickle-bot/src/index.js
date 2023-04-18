@@ -6,7 +6,7 @@ import * as Sentry from '@sentry/node';
 import { Firestore } from '@google-cloud/firestore';
 import queries from './queries';
 import sendGraphReq from './sendGraphReq';
-import { ticketNotifications } from './middleware';
+import { ticketNotifications, meetThatMatching } from './middleware';
 import constants from './constants';
 
 const dlog = debug('that:api:ticklebot');
@@ -113,6 +113,7 @@ export const handler = api
   .use('/thatstats', thatStats)
   .use('/queueUpSocials', queueUpSocials)
   .use('/ticketNotification', ticketNotifications)
+  .use('/engagementMeetThatMatching', meetThatMatching)
 
   .use(Sentry.Handlers.errorHandler())
   .use(failure);
