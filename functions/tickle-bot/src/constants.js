@@ -9,7 +9,7 @@ const constants = {
     TEMPLATES: {
       ORDER_OWNER_NOT_TRANSFERRED: 'order-owner-tickets-not-transferred',
       TICKET_HOLDER_NOT_COMPLETE: 'ticket-holder-tickets-incomplete',
-      MEET_THAT: 'engagement-meet-that',
+      MEET_THAT: 'engagement-meet-that-camper',
     },
     MAX_PER_BATCH: 450,
   },
