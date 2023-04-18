@@ -16,10 +16,10 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Use Node.js 16.x
+      - name: Use Node.js 18.x
         uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 18
       - name: npm ci, run validate
         run: |
           cd functions/tickle-bot
@@ -35,7 +35,7 @@ jobs:
           cp ./package-lock.json __build__/
           git rev-list --count master > __build__/ccnt.txt
       - name: Archive Build Artifact
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: tc-api
           path: functions/tickle-bot/__build__
@@ -56,7 +56,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download Build Artifact
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v3
         with:
           name: tc-api
       - name: Setup gcloud Actions
@@ -86,7 +86,7 @@ jobs:
           echo $PWD
           ls -lasiR
       - name: Run GCP Deploy Function - tickle-bot
-        run: gcloud functions deploy ticklebot --runtime nodejs16 --trigger-http --source $PWD/tc-api --entry-point handler --memory 256MB --timeout 300
+        run: gcloud functions deploy ticklebot --runtime nodejs18 --trigger-http --source $PWD/tc-api --entry-point handler --memory 512MB --timeout 300
         env:
           CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
       - name: Slack Notification

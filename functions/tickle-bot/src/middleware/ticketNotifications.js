@@ -61,7 +61,7 @@ export default async function ticketNotifications(req, res, next) {
 
   if (messagesInError.length > 0) {
     Sentry.withScope(scope => {
-      scope.setContext('MessagesInError obj', messagesInError);
+      scope.setContext('MessagesInError obj', { messagesInError });
       scope.setContext(
         'MessagesInError string',
         JSON.stringify(messagesInError),

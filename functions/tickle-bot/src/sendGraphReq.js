@@ -15,7 +15,7 @@ export default async function sendGraphReq(payload) {
     'Content-Type': 'application/json',
     authorization: `Bearer ${token}`,
   };
-  dlog('payload %O', payload);
+  dlog('payload %o', payload);
 
   return fetch(gateway, {
     method: 'post',

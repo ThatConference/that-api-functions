@@ -12,10 +12,21 @@ export default async function sendPostmarkMessages({
   postmarkMessages,
   validationMessages,
 }) {
-  if (!Array.isArray(postmarkMessages) || !Array.isArray(validationMessages))
-    return [];
+  if (!Array.isArray(postmarkMessages) || !Array.isArray(validationMessages)) {
+    Sentry.withScope(scope => {
+      scope.setTag('function', 'sendPostmarkMessages');
+      scope.setContext('Message collection lengths', {
+        postmarkMessages: postmarkMessages?.length,
+        validationMessages: validationMessages?.length,
+      });
+    });
+    throw new Error(
+      'postmarkMessages and/or validationMessages collection not in Array form',
+    );
+  }
   if (postmarkMessages.length !== validationMessages.length) {
     Sentry.withScope(scope => {
+      scope.setTag('function', 'sendPostmarkMessages');
       scope.setContext('Message collection lengths', {
         postmarkMessages: postmarkMessages?.length,
         validationMessages: validationMessages?.length,
@@ -73,7 +84,7 @@ export default async function sendPostmarkMessages({
       const ids = postmarkValidation?.that?.orderAllocationIds ?? [];
       if (ids.length === 0)
         dlog(
-          'zero ids(idx: %d)::\n%O\n::\n%O',
+          'zero allocation ids(idx: %d)::\n%O\n::\n%O',
           j,
           postmarkValidation,
           sendResult,
