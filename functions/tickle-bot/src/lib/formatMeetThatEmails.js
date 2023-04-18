@@ -40,6 +40,8 @@ export default function formatMeetThatEmails({ newMatches }) {
     }
     const sharedProfileA = a?.allocatedTo?.profiles?.shared;
     const sharedProfileB = b?.allocatedTo?.profiles?.shared;
+    const profileA = a?.profile;
+    const profileB = b?.profile;
     if (!sharedProfileA?.email || !sharedProfileB?.email) {
       Sentry.configureScope(scope => {
         scope.tag('function', 'formatMeetThatEmails');
@@ -62,8 +64,16 @@ export default function formatMeetThatEmails({ newMatches }) {
       trackOpens: true,
       templateAlias: meetThatTemplate,
       templateModel: {
-        memberA: sharedProfileA,
-        memberB: sharedProfileB,
+        memberA: {
+          ...sharedProfileA,
+          canFeature: profileA?.canFeature ?? false,
+          profileSlug: profileA.profileSlug,
+        },
+        memberB: {
+          ...sharedProfileB,
+          canFeature: profileB?.canFeature ?? false,
+          profileSlug: profileB.profileSlug,
+        },
       },
     };
     const chkMessage = {
