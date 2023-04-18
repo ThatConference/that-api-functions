@@ -59,6 +59,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: tc-api
+          path: tc-api
       - name: Setup gcloud Actions
         uses: google-github-actions/setup-gcloud@v0
         with:
