@@ -68,11 +68,13 @@ export default function formatMeetThatEmails({ newMatches }) {
           ...sharedProfileA,
           canFeature: profileA?.canFeature ?? false,
           profileSlug: profileA.profileSlug,
+          interests: profileA.interests?.join(', ') ?? '',
         },
         memberB: {
           ...sharedProfileB,
           canFeature: profileB?.canFeature ?? false,
           profileSlug: profileB.profileSlug,
+          interests: profileB.interests?.join(', ') ?? '',
         },
       },
     };
