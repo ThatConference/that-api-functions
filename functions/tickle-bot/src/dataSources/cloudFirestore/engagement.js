@@ -69,7 +69,7 @@ const engagement = dbInstance => {
 
   // If there are any log entries after provided date, return true.
   function isLogEntryAfterDate({ name, date }) {
-    dlog('isLogEntryAfterDate for %d, at date: %o', name, date);
+    dlog('isLogEntryAfterDate for %s, at date: %o', name, date);
     if (typeof name !== 'string')
       throw new Error('name parameter must be a string');
     if (!(date instanceof Date)) {
