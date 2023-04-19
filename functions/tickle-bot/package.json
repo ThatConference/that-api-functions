@@ -1,6 +1,6 @@
 {
   "name": "tickle-bot",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "description": "Provides authenticated requests against our api",
   "main": "index.js",
   "scripts": {

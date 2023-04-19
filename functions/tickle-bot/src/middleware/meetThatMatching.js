@@ -92,6 +92,7 @@ export default async function meetThatMatching(req, res, next) {
     'distinct member ids from allocations: %d',
     memberIdsFromAllocations.size,
   );
+  result.idCountFromAllocations = memberIdsFromAllocations.size;
 
   let optedInMembers;
   try {
@@ -103,6 +104,7 @@ export default async function meetThatMatching(req, res, next) {
     return next(err);
   }
   dlog('optedIn members count: %d', optedInMembers.length);
+  result.optInCount = optedInMembers.length;
 
   const membersToMatch = new Map();
   for (let i = 0; i < optedInMembers.length; i += 1) {
@@ -116,13 +118,11 @@ export default async function meetThatMatching(req, res, next) {
     }
   }
   dlog('members count to match: %d', membersToMatch.size);
+  result.membersToMatch = membersToMatch.size;
 
   if (membersToMatch.size < 2) {
-    dlog('no members to match, exiting');
-    result.idCountFromAllocations = memberIdsFromAllocations.size;
-    result.optInCount = optedInMembers.length;
-    result.membersToMatch = membersToMatch.size;
-    result.result = 'no members to match';
+    dlog('not enough members to match, exiting');
+    result.result = 'not enough members to match';
 
     try {
       await engagementStore.createEngagementLog({
@@ -158,13 +158,11 @@ export default async function meetThatMatching(req, res, next) {
     previousEngagementMatches,
   });
   dlog('There are %d new matches made', newMatches.length);
+  result.matchesMade = newMatches.length;
+
   if (newMatches.length < 1) {
-    dlog('No matches made, exiting');
-    result.idCountFromAllocations = memberIdsFromAllocations.size;
-    result.optInCount = optedInMembers.length;
-    result.membersToMatch = membersToMatch.size;
-    result.matchesMade = newMatches.length;
-    result.result = 'no matches made';
+    dlog('No matches possible to make, exiting');
+    result.result = 'no matches possible to make';
     try {
       await engagementStore.createEngagementLog({
         name: engagementName,
@@ -211,11 +209,6 @@ export default async function meetThatMatching(req, res, next) {
     });
   }
 
-  result.idCountFromAllocations = memberIdsFromAllocations.size;
-  result.optInCount = optedInMembers.length;
-  result.membersToMatch = membersToMatch.size;
-  result.matchesMade = newMatches.length;
-  result.result = 'no matches made';
   result.emailsInError = messagesInError.length;
   result.result = `${newMatches.length} new matches made and emailed`;
 
