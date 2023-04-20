@@ -59,7 +59,7 @@ export default function stripeEventParse(req, res, next) {
   if (event.livemode && !isProduction) {
     whRes.errorMsg = 'TEST mode stripe event sent to PRODUCTION Bouncer';
     Sentry.setTag('stripe', 'livemode failure');
-    Sentry.setContext('stripe event', JSON.stringify(event));
+    Sentry.setContext('stripe event', { event });
     Sentry.level('error');
     Sentry.captureMessage(whRes.errorMsg); // force capture as 'error'
     console.error(whRes.errorMsg);

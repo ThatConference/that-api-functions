@@ -5,7 +5,7 @@ export default function errorHandler(err, req, res, next) {
   let { whRes } = req;
   if (!whRes || !whRes.stages) whRes = { stages: [] };
   whRes.stages.push('errorHandler');
-  Sentry.setContext('whRes', JSON.stringify(whRes));
+  Sentry.setContext('whRes', { whRes });
 
   // for unknown errors
   if (err instanceof Error) {
