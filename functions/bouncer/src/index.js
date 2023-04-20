@@ -43,6 +43,7 @@ Sentry.init({
   environment: process.env.NODE_ENV,
   release: process.env.SENTRY_VERSION || defaultVersion,
   debug: process.env.NODE_ENV === 'development',
+  normalizeDepth: 6,
 });
 Sentry.configureScope(scope => {
   scope.setTag('thatApp', 'bouncer');
@@ -67,7 +68,7 @@ const thatSigningCheck = (req, res, next) => {
   } catch (err) {
     dlog('signing error message: %s', err.message);
     Sentry.captureException(err);
-    res.status(400).send('Invalid Request');
+    return res.status(400).send('Invalid Request');
   }
 
   if (checkResult?.isValid !== true) {
@@ -76,7 +77,7 @@ const thatSigningCheck = (req, res, next) => {
       `THAT Signature check failed: ${checkResult?.message}`,
       'info',
     );
-    res.status(400).send('Invalid Request');
+    return res.status(400).send('Invalid Request');
   }
 
   dlog('THAT signing check passed');
@@ -109,7 +110,7 @@ function authz(role) {
       next();
     } else {
       dlog('failed permission validation');
-      Sentry.setContext('permissions', JSON.stringify(req.user.permissions));
+      Sentry.setContext('permissions', { user: req.user.permissions });
       Sentry.setTag('auth', 'failedPermissions');
       Sentry.captureException(new Error('failed permissions check'));
       res.status(401).send('Permissions Denied');
