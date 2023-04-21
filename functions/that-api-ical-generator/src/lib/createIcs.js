@@ -14,22 +14,29 @@ export default ({ member, sessions }) => {
   });
 
   // event info: https://sebbo2002.github.io/ical-generator/develop/reference/interfaces/ICalEventData.html
-  const events = sessions.map(s => {
-    let location = 'ONLINE';
-    if (s.location?.location) {
-      location = s.location.location;
+  const events = [];
+  for (let i = 0; i < sessions.length; i += 1) {
+    const session = sessions[i];
+    // If there isn't a start time (date), you can't add to a calendar
+    if (dayjs(session.startTime).isValid()) {
+      let location = `See activity's details`;
+      if (session.location?.location) {
+        location = session.location.location;
+      }
+      const url = `${baseActivityUrl}/${session.id}/`;
+      events.push({
+        start: dayjs(session.startTime).toDate(),
+        end: dayjs(session.startTime)
+          .add(session.durationInMinutes, 'm')
+          .toDate(),
+        summary: session.title,
+        description: session.shortDescription,
+        location,
+        url,
+        status: 'CONFIRMED',
+      });
     }
-    const url = `${baseActivityUrl}/${s.id}/`;
-    return {
-      start: dayjs(s.startTime).toDate(),
-      end: dayjs(s.startTime).add(s.durationInMinutes, 'm').toDate(),
-      summary: s.title,
-      description: s.shortDescription,
-      location,
-      url,
-      status: 'CONFIRMED',
-    };
-  });
+  }
 
   return ical.events(events).toString();
 };
