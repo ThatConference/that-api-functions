@@ -56,7 +56,7 @@ export default async function ticketNotifications(req, res, next) {
   }
   Sentry.withScope(scope => {
     scope.setTag('function', 'ticketNotifications MW');
-    scope.setContext('sentOrderAllocationIds', sentOrderAllocationIds);
+    scope.setContext('sentOrderAllocationIds', { sentOrderAllocationIds });
   });
 
   if (messagesInError.length > 0) {
@@ -95,12 +95,19 @@ export default async function ticketNotifications(req, res, next) {
     );
   }
 
-  // output this shit
-  return res.json({
+  const result = {
     counts,
     eventNotifications,
     messageCount: postmarkMessages.length,
     sentOrderAllocationIds,
     messagesInError,
+  };
+
+  Sentry.withScope(scope => {
+    scope.setContext('result', { result });
+    scope.setLevel('info');
+    Sentry.captureMessage('ticket notification return result');
   });
+
+  return res.json(result);
 }

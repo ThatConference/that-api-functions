@@ -29,7 +29,7 @@ Sentry.configureScope(scope => {
 function failure(err, req, res, next) {
   dlog('middleware catch-all error %O', err);
   // Sentry.captureException(err);
-  res.set('Content-type', 'application/json').status(500).json({
+  res.status(500).json({
     err: err.message,
     sentryId: res.sentry,
   });
