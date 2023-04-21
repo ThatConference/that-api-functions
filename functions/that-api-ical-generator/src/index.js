@@ -76,5 +76,5 @@ export const handler = api
   .use(Sentry.Handlers.errorHandler())
   .use(failure);
 
-const port = parseInt(process.env.PORT, 10) || 8080;
+const port = parseInt(process.env.PORT, 10) || 8180;
 api.listen(port, () => console.log(`running 🏃‍♂️ http://localhost:${port}`));
