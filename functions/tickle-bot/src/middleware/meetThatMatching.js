@@ -44,8 +44,14 @@ export default async function meetThatMatching(req, res, next) {
     name: engagementName,
     date: new Date(runDelay),
   });
-  if (lastRunWithinDate) {
+  if (lastRunWithinDate === true) {
     result.result = `Process run withing the last ${constants.TICKLEBOT.ENGAGEMENT.MEET_THAT_MIN_DAYS} days. Exiting`;
+    Sentry.withScope(scope => {
+      scope.setContext('result', { result });
+      scope.setLevel('info');
+      scope.setTag('result', result.result);
+      Sentry.captureMessage('engagement meet that return result');
+    });
     return res.json(result);
   }
 
@@ -135,6 +141,13 @@ export default async function meetThatMatching(req, res, next) {
       next(err);
     }
 
+    Sentry.withScope(scope => {
+      scope.setContext('result', { result });
+      scope.setLevel('info');
+      scope.setTag('result', result.result);
+      Sentry.captureMessage('engagement meet that return result');
+    });
+
     return res.json(result);
   }
 
@@ -173,6 +186,13 @@ export default async function meetThatMatching(req, res, next) {
     } catch (err) {
       next(err);
     }
+
+    Sentry.withScope(scope => {
+      scope.setContext('result', { result });
+      scope.setLevel('info');
+      scope.setTag('result', result.result);
+      Sentry.captureMessage('engagement meet that return result');
+    });
 
     return res.json(result);
   }
@@ -227,6 +247,13 @@ export default async function meetThatMatching(req, res, next) {
   } catch (err) {
     next(err);
   }
+
+  Sentry.withScope(scope => {
+    scope.setContext('result', { result });
+    scope.setLevel('info');
+    scope.setTag('result', result.result);
+    Sentry.captureMessage('engagement meet that return result');
+  });
 
   return res.json(result);
 }
