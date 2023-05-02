@@ -58,6 +58,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: tc-api
+          path: tc-api
       - name: Setup google auth for github actions
         uses: google-github-actions/auth@v1
         with:
@@ -90,7 +91,7 @@ jobs:
       - name: Run GCP Deploy Function - help-post-comment-count
         run: |
           cd tc-api
-          gcloud functions deploy help-post-comment-count --runtime nodejs18 --trigger-event providers/cloud.firestore/eventTypes/document.create --trigger-resource "projects/all-that/databases/(default)/documents/helpPosts/{helpPostId}/helpPostComments/{commentId}" --entry-point helpPostCommentCount
+          gcloud functions deploy help-post-comment-count --runtime nodejs18 --trigger-event providers/cloud.firestore/eventTypes/document.create --trigger-resource "projects/${{ secrets.GCP_PROJECT_ID }}/databases/(default)/documents/helpPosts/{helpPostId}/helpPostComments/{commentId}" --entry-point helpPostCommentCount
         env:
           CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
       - name: Slack Notification

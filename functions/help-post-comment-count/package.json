@@ -1,6 +1,6 @@
 {
   "name": "help-post-comment-count",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Sets comment count on helpPost when a comment is added or removed.",
   "main": "index.js",
   "scripts": {

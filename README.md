@@ -46,3 +46,8 @@ A collection of functions used for THAT
 
 [![that-api-og-image Pull Request](https://github.com/ThatConference/that-api-functions/actions/workflows/that-api-og-image_PullRequest.yml/badge.svg)](https://github.com/ThatConference/that-api-functions/actions/workflows/that-api-og-image_PullRequest.yml)  
 [![that-api-og-image Push Master](https://github.com/ThatConference/that-api-functions/actions/workflows/that-api-og-image_PushMaster.yml/badge.svg)](https://github.com/ThatConference/that-api-functions/actions/workflows/that-api-og-image_PushMaster.yml)
+
+## [help-post-comment-count](functions/help-post-comment-count)
+
+[![help-post-comment-count Pull Request](https://github.com/ThatConference/that-api-functions/actions/workflows/help-post-comment-count_PullRequest.yml/badge.svg)](https://github.com/ThatConference/that-api-functions/actions/workflows/help-post-comment-count_PullRequest.yml)
+[![help-post-comment-count Pull Request](https://github.com/ThatConference/that-api-functions/actions/workflows/help-post-comment-count_PullRequest.yml/badge.svg)](https://github.com/ThatConference/that-api-functions/actions/workflows/help-post-comment-count_PullRequest.yml)

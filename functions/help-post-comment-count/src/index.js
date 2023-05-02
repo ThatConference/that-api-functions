@@ -8,7 +8,8 @@ import Firestore from '@google-cloud/firestore';
 
 const dlog = debug('that:api:helpPostCommentCount');
 const firestore = new Firestore();
-const helpPostColName = 'helpPost';
+// const helpPostColName = 'helpPost';
+const helpPostColName = 'helpPosts';
 const commentColName = 'helpPostComments';
 let version;
 let packageName;
@@ -61,34 +62,24 @@ export const helpPostCommentCount = async (event, context) => {
 
   const eventDoc = event.value.name;
   dlog('👽 Event Doc path/name (undefined on delete):: %s', eventDoc);
-  dlog('👽 Firestore query & update actions');
 
-  let commentCount;
-  try {
-    commentCount = await firestore
+  // If a read-write transaction fails with contention,
+  // the transaction is retried up to five times
+  return firestore.runTransaction(transaction => {
+    dlog('👽 executing transaction');
+    return firestore
       .collection(`${helpPostColName}/${helpPostId}/${commentColName}`)
       .count()
-      .get();
-  } catch (err) {
-    const sentryId = Sentry.captureException(err);
-    console.log('error reference:', sentryId);
-    return undefined;
-  }
-
-  commentCount = commentCount.data().count ?? 0;
-  try {
-    // If a read-write transaction fails with contention,
-    // the transaction is retried up to five times
-    const result = await firestore.runTransaction(transaction => {
-      const docRef = firestore.doc(`${helpPostColName}/${helpPostId}`);
-      transaction.update(docRef, { commentCount });
-      return Promise.resolve(new Date());
-    });
-    dlog('👽 helpDoc update result: %o', result);
-  } catch (err) {
-    const sentryId = Sentry.captureException(err);
-    console.log('error reference: ', sentryId);
-  }
-
-  return undefined;
+      .get()
+      .then(countData => {
+        const commentCount = countData.data().count ?? 0;
+        const docRef = firestore.doc(`${helpPostColName}/${helpPostId}`);
+        return transaction.update(docRef, { commentCount });
+      })
+      .then(() => console.log('transaction result', true))
+      .catch(err => {
+        const sentryId = Sentry.captureException(err);
+        console.log('error reference:', sentryId);
+      });
+  });
 };

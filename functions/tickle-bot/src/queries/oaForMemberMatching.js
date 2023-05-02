@@ -18,6 +18,7 @@ export default {
               eventId
               orderAllocations(orderTypes: [REGULAR, PARTNER, SPEAKER]) {
                 id
+                uiReference
                 allocatedTo {
                   __typename
                   id
