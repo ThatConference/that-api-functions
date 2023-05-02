@@ -10,7 +10,7 @@ on:
 jobs:
   build:
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -31,6 +31,7 @@ jobs:
         run: |
           cd functions/tickle-bot
           pwd
+          npm pkg delete scripts.build
           cp ./package.json __build__/
           cp ./package-lock.json __build__/
           git rev-list --count master > __build__/ccnt.txt
@@ -53,18 +54,21 @@ jobs:
   deploy-image:
     name: Deploy Ticklebot
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Download Build Artifact
         uses: actions/download-artifact@v3
         with:
           name: tc-api
           path: tc-api
-      - name: Setup gcloud Actions
-        uses: google-github-actions/setup-gcloud@v0
+      - name: Setup google auth for github actions
+        uses: google-github-actions/auth@v1
         with:
-          version: '397.0.0'
-          service_account_key: ${{ secrets.GCLOUD_AUTH }}
+          credentials_json: ${{ secrets.GCLOUD_AUTH }}          
+      - name: Setup gcloud Actions
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          version: '428.0.0'
           project_id: ${{ secrets.GCP_PROJECT_ID }}
       - name: write .env file
         run: |
