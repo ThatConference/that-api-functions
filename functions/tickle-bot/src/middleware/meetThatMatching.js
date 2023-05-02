@@ -29,6 +29,7 @@ export default async function meetThatMatching(req, res, next) {
   const result = {
     createdAt: new Date(),
     idCountFromAllocations: 0,
+    campmateIdsFromAllocations: 0,
     optInCount: 0,
     membersToMatch: 0,
     matchesMade: 0,
@@ -86,19 +87,34 @@ export default async function meetThatMatching(req, res, next) {
   }, []);
   dlog(`combined orderAllocation count: %d`, orderAllocations.length);
   const memberIdsFromAllocations = new Map();
+  const campmateIdsFromAllocations = new Map();
   for (let i = 0; i < orderAllocations.length; i += 1) {
     const oa = orderAllocations[i];
     const allocatedTo = oa?.allocatedTo;
-    if (allocatedTo?.id) {
+    const uiReference = oa?.uiReference;
+    if (
+      allocatedTo?.id &&
+      uiReference !== 'GEEKLING' &&
+      uiReference !== 'CAMPMATE'
+    ) {
       if (!memberIdsFromAllocations.has(allocatedTo.id))
         memberIdsFromAllocations.set(allocatedTo.id, allocatedTo);
+    } else if (allocatedTo?.id && uiReference === 'CAMPMATE') {
+      // future use to send campmates engagement emails.
+      if (!campmateIdsFromAllocations.has(allocatedTo.id))
+        campmateIdsFromAllocations.set(allocatedTo.id, allocatedTo);
     }
   }
   dlog(
     'distinct member ids from allocations: %d',
     memberIdsFromAllocations.size,
   );
+  dlog(
+    'distinct campmate ids from allocations: %d',
+    campmateIdsFromAllocations.size,
+  );
   result.idCountFromAllocations = memberIdsFromAllocations.size;
+  result.campmateIdsFromAllocations = campmateIdsFromAllocations.size;
 
   let optedInMembers;
   try {
