@@ -1,0 +1,25 @@
+# Validate lint, build, and tests on PR
+name: help-post-comment-count Pull Request
+
+on:
+  pull_request:
+    paths:
+      - "functions/help-post-comment-count/**"
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Use node.js 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: npm ci, run
+        run: |
+          cd functions/help-post-comment-count
+          cp .env.sample .env
+          npm ci
+          npm run validate
