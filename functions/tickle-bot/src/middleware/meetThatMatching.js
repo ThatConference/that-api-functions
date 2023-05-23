@@ -212,10 +212,41 @@ export default async function meetThatMatching(req, res, next) {
 
     return res.json(result);
   }
+  // Randomize a/b matches
+  const newMatchesRandomized = newMatches.map(match => {
+    const { a, b } = match;
+    let matchA = a;
+    let matchB = b;
+    if (Math.random() * 2 > 1) {
+      matchA = b;
+      matchB = a;
+    }
+    return {
+      a: matchA,
+      b: matchB,
+    };
+  });
+
+  if (newMatches.length !== newMatchesRandomized.length) {
+    dlog(
+      'New randomize match array length does not equal matches array length %d, %d',
+      newMatches.length,
+      newMatchesRandomized.length,
+    );
+    Sentry.setContext('newMatches array length', { length: newMatches.length });
+    Sentry.setContext('newMatchesRandomized length', {
+      length: newMatchesRandomized.length,
+    });
+    return next(
+      new Error(
+        'New randomize match array length does not equal matches array length',
+      ),
+    );
+  }
 
   // format emails
   const { postmarkMessages, validationMessages } = formatMeetThatEmails({
-    newMatches,
+    newMatches: newMatchesRandomized,
   });
   dlog('%d emails formatted for postmark', postmarkMessages.length);
 
@@ -236,17 +267,19 @@ export default async function meetThatMatching(req, res, next) {
       scope.setContext('messagesInError count', {
         MessagessInErrorCount: messagesInError.length,
       });
-      scope.setContext('new matches', { matchCount: newMatches.length });
+      scope.setContext('new matches', {
+        matchCount: newMatchesRandomized.length,
+      });
       Sentry.captureException(
         new Error(
-          `Engagement meetThat emails returned with ${messagesInError.length} send errors over ${newMatches.length} messages`,
+          `Engagement meetThat emails returned with ${messagesInError.length} send errors over ${newMatchesRandomized.length} messages`,
         ),
       );
     });
   }
 
   result.emailsInError = messagesInError.length;
-  result.result = `${newMatches.length} new matches made and emailed`;
+  result.result = `${newMatchesRandomized.length} new matches made and emailed`;
 
   // update matches collection
   try {
