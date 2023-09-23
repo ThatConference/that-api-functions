@@ -3,14 +3,15 @@ import icalGenerator from 'ical-generator';
 import dayjs from 'dayjs';
 
 const dlog = debug('that:function:that-api-ical-generator:createIcs');
-const baseActivityUrl = 'https://that.us/activities';
+const baseActivityUrlOnline = 'https://that.us/activities';
+const baseActivityUrlInPerson = 'https://thatconference.com/activities';
 
 export default ({ member, sessions }) => {
   dlog('create ical called on %d sessions', sessions?.length);
   const ical = icalGenerator({
     name: `${member.firstName}'s THAT.us favorites`,
     description: `Custom feed of sessions favorited by ${member.firstName} at THAT.us`,
-    prodId: '//THAT Conference//THAT.us//EN',
+    prodId: '//THAT Conference//THAT//EN',
   });
 
   // event info: https://sebbo2002.github.io/ical-generator/develop/reference/interfaces/ICalEventData.html
@@ -20,10 +21,14 @@ export default ({ member, sessions }) => {
     // If there isn't a start time (date), you can't add to a calendar
     if (dayjs(session.startTime).isValid()) {
       let location = `See activity's details`;
-      if (session.location?.location) {
-        location = session.location.location;
+      let url = `${baseActivityUrlOnline}/${session.id}`;
+      if (session.location?.destination) {
+        location = session.location.destination;
+        if (session.location?.isOnline !== true) {
+          url = `${baseActivityUrlInPerson}/${session.id}/`;
+        }
       }
-      const url = `${baseActivityUrl}/${session.id}/`;
+
       events.push({
         start: dayjs(session.startTime).toDate(),
         end: dayjs(session.startTime)
