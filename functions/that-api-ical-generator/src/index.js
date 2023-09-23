@@ -59,8 +59,8 @@ function logme(req, res, next) {
 
 const rateLimit = rateLimiter({
   windowMs: 10 * 60 * 1000,
-  max: 20,
-  standardHeaders: true,
+  limit: 20,
+  standardHeaders: 'draft-7',
   legacyHeaders: false,
   skipSuccessfulRequests: true,
 });
