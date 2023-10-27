@@ -49,10 +49,10 @@ A collection of functions used for THAT
 
 ## [help-post-comment-count](functions/help-post-comment-count)
 
-[![help-post-comment-count Pull Request](https://github.com/ThatConference/that-api-functions/actions/workflows/help-post-comment-count_PullRequest.yml/badge.svg)](https://github.com/ThatConference/that-api-functions/actions/workflows/help-post-comment-count_PullRequest.yml)
-[![help-post-comment-count Pull Request](https://github.com/ThatConference/that-api-functions/actions/workflows/help-post-comment-count_PullRequest.yml/badge.svg)](https://github.com/ThatConference/that-api-functions/actions/workflows/help-post-comment-count_PullRequest.yml)
+[![help-post-comment-count Pull Request](https://github.com/ThatConference/that-api-functions/actions/workflows/help-post-comment-count_PullRequest.yml/badge.svg)](https://github.com/ThatConference/that-api-functions/actions/workflows/help-post-comment-count_PullRequest.yml)  
+[![help-post-comment-count Push Master](https://github.com/ThatConference/that-api-functions/actions/workflows/help-post-comment-count_PushMaster.yml/badge.svg)](https://github.com/ThatConference/that-api-functions/actions/workflows/help-post-comment-count_PushMaster.yml)
 
 ## [that-join-discord-bot](functions/that-join-discord-bot)
 
-[![that-join-discord-bot Pull Request](https://github.com/ThatConference/that-api-functions/actions/workflows/that-join-discord-bot_PullRequest.yml/badge.svg)](https://github.com/ThatConference/that-api-functions/actions/workflows/that-join-discord-bot_PullRequest.yml)
-[![that-join-discord-bot Pull Request](https://github.com/ThatConference/that-api-functions/actions/workflows/that-join-discord-bot_PullRequest.yml/badge.svg)](https://github.com/ThatConference/that-api-functions/actions/workflows/that-join-discord-bot_PullRequest.yml)
+[![that-join-discord-bot Pull Request](https://github.com/ThatConference/that-api-functions/actions/workflows/that-join-discord-bot_PullRequest%20copy.yml/badge.svg)](https://github.com/ThatConference/that-api-functions/actions/workflows/that-join-discord-bot_PullRequest%20copy.yml)  
+[![that-join-discord-bot Push Master](https://github.com/ThatConference/that-api-functions/actions/workflows/that-join-discord-bot_PushMaster%20copy.yml/badge.svg)](https://github.com/ThatConference/that-api-functions/actions/workflows/that-join-discord-bot_PushMaster%20copy.yml)
