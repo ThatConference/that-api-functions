@@ -6,6 +6,7 @@ import { Firestore } from '@google-cloud/firestore';
 import responseTime from 'response-time';
 import { verifyKey } from 'discord-interactions';
 import { security } from '@thatconference/api';
+import rateLimiter from 'express-rate-limit';
 import config from './envConfig';
 import {
   installAllCommands,
@@ -36,6 +37,13 @@ Sentry.configureScope(scope => {
     thatApp: 'that-join-discord-bot',
     subSystem: 'api',
   });
+});
+
+const rateLimit = rateLimiter({
+  windowMs: 1 * 60 * 1000,
+  limit: 5,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
 });
 
 function verifyDiscordSig(req, res, next) {
@@ -99,6 +107,7 @@ function failure(err, req, res, next) {
 dlog('starting gcp function handler');
 export const handler = api
   .use(Sentry.Handlers.requestHandler())
+  .use(rateLimit)
   .post('/interactions', verifyDiscordSig, interactionsHandler)
   .post('/registerCommands', thatSigningCheck, installAllCommands)
   .use(responseTime(), thatSigningCheck, express.json())
