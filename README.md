@@ -51,3 +51,8 @@ A collection of functions used for THAT
 
 [![help-post-comment-count Pull Request](https://github.com/ThatConference/that-api-functions/actions/workflows/help-post-comment-count_PullRequest.yml/badge.svg)](https://github.com/ThatConference/that-api-functions/actions/workflows/help-post-comment-count_PullRequest.yml)
 [![help-post-comment-count Pull Request](https://github.com/ThatConference/that-api-functions/actions/workflows/help-post-comment-count_PullRequest.yml/badge.svg)](https://github.com/ThatConference/that-api-functions/actions/workflows/help-post-comment-count_PullRequest.yml)
+
+## [that-join-discord-bot](functions/that-join-discord-bot)
+
+[![that-join-discord-bot Pull Request](https://github.com/ThatConference/that-api-functions/actions/workflows/that-join-discord-bot_PullRequest.yml/badge.svg)](https://github.com/ThatConference/that-api-functions/actions/workflows/that-join-discord-bot_PullRequest.yml)
+[![that-join-discord-bot Pull Request](https://github.com/ThatConference/that-api-functions/actions/workflows/that-join-discord-bot_PullRequest.yml/badge.svg)](https://github.com/ThatConference/that-api-functions/actions/workflows/that-join-discord-bot_PullRequest.yml)

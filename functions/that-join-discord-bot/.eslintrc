@@ -1,0 +1,27 @@
+{
+  "extends": ["airbnb-base", "plugin:prettier/recommended"],
+  "env": {
+    "node": true,
+    "es6": true,
+    "jest/globals": true
+  },
+  "rules": {
+    "no-unused-vars": [
+      1,
+      { "argsIgnorePattern": "res|next|resolve|reject|^err" }
+    ],
+    "arrow-body-style": [2, "as-needed"],
+    "import/no-dynamic-require": "warn",
+    "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
+    "max-len": "off",
+    "jest/no-disabled-tests": "warn",
+    "jest/no-focused-tests": "error",
+    "jest/no-identical-title": "error",
+    "jest/prefer-to-have-length": "warn",
+    "jest/valid-expect": "error",
+    "no-underscore-dangle": "off",
+    "import/prefer-default-export": "off"
+  },
+  "plugins": ["jest"],
+  "parser": "@babel/eslint-parser"
+}

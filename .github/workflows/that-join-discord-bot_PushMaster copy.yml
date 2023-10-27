@@ -1,0 +1,106 @@
+name: that-join-discord-bot Push Master
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "functions/that-join-discord-bot/**"
+
+jobs:
+  build:
+    name: Build that-join-discord-bot
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: npm ci, run validate
+        run: |
+          cd functions/that-join-discord-bot
+          pwd
+          cp .env.sample .env
+          npm ci
+          npm run validate
+      - name: Post-Build Copies
+        run: |
+          cd functions/that-join-discord-bot
+          pwd
+          npm pkg delete scripts.build
+          cp ./package.json __build__/
+          cp ./package-lock.json __build__/
+          git rev-list --count master > __build__/ccnt.txt
+      - name: Archive Build Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: tc-api
+          path: functions/that-join-discord-bot/__build__
+      - name: Slack Notification
+        uses: 8398a7/action-slack@v3
+        with:
+          fields: repo,message,commit,author,eventName,ref,workflow,job,took
+          status: ${{ job.status }}
+          author_name: Push Master CI
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_DEV_NOTIFICATIONS }}
+        if: job.status == 'failure' || job.status == 'cancelled'
+
+  deploy-image:
+    name: Deploy that-join-discord-bot
+    needs: build
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Download Build Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: tc-api
+          path: tc-api
+      - name: Setup google auth for github actions
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCLOUD_AUTH }}
+      - name: Setup gcloud Actions
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          version: "437.0.1"
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+      - name: write .env file
+        run: |
+          gcloud secrets versions access latest --secret prod-that-join-discord-bot-env > tc-api/.env
+          C_CNT=$(cat tc-api/ccnt.txt)
+          rm -f tc-api/ccnt.txt
+          SENTRYREL=SENTRY_VERSION=that-that-join-discord-bot@$(cat tc-api/package.json | jq '.version' | tr -d '"')-$C_CNT.$(echo $GITHUB_SHA | cut -c1-7)
+          echo "" >> tc-api/.env
+          echo $SENTRYREL >> tc-api/.env
+          echo "SENTRYREL=$SENTRYREL" >> $GITHUB_ENV
+        env:
+          CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
+      - name: Checks and verifications
+        run: |
+          echo "**********"
+          echo $SENTRYREL
+          echo $GITHUB_SHA
+          echo $GITHUB_REF
+          echo "**********"
+          echo $PWD
+          ls -lasiR
+      - name: Run GCP Deploy Function - that-join-discord-bot
+        run: gcloud functions deploy that-join-discord-bot --runtime nodejs18 --trigger-http --source $PWD/tc-api --entry-point handler --memory 512MB --timeout 300
+        env:
+          CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
+      - name: Slack Notification
+        uses: 8398a7/action-slack@v3
+        with:
+          fields: repo,message,commit,author,eventName,ref,workflow,job,took
+          status: ${{ job.status }}
+          author_name: Push Master CI
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_DEV_NOTIFICATIONS }}
+        if: always()
