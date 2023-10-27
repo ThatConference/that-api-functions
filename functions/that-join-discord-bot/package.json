@@ -1,0 +1,81 @@
+{
+  "name": "that-join-discord-bot",
+  "version": "0.1.0",
+  "description": "server-side functions for our v2 join discord bot",
+  "main": "index.js",
+  "scripts": {
+    "build": "rimraf __build__ && babel ./src -d ./__build__ --copy-files --ignore ./**/__tests__",
+    "postbuild": "cp -v .env package.json package-lock.json __build__",
+    "predeploy:api:thatusBot": "npm run build",
+    "deploy:api:thatusBot": "functions-framework --target=handler --port=8080 --source=./__build__",
+    "start:watch": "nodemon -e env,js,json,graphql --watch src --ignore '*.test.js' --exec npm run deploy:api:thatusBot",
+    "test": "jest --coverage --passWithNoTests",
+    "lint": "eslint 'src/**/*.js'",
+    "validate": "concurrently npm:test npm:lint npm:build"
+  },
+  "engines": {
+    "node": ">=18 <19"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ThatConference/that-api-functions.git"
+  },
+  "keywords": [
+    "slack",
+    "webhook",
+    "rollup",
+    "nodejs"
+  ],
+  "author": "THAT Conference",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/ThatConference/that-api-functions/issues"
+  },
+  "homepage": "https://github.com/ThatConference/that-api-functions#readme",
+  "dependencies": {
+    "@google-cloud/firestore": "^7.1.0",
+    "@sentry/node": "^7.76.0",
+    "@thatconference/api": "^4.3.0",
+    "dayjs": "^1.11.10",
+    "debug": "^4.3.4",
+    "discord-interactions": "^3.4.0",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "fetch-retry": "^5.0.6",
+    "node-fetch": "~2.6.13",
+    "response-time": "^2.3.2"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.23.0",
+    "@babel/core": "^7.23.2",
+    "@babel/eslint-parser": "^7.22.15",
+    "@babel/node": "^7.22.19",
+    "@babel/preset-env": "^7.23.2",
+    "@google-cloud/functions-framework": "^3.3.0",
+    "babel-jest": "^29.7.0",
+    "concurrently": "^8.2.2",
+    "eslint": "^8.52.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-babel": "^5.3.1",
+    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-jest": "^27.6.0",
+    "eslint-plugin-prettier": "^5.0.1",
+    "husky": "~4.3.8",
+    "jest-cli": "^29.7.0",
+    "nodemon": "^3.0.1",
+    "prettier-eslint": "^16.1.1",
+    "prettier-eslint-cli": "^8.0.1"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "npm run validate"
+    }
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "verbose": true,
+    "rootDir": "./src",
+    "coverageDirectory": "../__testCoverage__"
+  }
+}
