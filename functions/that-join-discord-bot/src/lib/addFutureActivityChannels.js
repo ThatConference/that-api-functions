@@ -6,7 +6,7 @@ import sessionStoreFn from '../dataSources/cloudFirestore/session';
 import { addChannelDetails } from './addActivityChannelAction';
 import envConfig from '../envConfig';
 
-const dlog = debug('that:api:functions:join-bot:activitiesBatch');
+const dlog = debug('that:api:functions:join-bot:activities-batch');
 
 export async function addFutureActivityChannels({ firestore }) {
   dlog('addFutureActivityChannels called');

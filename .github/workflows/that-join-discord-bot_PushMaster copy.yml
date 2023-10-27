@@ -91,7 +91,7 @@ jobs:
           echo $PWD
           ls -lasiR
       - name: Run GCP Deploy Function - that-join-discord-bot
-        run: gcloud functions deploy that-join-discord-bot --runtime nodejs18 --trigger-http --source $PWD/tc-api --entry-point handler --memory 512MB --timeout 300
+        run: gcloud functions deploy that-join-discord-bot --runtime nodejs18 --trigger-http --source $PWD/tc-api --allow-unauthenticated --entry-point handler --memory 256MB --timeout 300
         env:
           CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
       - name: Slack Notification
