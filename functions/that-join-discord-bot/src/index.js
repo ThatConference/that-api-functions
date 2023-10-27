@@ -23,6 +23,7 @@ const firestore = new Firestore();
 const api = express();
 const defaultVersion = `that-join-discord-bot@${config.version}`;
 
+api.set('trust proxy', 1);
 api.set(constants.THAT_JOIN.FIRESTORE, firestore);
 
 Sentry.init({
