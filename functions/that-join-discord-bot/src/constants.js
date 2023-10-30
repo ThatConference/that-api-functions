@@ -1,7 +1,7 @@
 export default {
   THAT_JOIN: {
     FIRESTORE: 'firestore',
-    MIN_MINUTES_TO_ADD_CHANNEL: 30,
+    MIN_MINUTES_TO_ADD_EVENT: 5,
     MIN_AFTER_ACTIVITY_REMOVE_CHANNEL: 23 * 60,
   },
   DISCORD: {

@@ -15,6 +15,7 @@ import {
   createActivityChannel,
   batchCreateActivityChannels,
   deleteExpiredChannelHandler,
+  basicAuth,
 } from './middleware';
 import constants from './constants';
 
@@ -41,7 +42,7 @@ Sentry.configureScope(scope => {
 });
 
 const rateLimit = rateLimiter({
-  windowMs: 1 * 60 * 1000,
+  windowMs: 1 * 30 * 1000,
   limit: 5,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
@@ -96,6 +97,12 @@ function thatSigningCheck(req, res, next) {
   return next();
 }
 
+function guildbeta(req, res) {
+  return res.json({
+    config: config.discord.beta,
+  });
+}
+
 function failure(err, req, res, next) {
   dlog('middleware catchall error %O', err);
   if (res.headersSent) {
@@ -107,14 +114,19 @@ function failure(err, req, res, next) {
 
 dlog('starting gcp function handler');
 export const handler = api
-  .use(Sentry.Handlers.requestHandler())
-  .use(rateLimit)
+  .use(Sentry.Handlers.requestHandler(), responseTime(), rateLimit)
+  .get('/lockedguild', guildbeta)
   .post('/interactions', verifyDiscordSig, interactionsHandler)
-  .post('/registerCommands', thatSigningCheck, installAllCommands)
-  .use(responseTime(), thatSigningCheck, express.json())
-  .post('/batchCreateChannels', batchCreateActivityChannels)
-  .post('/cleanUpChannels', deleteExpiredChannelHandler)
-  .post('/addActivityChannel', activityChecks, createActivityChannel)
+  .post('/registerCommands', basicAuth, installAllCommands)
+  .post('/batchCreateChannels', basicAuth, batchCreateActivityChannels)
+  .post('/cleanUpChannels', basicAuth, deleteExpiredChannelHandler)
+  .post(
+    '/addActivityChannel',
+    thatSigningCheck,
+    express.json(),
+    activityChecks,
+    createActivityChannel,
+  )
 
   .use(Sentry.Handlers.errorHandler())
   .use(failure);

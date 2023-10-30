@@ -13,6 +13,7 @@ export default {
     signingKey:
       process.env.THAT_REQUEST_SIGNING_KEY ??
       configMissing('THAT_REQUEST_SIGNING_KEY'),
+    authCreds: process.env.AUTH_CREDS_LIST ?? configMissing('AUTH_CREDS_LIST'),
   },
   sentry: {
     dsn: process.env.SENTRY_DSN ?? configMissing('SENTRY_DSN'),
