@@ -1,6 +1,6 @@
 {
   "name": "that-join-discord-bot",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "server-side functions for our v2 join discord bot",
   "main": "index.js",
   "scripts": {
