@@ -16,7 +16,7 @@ const dlog = debug('that:api:functions:join-bot:addActivityChannelAction');
 
 function okAddGuildScheduledEvent(startTime) {
   const chkStart = dayjs(startTime).subtract(
-    constants.THAT_JOIN.MIN_MINUTES_TO_ADD_CHANNEL,
+    constants.THAT_JOIN.MIN_MINUTES_TO_ADD_EVENT,
     'minute',
   );
 
