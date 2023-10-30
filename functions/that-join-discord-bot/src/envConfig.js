@@ -24,8 +24,9 @@ export default {
     publicKey: process.env.PUBLIC_KEY ?? configMissing('PUBLIC_KEY'),
     baseUrl: 'https://discord.com/api/v10',
     beta: {
-      guildId: '1164973641679769650',
-      categoryChannelId: '1166417863293276160',
+      guildId: process.env.GUILD_ID ?? configMissing('GUILD_ID'),
+      categoryChannelId:
+        process.env.CATEGORY_CHANNEL_ID ?? configMissing('CATEGORY_CHANNEL_ID'),
     },
   },
 };
