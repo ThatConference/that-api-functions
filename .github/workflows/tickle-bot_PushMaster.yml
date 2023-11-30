@@ -16,10 +16,10 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Use Node.js 18.x
+      - name: Use Node.js 20.x
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20
       - name: npm ci, run validate
         run: |
           cd functions/tickle-bot
@@ -64,11 +64,11 @@ jobs:
       - name: Setup google auth for github actions
         uses: google-github-actions/auth@v1
         with:
-          credentials_json: ${{ secrets.GCLOUD_AUTH }}          
+          credentials_json: ${{ secrets.GCLOUD_AUTH }}
       - name: Setup gcloud Actions
         uses: google-github-actions/setup-gcloud@v1
         with:
-          version: '428.0.0'
+          version: "437.0.1"
           project_id: ${{ secrets.GCP_PROJECT_ID }}
       - name: write .env file
         run: |
@@ -91,7 +91,7 @@ jobs:
           echo $PWD
           ls -lasiR
       - name: Run GCP Deploy Function - tickle-bot
-        run: gcloud functions deploy ticklebot --runtime nodejs18 --trigger-http --source $PWD/tc-api --entry-point handler --memory 512MB --timeout 300
+        run: gcloud functions deploy ticklebot --runtime nodejs20 --trigger-http --source $PWD/tc-api --entry-point handler --memory 512MB --timeout 300
         env:
           CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
       - name: Slack Notification
