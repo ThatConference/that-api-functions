@@ -10,16 +10,16 @@ on:
 jobs:
   build:
     name: Build File Upload
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Use Node.js 16
-        uses: actions/setup-node@v1
+      - name: Use Node.js 20
+        uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 20
       - name: npm ci, run validate
         run: |
           cd functions/fileUpload
@@ -31,11 +31,12 @@ jobs:
         run: |
           cd functions/fileUpload
           pwd
+          npm pkg delete scripts.build
           cp ./package.json __build__/
           cp ./package-lock.json __build__/
           git rev-list --count master > __build__/ccnt.txt
       - name: Archive Build Artifact
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: tc-api
           path: functions/fileUpload/__build__
@@ -53,17 +54,21 @@ jobs:
   deploy-image:
     name: Deploy Image Upload
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Download Build Artifact
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v3
         with:
           name: tc-api
-      - name: Setup gcloud Actions
-        uses: google-github-actions/setup-gcloud@v0
+          path: tc-api
+      - name: Setup google auth for github actions
+        uses: google-github-actions/auth@v1
         with:
-          version: '397.0.0'
-          service_account_key: ${{ secrets.GCLOUD_AUTH }}
+          credentials_json: ${{ secrets.GCLOUD_AUTH }}
+      - name: Setup gcloud Actions
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          version: "437.0.1"
           project_id: ${{ secrets.GCP_PROJECT_ID }}
       - name: write .env file
         run: |
@@ -73,7 +78,6 @@ jobs:
           SENTRYREL=SENTRY_VERSION=that-imgage-upload@$(cat tc-api/package.json | jq '.version' | tr -d '"')-$C_CNT.$(echo $GITHUB_SHA | cut -c1-7)
           echo "" >> tc-api/.env
           echo $SENTRYREL >> tc-api/.env
-          # echo "::set-env name=SENTRYREL::$SENTRYREL"
           echo "SENTRYREL=$SENTRYREL" >> $GITHUB_ENV
         env:
           CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
@@ -87,7 +91,7 @@ jobs:
           echo $PWD
           ls -lasiR
       - name: Run GCP Deploy Function - imageUpload
-        run: gcloud functions deploy fileUploadGateway --allow-unauthenticated --runtime nodejs16 --trigger-http --source $PWD/tc-api --entry-point handler --memory 512MB
+        run: gcloud functions deploy fileUploadGateway --allow-unauthenticated --runtime nodejs20 --trigger-http --source $PWD/tc-api --entry-point handler --memory 512MB
         env:
           CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
       - name: Slack Notification
