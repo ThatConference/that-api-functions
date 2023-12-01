@@ -1,6 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 import 'dotenv/config';
-import connect from 'connect';
+import server from 'express';
 import cors from 'cors';
 import debug from 'debug';
 import { expressjwt as jwt } from 'express-jwt';
@@ -26,7 +26,7 @@ let version;
   version = p.version;
 })();
 
-const api = connect();
+const api = server();
 const dlog = debug('that:api:gateway:fileUpload');
 dlog('fileUpload api started');
 const defaultVersion = `that-api-gateway@${version}`;
