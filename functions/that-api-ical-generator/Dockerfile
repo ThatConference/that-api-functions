@@ -1,6 +1,6 @@
 # THAT Dockerfile
 
-FROM node:18-alpine
+FROM node:20-alpine
 
 # Create and change to app directory
 WORKDIR /usr/src/that
