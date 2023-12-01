@@ -13,7 +13,7 @@ export default async function queueReader(req, res, next) {
   Sentry.addBreadcrumb({
     category: 'messageQueue',
     message: 'queueReader invoked',
-    level: Sentry.Severity.Info,
+    level: 'info',
   });
 
   const firestore = req.app.get('firestore');
@@ -64,7 +64,7 @@ export default async function queueReader(req, res, next) {
       Sentry.addBreadcrumb({
         category: 'messageQueue',
         message: 'saving messageQueue log',
-        level: Sentry.Severity.Warning,
+        level: 'warning',
       });
       Sentry.captureException(err);
       // not sending to errorHandler for a log issue, the messages have sent.

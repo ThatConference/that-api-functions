@@ -10,16 +10,16 @@ on:
 jobs:
   build:
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Use Node.js 14.x
-        uses: actions/setup-node@v1
+      - name: Use Node.js 20.x
+        uses: actions/setup-node@v3
         with:
-          node-version: 14.x
+          node-version: 20
       - name: npm ci, run validate
         run: |
           cd functions/newman
@@ -31,11 +31,12 @@ jobs:
         run: |
           cd functions/newman
           pwd
+          npm pkg delete scripts.build
           cp ./package.json __build__/
           cp ./package-lock.json __build__/
           git rev-list --count master > __build__/ccnt.txt
       - name: Archive Build Artifact
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: tc-api
           path: functions/newman/__build__
@@ -56,14 +57,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download Build Artifact
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v3
         with:
           name: tc-api
-      - name: Setup gcloud Actions
-        uses: google-github-actions/setup-gcloud@v0
+          path: tc-api
+      - name: Setup google auth for github actions
+        uses: google-github-actions/auth@v1
         with:
-          version: '360.0.0'
-          service_account_key: ${{ secrets.GCLOUD_AUTH }}
+          credentials_json: ${{ secrets.GCLOUD_AUTH }}
+      - name: Setup gcloud Actions
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          version: "437.0.1"
           project_id: ${{ secrets.GCP_PROJECT_ID }}
       - name: write .env file
         run: |
@@ -86,7 +91,7 @@ jobs:
           echo $PWD
           ls -lasiR
       - name: Run GCP Deploy Function - newman
-        run: gcloud functions deploy newman --runtime nodejs14 --trigger-http --source $PWD/tc-api --entry-point handler --memory 256MB --timeout 300
+        run: gcloud functions deploy newman --runtime nodejs20 --trigger-http --source $PWD/tc-api --entry-point handler --memory 256MB --timeout 300
         env:
           CLOUDSDK_CORE_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
       - name: Slack Notification

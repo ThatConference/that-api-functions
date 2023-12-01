@@ -23,5 +23,5 @@
     "import/prefer-default-export": "off"
   },
   "plugins": ["jest"],
-  "parser": "babel-eslint"
+  "parser": "@babel/eslint-parser"
 }
