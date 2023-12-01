@@ -66,9 +66,8 @@ export default async msgQueue => {
   };
 
   if (templatedMessages.length > 0) {
-    output.postmarkResponse = await postmark.sendEmailBatchWithTemplates(
-      templatedMessages,
-    );
+    output.postmarkResponse =
+      await postmark.sendEmailBatchWithTemplates(templatedMessages);
   }
 
   return output;
