@@ -10,17 +10,17 @@ on:
 jobs:
   build:
     name: Build that-api-ical-generator
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout master
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Use Node.js 18
+      - name: Use Node.js 20
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20
       - name: npm ci, run validate
         run: |
           cd functions/that-api-ical-generator
@@ -59,7 +59,7 @@ jobs:
   deploy-image:
     name: Deploy that-api-ical-generator
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     env:
       apiName: ical-generator
     steps:
@@ -71,7 +71,7 @@ jobs:
       - name: Setup gcloud Actions
         uses: google-github-actions/setup-gcloud@v0
         with:
-          version: '397.0.0'
+          version: "437.0.1"
           service_account_key: ${{ secrets.GCLOUD_AUTH }}
           project_id: ${{ secrets.GCP_PROJECT_ID }}
       - name: gcloud docker cred helper
