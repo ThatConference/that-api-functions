@@ -58,7 +58,7 @@ export PUBSUB_PROJECT_ID=dev-that
 
 ##### Stopping Emulator
 
-Note: new versions of gcloud seems to have corrected this issue. I am leaving this here for historical and referential reasons.
+**Note**: new versions of gcloud seems to have corrected this issue. I am leaving this here for historical and referential reasons.
 
 **Ctrl-c does stop the Python process for the emulator**. What it doesn't stop is a java process spawned (for a jetty session or similar). Anyway, this process also needs to be killed to clean thing up properly. If there is a message stuck in the queue even if you **stop the emulator process** this java process will continue to try and deliver the message. If you aren't running other java processes, something like `killall java` works fine.
 
