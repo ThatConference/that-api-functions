@@ -17,7 +17,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Use Node.js 14.x
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: 14.x
       - name: npm ci, run validate
@@ -35,7 +35,7 @@ jobs:
           cp ./package-lock.json __build__/
           git rev-list --count master > __build__/ccnt.txt
       - name: Archive Build Artifact
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: tc-api
           path: functions/that-api-og-image/__build__
@@ -56,14 +56,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download Build Artifact
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v3
         with:
           name: tc-api
-      - name: Setup gcloud Actions
-        uses: google-github-actions/setup-gcloud@v0
+          path: __build__
+      - name: Setup google auth for github actions
+        uses: google-github-actions/auth@v1
         with:
-          version: '360.0.0'
-          service_account_key: ${{ secrets.GCLOUD_AUTH }}
+          credentials_json: ${{ secrets.GCLOUD_AUTH }}
+      - name: Setup GCLOUD CLI Action
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          version: "437.0.1"
           project_id: ${{ secrets.GCP_PROJECT_ID }}
       - name: write .env file
         run: |

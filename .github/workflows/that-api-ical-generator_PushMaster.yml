@@ -68,11 +68,15 @@ jobs:
         with:
           name: tc-api
           path: __build__
-      - name: Setup gcloud Actions
-        uses: google-github-actions/setup-gcloud@v0
+
+      - name: Setup google auth for github actions
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCLOUD_AUTH }}
+      - name: Setup GCLOUD CLI Action
+        uses: google-github-actions/setup-gcloud@v1
         with:
           version: "437.0.1"
-          service_account_key: ${{ secrets.GCLOUD_AUTH }}
           project_id: ${{ secrets.GCP_PROJECT_ID }}
       - name: gcloud docker cred helper
         run: gcloud auth configure-docker
