@@ -48,6 +48,14 @@ function failure(err, req, res, next) {
   return res.status(500).json({ ref: res.sentry });
 }
 
+function hello(req, res) {
+  if (req.method === 'POST' || req.method === 'GET') {
+    res.send(`Hello ${req.ip ?? '0'}`);
+  }
+
+  res.status(405).end();
+}
+
 function nothere(req, res) {
   return res.status(404).end();
 }
@@ -71,6 +79,7 @@ export const handler = api
   .use(logme)
   .use(rateLimit)
   .get('/sessions/:profileSlug/:icsKey', sessions)
+  .use('/hello', hello)
   .use('/', nothere)
 
   .use(Sentry.Handlers.errorHandler())
