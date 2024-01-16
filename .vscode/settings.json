@@ -14,7 +14,7 @@
   "editor.snippetSuggestions": "top",
   "prettier.tabWidth": 2,
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": false
+    "source.fixAll.eslint": "never"
   },
   "peacock.color": "#b700ff"
 }
