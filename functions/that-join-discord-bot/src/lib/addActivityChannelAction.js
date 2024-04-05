@@ -77,7 +77,8 @@ export async function addChannelDetails({ activity, firestore }) {
     const vcRes = await channels.createVoiceChannel({
       guildId: discordData.guildId,
       name: title,
-      topic: shortDescription.slice(0, 1023),
+      // Voice channels no longer support topics
+      // topic: shortDescription.slice(0, 1023),
       parentId: envConfig.discord.beta.categoryChannelId,
     });
     if ([200, 201].includes(vcRes.status)) {
@@ -128,6 +129,7 @@ export async function addChannelDetails({ activity, firestore }) {
       }
     } else {
       // report failed channel creation
+      dlog('Channel create error: %o', vcRes);
       result.status = 500;
       result.message = `unable to create voice channel. Activity update not attempted`;
     }
