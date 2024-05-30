@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 import debug from 'debug';
 import * as Sentry from '@sentry/node';
-import { dataSources, orbitLove } from '@thatconference/api';
+import { dataSources } from '@thatconference/api';
 import dateformat from 'dateformat';
 import slackNotification from '../notifications/slack';
 import setFollowPurchasedEvents from '../setFollowPurchasedEvents';
@@ -288,47 +288,6 @@ export default function orderEvents() {
       );
   }
 
-  function sendOrbitLovePurchaseActivity({
-    firestore,
-    member,
-    order,
-    orderAllocations,
-    event,
-  }) {
-    dlog('sendOrbitLovePurchase activity for %s', member.id);
-    // Speaker orders are included, not a purchase
-    if (order.orderType === 'SPEAKER') return undefined;
-
-    const orbitLoveApi = orbitLove.orbitLoveApi({ firestore });
-    const olActivityType = orbitLove.activityTypes;
-    let activityType;
-    if (
-      orderAllocations.filter(
-        p => p.uiReference && p.uiReference.includes('VIRTUAL'),
-      ).length > 0
-    ) {
-      activityType = olActivityType.purchase.onThat();
-    } else if (
-      orderAllocations.filter(
-        p => p.uiReference && p.uiReference.includes('CAMPER'),
-      ).length > 0
-    ) {
-      activityType = olActivityType.purchase.atThat();
-    } else {
-      // not a camper ticket
-      return undefined;
-    }
-    return orbitLoveApi
-      .addPurchaseActivity({
-        activityType,
-        member,
-        event,
-      })
-      .catch(err =>
-        process.nextTick(() => orderEventEmitter.emit('error', err)),
-      );
-  }
-
   async function validateOrderForThankYou({
     member,
     firestore,
@@ -609,30 +568,6 @@ export default function orderEvents() {
       );
   }
 
-  // assuming non-bulk orders only
-  function sendOrbitLoveMembershipActivity({
-    order,
-    orderAllocations,
-    member,
-    firestore,
-  }) {
-    dlog('sendOrbitLoveMembershipAcivity for %s', member.id);
-    const checkResult = validateIsMembershipOrder({ orderAllocations, member });
-    if (checkResult === false) return undefined;
-
-    const orbitLoveApi = orbitLove.orbitLoveApi({ firestore });
-
-    return orbitLoveApi
-      .addPurchaseActivity({
-        activityType: orbitLove.activityTypes.purchase.membership(),
-        order,
-        member,
-      })
-      .catch(err =>
-        process.nextTick(() => orderEventEmitter.emit('error', err)),
-      );
-  }
-
   async function setOrderOnAcceptedSpeaker({ order, firestore }) {
     dlog('setOrderOnAcceptedSpeaker called');
     const checkResult = await validateIsSpeakerOrder({ order, firestore });
@@ -658,59 +593,6 @@ export default function orderEvents() {
       .catch(err => {
         process.nextTick(() => orderEventEmitter.emit('error', err));
       });
-  }
-
-  async function sendOrbitLoveSpeakerActivity({
-    order,
-    orderAllocations,
-    member,
-    firestore,
-  }) {
-    dlog('sendOrbitLoveSpeakerActivity for %s', member.id);
-    let checkResult;
-    try {
-      checkResult = await validateIsSpeakerOrder({ order, firestore });
-    } catch (err) {
-      process.nextTick(() => orderEventEmitter.emit('error', err));
-      return undefined;
-    }
-
-    if (checkResult === false) return undefined;
-
-    const orbitLoveApi = orbitLove.orbitLoveApi({ firestore });
-    const olActivities = orbitLove.activityTypes;
-    let activityType;
-    if (orderAllocations.find(a => a.uiReference === 'COUNSELOR_AT_THAT')) {
-      activityType = olActivities.speaker.acceptedAtThat();
-    } else if (
-      orderAllocations.find(a => a.uiReference === 'COUNSELOR_ON_THAT')
-    ) {
-      activityType = olActivities.speaker.acceptedOnThat();
-    } else {
-      Sentry.withScope(scope => {
-        Sentry.setContext(
-          'order allocations',
-          JSON.stringify(orderAllocations),
-        );
-        scope.setTags({
-          memberId: member.id,
-          orderId: order.id,
-        });
-        scope.setLevel('warning');
-        Sentry.captureMessage('Speaker order found without AT or ON ticket');
-      });
-      return undefined;
-    }
-
-    return orbitLoveApi
-      .addSpeakerActivity({
-        activityType,
-        order,
-        member,
-      })
-      .catch(err =>
-        process.nextTick(() => orderEventEmitter.emit('error', err)),
-      );
   }
 
   function sendEventErrorToSentry(error, templateModel) {
@@ -744,15 +626,7 @@ export default function orderEvents() {
   );
   orderEventEmitter.on(
     constants.ORDER_EVENT_EMITTER.ORDER_CREATED,
-    sendOrbitLoveMembershipActivity,
-  );
-  orderEventEmitter.on(
-    constants.ORDER_EVENT_EMITTER.ORDER_CREATED,
     setOrderOnAcceptedSpeaker,
-  );
-  orderEventEmitter.on(
-    constants.ORDER_EVENT_EMITTER.ORDER_CREATED,
-    sendOrbitLoveSpeakerActivity,
   );
   orderEventEmitter.on(
     constants.ORDER_EVENT_EMITTER.SUBSCRIPTION_CHANGE,
@@ -775,10 +649,6 @@ export default function orderEvents() {
   orderEventEmitter.on(
     constants.ORDER_EVENT_EMITTER.VALIDATED_FOR_THANKYOU,
     sendPreValidatedTicketThankYou,
-  );
-  orderEventEmitter.on(
-    constants.ORDER_EVENT_EMITTER.VALIDATED_FOR_THANKYOU,
-    sendOrbitLovePurchaseActivity,
   );
 
   // family products (emitter in case there is more to do in the future)
