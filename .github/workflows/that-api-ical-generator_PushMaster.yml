@@ -14,11 +14,11 @@ jobs:
 
     steps:
       - name: Checkout master
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Use Node.js 20
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20
       - name: npm ci, run validate
@@ -41,7 +41,7 @@ jobs:
           cp ./Dockerfile __build__/
           git rev-list --count ${{ github.ref_name }} > __build__/ccnt.txt
       - name: Archive Build Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: tc-api
           path: functions/that-api-ical-generator/__build__
@@ -64,17 +64,17 @@ jobs:
       apiName: ical-generator
     steps:
       - name: Download Build Artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: tc-api
           path: __build__
 
       - name: Setup google auth for github actions
-        uses: google-github-actions/auth@v1
+        uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.GCLOUD_AUTH }}
       - name: Setup GCLOUD CLI Action
-        uses: google-github-actions/setup-gcloud@v1
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: "437.0.1"
           project_id: ${{ secrets.GCP_PROJECT_ID }}

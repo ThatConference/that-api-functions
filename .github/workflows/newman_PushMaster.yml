@@ -13,11 +13,11 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Use Node.js 20.x
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20
       - name: npm ci, run validate
@@ -36,7 +36,7 @@ jobs:
           cp ./package-lock.json __build__/
           git rev-list --count master > __build__/ccnt.txt
       - name: Archive Build Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: tc-api
           path: functions/newman/__build__
@@ -57,16 +57,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download Build Artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: tc-api
           path: tc-api
       - name: Setup google auth for github actions
-        uses: google-github-actions/auth@v1
+        uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.GCLOUD_AUTH }}
       - name: Setup gcloud Actions
-        uses: google-github-actions/setup-gcloud@v1
+        uses: google-github-actions/setup-gcloud@v2
         with:
           version: "437.0.1"
           project_id: ${{ secrets.GCP_PROJECT_ID }}
